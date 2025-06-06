@@ -68,17 +68,7 @@ public static class ConsoleListener
 
 public static class NativeMethods
 {
-    public struct COORD
-    {
-        public short X;
-        public short Y;
-
-        public COORD(short x, short y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
+    public record struct COORD(short X, short Y);
 
     [StructLayout(LayoutKind.Explicit)]
     public struct INPUT_RECORD

@@ -9,8 +9,8 @@ public class _3DEngine
 
     private readonly int screenHeight, screenWidth;
 
-    TimeSpan buttonDelay = new TimeSpan();
-    readonly TimeSpan buttonTime = new TimeSpan(0, 0, 0, 0, 60);
+    TimeSpan buttonDelay = new();
+    readonly TimeSpan buttonTime = new(0, 0, 0, 0, 60);
 
     public Sprite screen;
 
@@ -42,16 +42,16 @@ public class _3DEngine
     public Sector[] sectors = new Sector[4];
 
     #region testing
-    readonly int[] loadSectors = new int[]
-    {//wall start, wall end, z1 height, z2 height, bottom color, top color
+    readonly int[] loadSectors =
+    [//wall start, wall end, z1 height, z2 height, bottom color, top color
      0,  4, 0, 60, (int)GameConsole.COLOR.FG_BLUE ,(int)GameConsole.COLOR.FG_DARK_BLUE, //sector 1
      4,  8, 0, 40, (int)GameConsole.COLOR.FG_RED ,(int)GameConsole.COLOR.FG_DARK_RED, //sector 2
      8, 12, 0, 40, (int)GameConsole.COLOR.FG_GREEN ,(int)GameConsole.COLOR.FG_DARK_GREEN, //sector 3
      12,16, 0, 40, (int)GameConsole.COLOR.FG_YELLOW ,(int)GameConsole.COLOR.FG_DARK_YELLOW, //sector 4
-    };
+    ];
 
-    readonly int[] loadWalls = new int[]
-    {//x1,y1, x2,y2, color
+    readonly int[] loadWalls =
+    [//x1,y1, x2,y2, color
       0, 0, 32, 0, (int)GameConsole.COLOR.FG_RED,
      32, 0, 32,32, (int)GameConsole.COLOR.FG_DARK_RED,
      32,32,  0,32, (int)GameConsole.COLOR.FG_RED,
@@ -71,7 +71,7 @@ public class _3DEngine
      32, 64, 32, 96, (int)GameConsole.COLOR.FG_DARK_BLUE,
      32, 96,  0, 96, (int)GameConsole.COLOR.FG_BLUE,
       0, 96,  0, 64, (int)GameConsole.COLOR.FG_DARK_BLUE,
-    };
+    ];
 
     #endregion
 

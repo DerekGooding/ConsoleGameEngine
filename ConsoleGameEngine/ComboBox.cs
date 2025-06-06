@@ -7,7 +7,7 @@ namespace ConsoleGameEngine;
 public class ComboBox
 {
     public int x, y;
-    public List<string> entries = new List<string>();
+    public List<string> entries = [];
     public Sprite outputSprite = null;
 
     private readonly bool simple;

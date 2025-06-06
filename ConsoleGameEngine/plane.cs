@@ -1,17 +1,10 @@
 namespace ConsoleGameEngine;
 
-public class Plane<T>
+public class Plane<T>(int width, int height)
 {
-    public T[] Data { get; }
-    public int Width { get; }
-    public int Height { get; }
-
-    public Plane(int width, int height)
-    {
-        Width = width;
-        Height = height;
-        Data = new T[width * height];
-    }
+    public T[] Data { get; } = new T[width * height];
+    public int Width { get; } = width;
+    public int Height { get; } = height;
 
     public int GetOffset(int x, int y) => (GameConsole.Clamp(y, 0, Height - 1) * Width) + GameConsole.Clamp(x, 0, Width - 1);
 

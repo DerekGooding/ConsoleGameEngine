@@ -24,7 +24,7 @@ public class Animation
     public Animation(Sprite sprite, TimeSpan frameDelay, int frameWidth, int frameHeight, int frameCount)
     {
         animationFromOneFrame = true;
-        sprites = new List<Sprite> { sprite };
+        sprites = [sprite];
         this.frameDelay = frameDelay;
         shownFrame = 0;
         lastUpdate = DateTime.Now;
@@ -36,7 +36,7 @@ public class Animation
 
     public Animation(List<string> sprites, TimeSpan frameDelay)
     {
-        this.sprites = new List<Sprite>();
+        this.sprites = [];
         foreach (var sprite in sprites)
         {
             this.sprites.Add(new Sprite(sprite));
@@ -50,7 +50,7 @@ public class Animation
     public Animation(string sprite, TimeSpan frameDelay, int frameWidth, int frameHeight)
     {
         animationFromOneFrame = true;
-        sprites = new List<Sprite> { new Sprite(sprite) };
+        sprites = [new(sprite)];
         this.frameDelay = frameDelay;
         shownFrame = 0;
         lastUpdate = DateTime.Now;

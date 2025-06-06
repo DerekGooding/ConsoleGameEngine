@@ -8,10 +8,10 @@ public class ListBox
 {
     public int x, y;
     public int w, h;
-    public List<string> entries = new List<string>();
+    public List<string> entries = [];
     readonly bool simple = false;
     readonly short foregroundColor, backgroundColor;
-    public Sprite outputSprite = new Sprite(1, 1);
+    public Sprite outputSprite = new(1, 1);
     int firstEntry = 0;
 
     public int selectedEntry = 0;

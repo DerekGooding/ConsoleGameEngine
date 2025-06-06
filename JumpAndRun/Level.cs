@@ -17,16 +17,16 @@ class Level
         walls = [];
 
         //ground-plattform
-        plattforms.Add(new Plattform { x = 0, y = 120, l = 200 });
+        plattforms.Add(new Plattform (0, 120, 200 ));
         //intro plattforms
-        plattforms.Add(new Plattform { x = 50, y = 70, l = 70 });
-        plattforms.Add(new Plattform { x = 90, y = 100, l = 70 });
-        plattforms.Add(new Plattform { x = 150, y = 40, l = 35 });
-        plattforms.Add(new Plattform { x = 130, y = 55, l = 20 });
+        plattforms.Add(new Plattform (50, 70, 70));
+        plattforms.Add(new Plattform (90, 100, 70));
+        plattforms.Add(new Plattform (150, 40, 35));
+        plattforms.Add(new Plattform (130, 55, 20));
 
         //walls
-        walls.Add(new Plattform { x = 0, y = 0, l = 120 });
-        walls.Add(new Plattform { x = 200, y = 0, l = 120 });
+        walls.Add(new Plattform (0, 0, 120));
+        walls.Add(new Plattform (200, 0, 120));
     }
 
     public void Update(TimeSpan elapsedTime)
@@ -43,25 +43,23 @@ class Level
             for(var i = 0; i < plattforms.Count; i++)
             {
                 var p = plattforms[i];
-                p.y++;
+                p.Y++;
 
-                if(p.y <= 120) updatedPlattforms.Add(p);
+                if(p.Y <= 120) updatedPlattforms.Add(p);
             }
             plattforms = updatedPlattforms;
             //check if new plattforms can be added
             for(var x = plattforms.Count; x < MAXplattformcount; x++)
             {
-                plattforms.Add(new Plattform { x = random.Next(0,200), y = random.Next((int)boundaries.Top, 50), l = random.Next(20,70) });
+                plattforms.Add(new Plattform (random.Next(0, 200),
+                                              random.Next(boundaries.Top, 50),
+                                              random.Next(20, 70)));
             }
         }
     }
 
-    public struct Plattform
+    public record struct Plattform(int X, int Y, int L)
     {
-        public int x;
-        public int y;
-        public int l;
-
-        public (int left, int right, int y) Bounds() => (x, x + l, y);
+        public readonly (int left, int right, int y) Bounds() => (X, X + L, Y);
     }
 }

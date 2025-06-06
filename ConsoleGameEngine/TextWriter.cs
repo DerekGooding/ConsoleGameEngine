@@ -6,9 +6,10 @@ namespace ConsoleGameEngine;
 public static class TextWriter
 {
     static Sprite spriteSheet, spriteSheetSMALL;
-    public static FontPadding fontPadding = new FontPadding(0, 0, 0, 0);
+    public static FontPadding fontPadding = new(0, 0, 0, 0);
     static int width, height, widthSMALL, heightSMALL;
-    static Dictionary<char, Coords> dictionary = new Dictionary<char, Coords> { { ' ', new Coords {X= 0, Y=0 } },
+    static Dictionary<char, Coords> dictionary = new()
+    { { ' ', new Coords {X= 0, Y=0 } },
                                                                                 { '!', new Coords {X= 1, Y=0 } },
                                                                                 { '"', new Coords {X= 2, Y=0 } },
                                                                                 { '#', new Coords {X= 3, Y=0 } },
@@ -103,7 +104,8 @@ public static class TextWriter
                                                                                 { '|', new Coords {X= 2, Y=5 } },
                                                                                 { '}', new Coords {X= 3, Y=5 } },
                                                                                 { '~', new Coords {X= 4, Y=5 } }};
-    static readonly Dictionary<char, Coords> dictionarySMALL = new Dictionary<char, Coords> { {'A', new Coords {X= 0, Y=0 }},
+    static readonly Dictionary<char, Coords> dictionarySMALL = new()
+    { {'A', new Coords {X= 0, Y=0 }},
             {'B', new Coords {X= 1, Y=0 } },
             {'C', new Coords {X= 2, Y=0 } },
             {'D', new Coords {X= 3, Y=0 } },
@@ -236,9 +238,9 @@ public static class TextWriter
                 var letter = new Sprite(1,1);
 
                 if (fontType == FontType.small)
-                    letter = spriteSheetSMALL.ReturnPartialSprite((coords.X * _width) + fontPadding.left + coords.X + 1, (coords.Y * _height) + fontPadding.top + coords.Y + 1, _width, _height);
+                    letter = spriteSheetSMALL.ReturnPartialSprite((coords.X * _width) + fontPadding.Left + coords.X + 1, (coords.Y * _height) + fontPadding.Top + coords.Y + 1, _width, _height);
                 else if (fontType == FontType.standard)
-                    letter = spriteSheet.ReturnPartialSprite((coords.X * _width) + fontPadding.left + coords.X + 1, (coords.Y * _height) + fontPadding.top + coords.Y + 1, _width, _height);
+                    letter = spriteSheet.ReturnPartialSprite((coords.X * _width) + fontPadding.Left + coords.X + 1, (coords.Y * _height) + fontPadding.Top + coords.Y + 1, _width, _height);
 
                 for (var x = 0; x < letter.Width; x++)
                 {
@@ -288,16 +290,5 @@ public static class TextWriter
         small
     }
 
-    public class FontPadding
-    {
-        public int top, left, right, bottom;
-
-        public FontPadding(int top, int left, int right, int bottom)
-        {
-            this.top = top;
-            this.left = left;
-            this.right = right;
-            this.bottom = bottom;
-        }
-    }
+    public record struct FontPadding(int Top, int Left, int Right, int Bottom);
 }

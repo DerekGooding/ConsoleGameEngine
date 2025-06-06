@@ -36,7 +36,7 @@ public class TextBlock
         //input body
         Sprite body;
 
-        content.PadLeft(length);
+        content = content.PadLeft(length);
 
         if (simple)
         {

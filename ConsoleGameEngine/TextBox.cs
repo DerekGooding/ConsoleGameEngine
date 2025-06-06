@@ -4,37 +4,31 @@ using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine;
 
-public class TextBox
+public class TextBox(int x,
+                     int y,
+                     int length,
+                     string tag,
+                     bool simple = true,
+                     TextBox.ObjectPosition tagPosition = TextBox.ObjectPosition.Top,
+                     short backgroundColor = (short)COLOR.FG_BLACK,
+                     short foregroundColor = (short)COLOR.FG_WHITE,
+                     string content = "")
 {
-    public int x, y;
-    public Sprite outputSprite;
-    readonly int length; //character-count
+    public int x = x, y = y;
+    public Sprite outputSprite = new(1, 1);
+    readonly int length = length; //character-count
 
-    public string content = "";
-    readonly string tag;
+    public string content = content;
+    readonly string tag = tag;
     public bool selected = false;
-    readonly bool simple = true; // simple - ascii-charcters, advanced - sprites
-    readonly short foregroundColor, backgroundColor;
-    readonly ObjectPosition tagPosition;
+    readonly bool simple = simple; // simple - ascii-charcters, advanced - sprites
+    readonly short foregroundColor = foregroundColor, backgroundColor = backgroundColor;
+    readonly ObjectPosition tagPosition = tagPosition;
 
     int inputFieldWidth, inputFieldHeight;
 
-    TimeSpan buttonDelay = new TimeSpan();
-    readonly TimeSpan buttonTime = new TimeSpan(0, 0, 0, 0, 120);
-
-    public TextBox(int x, int y, int length, string tag, bool simple = true, ObjectPosition tagPosition = ObjectPosition.Top, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE, string content = "")
-    {
-        this.x = x;
-        this.y = y;
-        this.length = length;
-        this.tag = tag;
-        this.simple = simple;
-        outputSprite = new Sprite(1,1);
-        this.foregroundColor = foregroundColor;
-        this.backgroundColor = backgroundColor;
-        this.tagPosition = tagPosition;
-        this.content = content;
-    }
+    TimeSpan buttonDelay = new();
+    readonly TimeSpan buttonTime = new(0, 0, 0, 0, 120);
 
     public void UpdateSelection(MOUSE_EVENT_RECORD r)
     {
@@ -117,7 +111,7 @@ public class TextBox
         //input body
         Sprite body;
 
-        content.PadLeft(length);
+        content = content.PadLeft(length);
 
         if(simple)
         {

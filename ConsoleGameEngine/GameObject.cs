@@ -5,7 +5,7 @@ namespace ConsoleGameEngine;
 
 public class GameObject
 {
-    readonly List<Animation> animations = new List<Animation>();
+    readonly List<Animation> animations = [];
     int activeAnimationIndex {get; set;}
     public Sprite outputSprite = null;
 
@@ -17,7 +17,7 @@ public class GameObject
     }
     public GameObject(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
     {
-        animations = new List<Animation>();
+        animations = [];
         animations = LoadSpriteSheet(spriteSheet, w, h, timeSpan, frameCounts);
     }
 

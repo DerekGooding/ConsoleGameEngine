@@ -40,17 +40,7 @@ public abstract class GameConsole : IDisposable
     private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct Coord
-    {
-        public short X;
-        public short Y;
-
-        public Coord(short x, short y)
-        {
-            X = x;
-            Y = y;
-        }
-    };
+    public record struct Coord(short X, short Y);
 
     [StructLayout(LayoutKind.Explicit)]
     private struct CharUnion
@@ -106,7 +96,7 @@ public abstract class GameConsole : IDisposable
             return false;       // No window is currently activated
         }
 
-        var procId = Process.GetCurrentProcess().Id;
+        var procId = Environment.ProcessId;
         GetWindowThreadProcessId(activatedHandle, out var activeProcId);
 
         return activeProcId == procId;
@@ -123,7 +113,7 @@ public abstract class GameConsole : IDisposable
     private readonly SafeFileHandle _consolehandle;
     private readonly Plane<CharInfo> _screenbuf;
     public readonly Coord _screencoord;
-    private readonly Coord _topleft = new Coord() { X = 0, Y = 0 };
+    private readonly Coord _topleft = new() { X = 0, Y = 0 };
     private readonly Thread _gamethread;
     private SmallRect _screenrect;
 

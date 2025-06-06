@@ -59,7 +59,7 @@ class JumpAndRun : GameConsole
         //draw plattforms
         foreach (var p in level.plattforms)
         {
-            DrawSprite(p.x, p.y, new Sprite(p.l, 1, COLOR.BG_DARK_GREEN));
+            DrawSprite(p.X, p.Y, new Sprite(p.L, 1, COLOR.BG_DARK_GREEN));
         }
 
         //draw walls

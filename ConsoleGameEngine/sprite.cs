@@ -17,14 +17,14 @@ public class Sprite
     public Sprite(string[] spriteData, short[] spriteColors = null)
     {
         if (spriteData.Length == 0)
-            throw new ArgumentException(nameof(spriteData));
+            throw new ArgumentException(null, nameof(spriteData));
         if (spriteData.Any(s => s.Length != spriteData[0].Length))
-            throw new ArgumentException(nameof(spriteData));
+            throw new ArgumentException(null, nameof(spriteData));
         Width = spriteData[0].Length;
         Height = spriteData.Length;
 
         if (spriteColors != null && spriteColors.Length != Width * Height)
-            throw new ArgumentException(nameof(spriteColors));
+            throw new ArgumentException(null, nameof(spriteColors));
 
         _spritedata = new Plane<char>(Width, Height);
         _spritecolors = new Plane<short>(Width, Height);
