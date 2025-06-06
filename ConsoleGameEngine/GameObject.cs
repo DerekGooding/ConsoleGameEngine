@@ -9,7 +9,7 @@ namespace ConsoleGameEngine
         int activeAnimationIndex {get; set;}
         public Sprite outputSprite = null;
 
-        public GameObject() 
+        public GameObject()
         {
             outputSprite = new Sprite(16,16);
             AddAnimation(new animation(outputSprite, new TimeSpan(0, 0, 0, 0, 100), 16, 16, 0));
@@ -64,7 +64,7 @@ namespace ConsoleGameEngine
         {
             activeAnimationIndex++;
 
-            if(activeAnimationIndex > animations.Count - 1) 
+            if(activeAnimationIndex > animations.Count - 1)
                 activeAnimationIndex = 0;
         }
     }

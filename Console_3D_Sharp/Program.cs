@@ -93,7 +93,7 @@ class Program
         }
 
         public override bool OnUserUpdate(TimeSpan fElapsedTime)
-        {      
+        {
             #region inputs
             if (GetKeyState(ConsoleKey.A).Held)// Keys[((int)'A')].held)
                 fPlayerA -= (fSpeed * 0.5f) * fElapsedTime.TotalSeconds;
@@ -323,7 +323,7 @@ class Program
                         }
                     }
                 }
-            
+
                 listObjects[i] = obj;
             }
 
@@ -348,10 +348,10 @@ class Program
     {
         Console.OutputEncoding = Encoding.GetEncoding(437);
 
-        using (var f = new ConsoleFPS())
-            f.Start();
+        using var f = new ConsoleFPS();
+        f.Start();
     }
-    
+
     static float GetElapsedTime()
     {
         TimeSpan elapsed = DateTime.Now - lastTime;

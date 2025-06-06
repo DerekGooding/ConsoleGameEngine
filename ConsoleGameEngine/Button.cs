@@ -60,7 +60,7 @@ namespace ConsoleGameEngine
             int mouseX = r.dwMousePosition.X, mouseY = r.dwMousePosition.Y;
             uint mouseState = r.dwButtonState;
 
-            if (mouseX <= x + width && mouseX >= x && mouseY <= y + height && mouseY > y) 
+            if (mouseX <= x + width && mouseX >= x && mouseY <= y + height && mouseY > y)
             {
                 if (mouseState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED)
                 {
@@ -91,7 +91,7 @@ namespace ConsoleGameEngine
                     outputSprite = sprite;
                 else
                     outputSprite = BuildSimpleSprite(false, false);
-            }      
+            }
         }
 
         private Sprite BuildSimpleSprite(bool clicked, bool hoovered)

@@ -221,17 +221,17 @@ namespace ConsoleGameEngine
                 sectors[s].distance = 0; //clear distance
 
                 if (player.z < sectors[s].bottomHeight) //bottom surface
-                { 
+                {
                     sectors[s].surface = 1; cycles = 2;
                     for (int x = 0; x < screenWidth; x++)
                         sectors[s].surfacePoints[x] = screenHeight;
-                } 
+                }
                 else if (player.z > sectors[s].topHeight) //top surface
-                { 
+                {
                     sectors[s].surface = 2; cycles = 2;
                     for (int x = 0; x < screenWidth; x++)
                         sectors[s].surfacePoints[x] = 0;
-                } 
+                }
                 else { sectors[s].surface = 0; cycles = 1; }    //no surfaces
 
                 for (int frontBack = 0; frontBack < cycles; frontBack++)
@@ -297,7 +297,7 @@ namespace ConsoleGameEngine
                     }
                     sectors[s].distance /= (sectors[s].wallNumberEnd - sectors[s].wallNumberStart);
                 }
-            }   
+            }
         }
         public void DrawWall(int x1, int x2, int b1, int b2, int t1, int t2, short color, int s)
         {

@@ -35,7 +35,7 @@ namespace ConsoleGameEngine
             this.tagPosition = tagPosition;
             this.content = content;
         }
-        
+
         public void UpdateSelection(MOUSE_EVENT_RECORD r)
         {
             int mouseX = r.dwMousePosition.X, mouseY = r.dwMousePosition.Y;
@@ -99,7 +99,7 @@ namespace ConsoleGameEngine
                 //(back-)space / enter
                 if (KeyStates[13].Held && buttonDelay >= buttonTime) //enter
                     selected = false;
-                
+
                 if (KeyStates[8].Held && buttonDelay >= buttonTime) //backspace
                 {
                     content = content.Length > 0 ? content.Remove(content.Length - 1) : content;

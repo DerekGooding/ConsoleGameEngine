@@ -284,7 +284,7 @@ namespace ConsoleGameEngine
             }
         }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="fWorldX">X for Cameraposition in World</param>
         /// <param name="fWorldY">Y for Cameraposition in World</param>

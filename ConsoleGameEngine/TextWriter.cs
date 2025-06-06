@@ -265,13 +265,13 @@ namespace ConsoleGameEngine
                 }
                 row++;
             }
+
             
-            
-            
+
             
             return sprite;
         }
-        
+
         public struct Coords
         {
             public int x { get; set; }

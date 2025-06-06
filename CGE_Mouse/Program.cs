@@ -28,7 +28,6 @@ internal class Program
             mode |= ENABLE_MOUSE_INPUT; //enable
             SetConsoleMode(inHandle, mode);
 
-            
             ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
             ConsoleListener.Start();
@@ -72,7 +71,7 @@ internal class Program
     {
         Console.OutputEncoding = Encoding.GetEncoding(437);
 
-        using (var f = new CGE_Mouse())
-            f.Start();
+        using var f = new CGE_Mouse();
+        f.Start();
     }
 }

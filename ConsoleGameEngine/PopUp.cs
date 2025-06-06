@@ -11,7 +11,7 @@ namespace ConsoleGameEngine
         String text;
         GameConsole.COLOR backgroundColor, foregroundColor;
         PopUpState state;
-        
+
         public PopUp(int x, int y, string text, out Sprite outputSprite, GameConsole.COLOR backgroundColor = GameConsole.COLOR.FG_BLUE, GameConsole.COLOR foregroundColor = GameConsole.COLOR.FG_WHITE)
         {
             this.x = x;
