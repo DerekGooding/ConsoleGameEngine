@@ -79,10 +79,7 @@ namespace ConsoleGameEngine
         private class CONSOLE_FONT_INFOEX
         {
             private int cbSize;
-            public CONSOLE_FONT_INFOEX()
-            {
-                cbSize = Marshal.SizeOf(typeof(CONSOLE_FONT_INFOEX));
-            }
+            public CONSOLE_FONT_INFOEX() => cbSize = Marshal.SizeOf(typeof(CONSOLE_FONT_INFOEX));
 
             public int FontIndex;
             public short FontWidth;

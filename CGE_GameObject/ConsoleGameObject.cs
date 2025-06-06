@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ConsoleGameEngine;
+﻿using ConsoleGameEngine;
 
 namespace CGE_GameObject;
 

@@ -8,6 +8,8 @@
     <Copyright>Copyright © Diehl Informatik GmbH 2025</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConsoleGameEngine\ConsoleGameEngine.csproj" />

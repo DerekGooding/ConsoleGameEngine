@@ -34,8 +34,10 @@ namespace ConsoleGameEngine
             int i = 0;
 
             foreach (var s in spriteData)
+            {
                 foreach (var c in s)
                     _spritedata.SetData(i++, c);
+            }
 
             for (i = 0; i < _spritecolors.Data.Length; i++)
                 _spritecolors.SetData(i, spriteColors == null ? (short)COLOR.FG_GREY : spriteColors[i]);
@@ -50,19 +52,10 @@ namespace ConsoleGameEngine
             if (!Load(file)) Create(8, 8);
         }
 
-        public Sprite(int w, int h)
-        {
-            Create(w, h);
-        }
-        public Sprite(int w, int h, COLOR color)
-        {
-            Create(w, h, color);
-        }
+        public Sprite(int w, int h) => Create(w, h);
+        public Sprite(int w, int h, COLOR color) => Create(w, h, color);
 
-        public Sprite(int w, int h, char c, COLOR color)
-        {
-            Create(w, h, c, color);
-        }
+        public Sprite(int w, int h, char c, COLOR color) => Create(w, h, c, color);
 
         public Sprite(string file, int w, int h, int startRow, int count)
         {

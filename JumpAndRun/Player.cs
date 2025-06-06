@@ -1,6 +1,4 @@
-﻿using System;
-
-using ConsoleGameEngine;
+﻿using ConsoleGameEngine;
 using static ConsoleGameEngine.GameConsole;
 
 namespace JumpAndRun;

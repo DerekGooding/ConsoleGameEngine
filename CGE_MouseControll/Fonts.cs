@@ -1,5 +1,4 @@
-﻿using System;
-using ConsoleGameEngine;
+﻿using ConsoleGameEngine;
 
 namespace CGE_Fonts;
 

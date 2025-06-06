@@ -5,6 +5,8 @@
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-using YoutubeExplode;
+﻿using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 
 using OpenCvSharp;
@@ -10,9 +7,7 @@ using NAudio.Wave;
 
 using ConsoleGameEngine;
 using static ConsoleGameEngine.NativeMethods;
-using System.IO;
 using System.Diagnostics;
-using System.Threading;
 
 namespace YouTubeStream;
 

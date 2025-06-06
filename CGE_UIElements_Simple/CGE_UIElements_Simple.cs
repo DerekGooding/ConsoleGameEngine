@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ConsoleGameEngine;
+﻿using ConsoleGameEngine;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace CGE_UIElements_Simple;

@@ -1,0 +1,1 @@
+﻿global using TextWriter = ConsoleGameEngine.TextWriter;
