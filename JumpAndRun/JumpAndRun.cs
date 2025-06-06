@@ -53,11 +53,11 @@ class JumpAndRun : GameConsole
         }
 
         Clear();
-        DrawSprite((int)_player.xPosition, (int)_player.yPosition, _player.outputSprite);
-        DrawSprite(0, 0, TextWriter.GenerateTextSprite($"   NINJA TOWER   {_level.points} ", TextWriter.Textalignment.Left, 1));
+        DrawSprite((int)_player.XPosition, (int)_player.YPosition, _player.OutputSprite);
+        DrawSprite(0, 0, TextWriter.GenerateTextSprite($"   NINJA TOWER   {_level.Points} ", TextWriter.Textalignment.Left, 1));
 
         //draw plattforms
-        foreach (var p in _level.plattforms)
+        foreach (var p in _level.Plattforms)
         {
             DrawSprite(p.X, p.Y, new Sprite(p.L, 1, COLOR.BG_DARK_GREEN));
         }
@@ -68,8 +68,8 @@ class JumpAndRun : GameConsole
         //    DrawSprite(p.x, p.y, new Sprite(1, p.l, GameConsole.COLOR.BG_DARK_GREEN));
         //}
 
-        if(_player.yPosition < 50) _startLevel = true;
-        if (_player.yPosition > 120) _startLevel = false;
+        if(_player.YPosition < 50) _startLevel = true;
+        if (_player.YPosition > 120) _startLevel = false;
 
         return true;
     }
