@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine
@@ -67,9 +62,7 @@ namespace ConsoleGameEngine
         public delegate void ConsoleKeyEvent(KEY_EVENT_RECORD r);
 
         public delegate void ConsoleWindowBufferSizeEvent(WINDOW_BUFFER_SIZE_RECORD r);
-
     }
-
 
     public static class NativeMethods
     {
@@ -177,7 +170,6 @@ namespace ConsoleGameEngine
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetStdHandle(uint nStdHandle);
 
-
         public const uint ENABLE_MOUSE_INPUT = 0x0010,
             ENABLE_QUICK_EDIT_MODE = 0x0040,
             ENABLE_EXTENDED_FLAGS = 0x0080,
@@ -190,12 +182,10 @@ namespace ConsoleGameEngine
         [DllImportAttribute("kernel32.dll")]
         public static extern bool SetConsoleMode(IntPtr hConsoleInput, uint dwMode);
 
-
         [DllImportAttribute("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern bool ReadConsoleInput(IntPtr hConsoleInput, [Out] INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
 
         [DllImportAttribute("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern bool WriteConsoleInput(IntPtr hConsoleInput, INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
-
     }
 }

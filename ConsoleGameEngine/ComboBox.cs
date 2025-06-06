@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
-
 
 namespace ConsoleGameEngine
 {
     public class ComboBox
     {
-
         public int x, y;
         public List<string> entries = new List<string>();
         public Sprite outputSprite = null;
@@ -43,7 +37,6 @@ namespace ConsoleGameEngine
             lb_Entries = new ListBox(x, y + tb_Selection.height, w, entriesToShow + 2, entries, simple: simple, backgroundColor: backgroundColor, foregroundColor: foregroundColor);
 
             outputSprite = BuildSprite();
-
         }
 
         public void UpdateMouseInput(MOUSE_EVENT_RECORD r)
@@ -82,11 +75,9 @@ namespace ConsoleGameEngine
 
                 retSprite.AddSpriteToSprite(0, 0, tb_Selection.outputSprite);
                 retSprite.AddSpriteToSprite(w-3, 1, btn_Select.outputSprite);
-
             }
 
             return retSprite;
-
         }
 
         private bool BtnSelectClicked()
@@ -95,6 +86,5 @@ namespace ConsoleGameEngine
             outputSprite = BuildSprite();
             return true;
         }
-
     }
 }

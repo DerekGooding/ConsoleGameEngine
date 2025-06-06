@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Data;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 using ConsoleGameEngine;
-using static ConsoleGameEngine._3DEngine;
 using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
-
 
 namespace JumpAndRun
 {
@@ -33,20 +27,19 @@ namespace JumpAndRun
         { }
         public override bool OnUserCreate()
         {
-            inHandle = NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE);
+            inHandle = GetStdHandle(STD_INPUT_HANDLE);
             uint mode = 0;
-            NativeMethods.GetConsoleMode(inHandle, ref mode);
-            mode &= ~NativeMethods.ENABLE_QUICK_EDIT_MODE; //disable
-            mode |= NativeMethods.ENABLE_WINDOW_INPUT; //enable (if you want)
-            mode |= NativeMethods.ENABLE_MOUSE_INPUT; //enable
-            NativeMethods.SetConsoleMode(inHandle, mode);
+            GetConsoleMode(inHandle, ref mode);
+            mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
+            mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+            mode |= ENABLE_MOUSE_INPUT; //enable
+            SetConsoleMode(inHandle, mode);
 
             ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
             ConsoleListener.Start();
 
             TextWriter.LoadFont("fontsheet.txt", 6, 8);
-
 
             player = new Player();
             level = new Level();
@@ -71,7 +64,7 @@ namespace JumpAndRun
             //draw plattforms
             foreach (Level.Plattform p in level.plattforms)
             {
-                DrawSprite(p.x, p.y, new Sprite(p.l, 1, GameConsole.COLOR.BG_DARK_GREEN));
+                DrawSprite(p.x, p.y, new Sprite(p.l, 1, COLOR.BG_DARK_GREEN));
             }
 
             //draw walls
@@ -79,7 +72,6 @@ namespace JumpAndRun
             //{
             //    DrawSprite(p.x, p.y, new Sprite(1, p.l, GameConsole.COLOR.BG_DARK_GREEN));
             //}
-
 
             if(player.yPosition < 50) startLevel = true;
             if (player.yPosition > 120) startLevel = false;
@@ -155,7 +147,6 @@ namespace JumpAndRun
                 playerSpeedX += acceleration;
                 playerSpeedX = ClampF(playerSpeedX, -acceleration, acceleration);
                 sign = 1;
-
             }
             else if(!(GetKeyState(ConsoleKey.A).Held) &&!(GetKeyState(ConsoleKey.D).Held))
             {
@@ -177,7 +168,7 @@ namespace JumpAndRun
             int bottomright_x = (int)xPosition + outputSprite.Width;
             int bottom_y = (int)yPosition + outputSprite.Height + 1;
 
-            if ( (gameConsole.GetColor(bottomleft_x, bottom_y) != (short)GameConsole.COLOR.BG_DARK_GREEN && gameConsole.GetColor(bottomright_x, bottom_y) != (short)GameConsole.COLOR.BG_DARK_GREEN))
+            if ( (gameConsole.GetColor(bottomleft_x, bottom_y) != (short)COLOR.BG_DARK_GREEN && gameConsole.GetColor(bottomright_x, bottom_y) != (short)COLOR.BG_DARK_GREEN))
             {
                 playerSpeedY += gravity_acceleration;
                 playerSpeedY = ClampF(playerSpeedY, -acceleration, acceleration);
@@ -191,7 +182,7 @@ namespace JumpAndRun
 
             if (GetKeyState(ConsoleKey.Spacebar).Pressed)
             {
-                if (gameConsole.GetColor(bottomleft_x, bottom_y) == (short)GameConsole.COLOR.BG_DARK_GREEN || gameConsole.GetColor(bottomright_x, bottom_y) == (short)GameConsole.COLOR.BG_DARK_GREEN)
+                if (gameConsole.GetColor(bottomleft_x, bottom_y) == (short)COLOR.BG_DARK_GREEN || gameConsole.GetColor(bottomright_x, bottom_y) == (short)COLOR.BG_DARK_GREEN)
                     playerSpeedY = -40;
                 else if(!airjumpused)
                 {
@@ -285,17 +276,14 @@ namespace JumpAndRun
         }
     }
 
-
-
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new JumpAndRun())
                 f.Start();
         }
     }
 }
-

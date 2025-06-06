@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Reflection.Emit;
 using System.Text;
-using System.Threading.Tasks;
 using ConsoleGameEngine;
 using static ConsoleGameEngine.NativeMethods;
 using BigGustave;
@@ -19,7 +13,6 @@ namespace SpriteEditor
         IntPtr inHandle;
         delegate void MyDelegate();
         MOUSE_EVENT_RECORD oldMouseState;
-
 
         int cursorX = 0, cursorY = 0;
         bool leftMousebuttonClicked = false, leftMousebuttonHeld = false, leftMouseButtonReleased = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
@@ -91,13 +84,13 @@ namespace SpriteEditor
 
             btnLoad = new Button(129, 44, " load ", method: BtnLoadClicked);
 
-            inHandle = NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE);
+            inHandle = GetStdHandle(STD_INPUT_HANDLE);
             uint mode = 0;
-            NativeMethods.GetConsoleMode(inHandle, ref mode);
-            mode &= ~NativeMethods.ENABLE_QUICK_EDIT_MODE; //disable
-            mode |= NativeMethods.ENABLE_WINDOW_INPUT; //enable (if you want)
-            mode |= NativeMethods.ENABLE_MOUSE_INPUT; //enable
-            NativeMethods.SetConsoleMode(inHandle, mode);
+            GetConsoleMode(inHandle, ref mode);
+            mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
+            mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+            mode |= ENABLE_MOUSE_INPUT; //enable
+            SetConsoleMode(inHandle, mode);
 
             ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
@@ -162,7 +155,6 @@ namespace SpriteEditor
 
             
 
-
             
             //GUI
             DrawColorPalette(1, 1, "Foregroundcolor");
@@ -218,7 +210,6 @@ namespace SpriteEditor
             Print(3, 7, $"{cursorX - spriteDrawX};{cursorY - spriteDrawY}");
             Print(0, Height - 1, $"marking active:{markingActive}; draging:{markingDraging}");
 
-
           //  DrawSprite(20, 30, ConsoleGameEngine.TextWriter.GenerateTextSprite("Small Text!", ConsoleGameEngine.TextWriter.Textalignment.Left, 1, fontType: ConsoleGameEngine.TextWriter.FontType.small));
 
             return true;
@@ -238,7 +229,6 @@ namespace SpriteEditor
             btnCopy.Update(r);
             btnAbortMarkAndCopy.Update(r);
             btnConfirmMarkAndCopy.Update(r);
-
 
             tb_Width.UpdateSelection(r);
             tb_Height.UpdateSelection(r);
@@ -619,7 +609,6 @@ namespace SpriteEditor
                         }
                         else if(markingActive)
                         {
-                            
                         }
                         else if(colorPickerActive)
                         {
@@ -682,7 +671,6 @@ namespace SpriteEditor
         }
         private bool BtnLoadClicked()
         {
-
             string ext = Path.GetExtension(saveFiles[lb_SavedFiles.selectedEntry]);
             //check extension of file
             switch (Path.GetExtension(saveFiles[lb_SavedFiles.selectedEntry]))
@@ -729,10 +717,7 @@ namespace SpriteEditor
             markingActive = !markingActive;
             return true;
         }
-        private bool BtnCopyClicked()
-        {
-            return true;
-        }
+        private bool BtnCopyClicked() => true;
         private bool BtnAbortClicked()
         {
             marking_visible = false;
@@ -780,7 +765,6 @@ namespace SpriteEditor
                 {
                     for (int j = 0; j < Height; j++)
                         sprite.SetPixel(i, j, (char)PIXELS.PIXEL_SOLID, 0x44);
-
                 }
 
                 for(int i = 0; i <Height; i+=gridheight)
@@ -823,7 +807,6 @@ namespace SpriteEditor
                 SetChar(x + i + 1, y + 1, brushes[i / 2]);
                 SetChar(x + i + 1, y + 2, brushes[i / 2]);
             }
-
         }
         private void DrawActiveBrush(int x, int y, string headline, short foregroundColor, short backgroundColor, char brush)
         {
@@ -839,7 +822,6 @@ namespace SpriteEditor
                     SetChar(x + i + headline.Length / 2 , y + j + 1, brush, color);
                 }
             }
-
         }
         #endregion
 
@@ -993,7 +975,7 @@ namespace SpriteEditor
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new SpriteEditor())
                 f.Start();

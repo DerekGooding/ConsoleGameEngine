@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine
 {
-    
     public class PopUp
     {
         public int x, y;
@@ -60,7 +54,6 @@ namespace ConsoleGameEngine
             }
             else
             { state = PopUpState.none; }
-
 
             return state;
         }

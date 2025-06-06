@@ -1,11 +1,5 @@
-﻿using BigGustave;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 
 namespace ConsoleGameEngine
 {
@@ -47,8 +41,6 @@ namespace ConsoleGameEngine
             public int surface;
         }
         public Sector[] sectors = new Sector[4];
-
-
 
         #region testing
         int[] loadSectors = new int[]

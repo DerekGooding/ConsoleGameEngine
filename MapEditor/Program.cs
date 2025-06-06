@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ConsoleGameEngine;
-using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace MapEditor
@@ -21,7 +18,6 @@ namespace MapEditor
         Sprite spriteSheet;
         List<string> saveFiles = new List<string>();
 
-
         public MapEditor()
           : base(200, 120, "Fonts", fontwidth: 6, fontheight: 6)
         { }
@@ -36,21 +32,17 @@ namespace MapEditor
             spriteSheet = new Sprite("Savefiles\\" + saveFiles[0]);
             tileBox = new TileBox(5, 5, 4, 5, 16, 16, spriteSheet);
 
-
-
-
-            inHandle = NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE);
+            inHandle = GetStdHandle(STD_INPUT_HANDLE);
             uint mode = 0;
-            NativeMethods.GetConsoleMode(inHandle, ref mode);
-            mode &= ~NativeMethods.ENABLE_QUICK_EDIT_MODE; //disable
-            mode |= NativeMethods.ENABLE_WINDOW_INPUT; //enable (if you want)
-            mode |= NativeMethods.ENABLE_MOUSE_INPUT; //enable
-            NativeMethods.SetConsoleMode(inHandle, mode);
+            GetConsoleMode(inHandle, ref mode);
+            mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
+            mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+            mode |= ENABLE_MOUSE_INPUT; //enable
+            SetConsoleMode(inHandle, mode);
 
             ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
             ConsoleListener.Start();
-
 
             return true;
         }
@@ -70,7 +62,6 @@ namespace MapEditor
             if(tileBox!= null)
                 tileBox.Update(r);
         }
-
 
         class TileBox
         {
@@ -110,7 +101,6 @@ namespace MapEditor
 
             private Sprite BuildSprite()
             {
-               
                 Sprite retSprite = new Sprite(spriteW, spriteH);
 
                 short color = (short)((foregroundColor << 4) + backgroundColor);
@@ -155,9 +145,6 @@ namespace MapEditor
                     }
                 }
 
-
-
-
                 return retSprite;
             }
 
@@ -194,7 +181,7 @@ namespace MapEditor
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new MapEditor())
                 f.Start();

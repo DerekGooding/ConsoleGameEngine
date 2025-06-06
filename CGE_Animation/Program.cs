@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ConsoleGameEngine;
 
 namespace CGE_Animation
@@ -10,7 +7,6 @@ namespace CGE_Animation
     class ConsoleAnimation : GameConsole
     {
         animation diddysAnimation;
-
 
         public ConsoleAnimation()
           : base(200, 120, "Animation", fontwidth: 4, fontheight: 4)
@@ -36,7 +32,7 @@ namespace CGE_Animation
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new ConsoleAnimation())
                 f.Start();

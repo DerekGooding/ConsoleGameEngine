@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
@@ -12,13 +10,9 @@ using BigGustave;
 using NAudio.Wave;
 
 using ConsoleGameEngine;
-using static ConsoleGameEngine._3DEngine;
-using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
-using System.Reflection.Emit;
 using System.IO;
 using System.Diagnostics;
-using Xabe.FFmpeg;
 using System.Threading;
 
 namespace YouTubeStream
@@ -33,7 +27,6 @@ namespace YouTubeStream
         Process ffmpeg;
 
         int points = 0;
-
 
         public YouTubeStream(string videoURL)
           : base(256, 154, "YouTube", fontwidth: 4, fontheight: 4)
@@ -52,13 +45,13 @@ namespace YouTubeStream
             #region nessecities
          //   ConsoleGameEngine.TextWriter.LoadFont("fontsheet.txt", 6, 8);
 
-            inHandle = NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE);
+            inHandle = GetStdHandle(STD_INPUT_HANDLE);
             uint mode = 0;
-            NativeMethods.GetConsoleMode(inHandle, ref mode);
-            mode &= ~NativeMethods.ENABLE_QUICK_EDIT_MODE; //disable
-            mode |= NativeMethods.ENABLE_WINDOW_INPUT; //enable (if you want)
-            mode |= NativeMethods.ENABLE_MOUSE_INPUT; //enable
-            NativeMethods.SetConsoleMode(inHandle, mode);
+            GetConsoleMode(inHandle, ref mode);
+            mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
+            mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+            mode |= ENABLE_MOUSE_INPUT; //enable
+            SetConsoleMode(inHandle, mode);
            
             //ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
             //ConsoleListener.Start();
@@ -75,7 +68,6 @@ namespace YouTubeStream
             var audioStream = streamManifest.GetAudioOnlyStreams().OrderByDescending(s => s.Bitrate).LastOrDefault();
 
             string audioURL = audioStream.Url;
-
 
             if (videoStream == null)
                 throw new Exception("No video-only streams found.");
@@ -162,7 +154,6 @@ namespace YouTubeStream
 
         private void ConsoleListener_MouseEvent(MOUSE_EVENT_RECORD r)
         {
-            
         }
     }
 
@@ -170,7 +161,7 @@ namespace YouTubeStream
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             if (args.Length > 0)
             {
@@ -182,8 +173,6 @@ namespace YouTubeStream
                 using (var f = new YouTubeStream("empty"))
                     f.Start();
             }
-
-
             
                 
         }

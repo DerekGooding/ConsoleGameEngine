@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ConsoleGameEngine;
 
 namespace CGE_GameObject
@@ -11,8 +9,6 @@ namespace CGE_GameObject
     {
         GameObject playerCharacter;
         Sprite spriteSheet;
-
-
 
         public ConsoleGameObject()
           : base(200, 120, "GameObject", fontwidth: 4, fontheight: 4)
@@ -29,12 +25,10 @@ namespace CGE_GameObject
             if (GetKeyState(ConsoleKey.A).Released)
             {
                 playerCharacter.DecAnimationIndex();
-
             }
             if (GetKeyState(ConsoleKey.D).Released)
             {
                 playerCharacter.IncAnimationIndex();
-
             }
 
             playerCharacter.Update();
@@ -49,11 +43,10 @@ namespace CGE_GameObject
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new ConsoleGameObject())
                 f.Start();
-
         }
     }
 }

@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Management.Instrumentation;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using BigGustave;
-using ConsoleGameEngine;
-using static ConsoleGameEngine.TextWriter;
 
 namespace ConsoleGameEngine
 {
@@ -197,10 +189,7 @@ namespace ConsoleGameEngine
             width = w; height = h;
             fontPadding = _fontPadding;
         }
-        public static void SetDictionary(Dictionary<char, Coords> _dictionary)
-        {
-            dictionary = _dictionary;
-        }
+        public static void SetDictionary(Dictionary<char, Coords> _dictionary) => dictionary = _dictionary;
 
         public static Sprite GenerateTextSprite(string text, Textalignment textalignment, int fontSize, short backgroundColor = (short)GameConsole.COLOR.FG_WHITE, short foregroundColor = (short)GameConsole.COLOR.FG_BLACK, FontType fontType = FontType.standard)
         {
@@ -243,10 +232,8 @@ namespace ConsoleGameEngine
 
                 for (int i = 0; i < str.Length; i += 1)
                 {
-                   
                     Coords coords = _dictonary[str[i]];
                     Sprite letter = new Sprite(1,1);
-
 
                     if (fontType == FontType.small)
                         letter = spriteSheetSMALL.ReturnPartialSprite(coords.x * _width + (fontPadding.left + (coords.x + 1)), coords.y * _height + (fontPadding.top + (coords.y + 1)), _width, _height);

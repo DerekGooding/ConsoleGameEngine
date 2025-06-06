@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleGameEngine
 {
@@ -14,7 +8,6 @@ namespace ConsoleGameEngine
         List<animation> animations = new List<animation>();
         int activeAnimationIndex {get; set;}
         public Sprite outputSprite = null;
-
 
         public GameObject() 
         {
@@ -34,10 +27,7 @@ namespace ConsoleGameEngine
             outputSprite = animations[activeAnimationIndex].outputSprite;
         }
 
-        public void AddAnimation(animation animation)
-        {
-            animations.Add(animation);
-        }
+        public void AddAnimation(animation animation) => animations.Add(animation);
 
         private List<animation> LoadSpriteSheet(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
         {

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using ConsoleGameEngine;
 
 namespace CGE_Mode7
 {
-
     class ConsoleMode7 : GameConsole
     {
         Sprite sprite;
@@ -19,7 +14,6 @@ namespace CGE_Mode7
         double fNear = 0.005f;
         double fFar = 0.03f;
         double fFoVHalf = 3.14159f / 4.0f;
-
 
         public ConsoleMode7()
           : base(200, 120, "Mode7", fontwidth: 4, fontheight: 4)
@@ -41,8 +35,6 @@ namespace CGE_Mode7
 
             if (GetKeyState(ConsoleKey.Y).Held) fFoVHalf += 0.1 * (elapsedTime.TotalMilliseconds / 1000);
             if (GetKeyState(ConsoleKey.X).Held) fFoVHalf -= 0.1 * (elapsedTime.TotalMilliseconds / 1000);
-
-
 
             if (GetKeyState(ConsoleKey.LeftArrow).Held)
                 fPlayerA -= 1.0f * (elapsedTime.TotalMilliseconds / 1000);
@@ -71,11 +63,10 @@ namespace CGE_Mode7
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new ConsoleMode7())
                 f.Start();
-
         }
     }
 }

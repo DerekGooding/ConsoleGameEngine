@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ConsoleGameEngine;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace CGE_UIElements_Simple
 {
-
     class CGE_UIElements_Simple : GameConsole
     {
         //Mouse-Controll
@@ -24,8 +21,6 @@ namespace CGE_UIElements_Simple
 
         List<string> entries = new List<string>() { "Entry 1", "Entry 2", "Entry 3", "Entry 4", "Entry 5", "Entry 6" };
 
-
-
         public CGE_UIElements_Simple()
           : base(80, 50, "Fonts", fontwidth: 10, fontheight: 10)
         { }
@@ -38,13 +33,13 @@ namespace CGE_UIElements_Simple
             yourComboBox = new ComboBox(40, 2, 15, 20, "I take selections", entries, entriesToShow: 8);
 
             //Mouse-Input-Init
-            inHandle = NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE);
+            inHandle = GetStdHandle(STD_INPUT_HANDLE);
             uint mode = 0;
-            NativeMethods.GetConsoleMode(inHandle, ref mode);
-            mode &= ~NativeMethods.ENABLE_QUICK_EDIT_MODE; //disable
-            mode |= NativeMethods.ENABLE_WINDOW_INPUT; //enable (if you want)
-            mode |= NativeMethods.ENABLE_MOUSE_INPUT; //enable
-            NativeMethods.SetConsoleMode(inHandle, mode);
+            GetConsoleMode(inHandle, ref mode);
+            mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
+            mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+            mode |= ENABLE_MOUSE_INPUT; //enable
+            SetConsoleMode(inHandle, mode);
             ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
             ConsoleListener.Start();
 
@@ -72,19 +67,14 @@ namespace CGE_UIElements_Simple
             yourComboBox.UpdateMouseInput(r);
         }
 
-        private bool OnButtonClick()
-        {
-            return true;
-        }
+        private bool OnButtonClick() => true;
     }
-
-
 
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new CGE_UIElements_Simple())
                 f.Start();

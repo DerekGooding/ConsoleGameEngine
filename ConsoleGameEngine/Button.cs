@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
 
@@ -57,10 +53,7 @@ namespace ConsoleGameEngine
             outputSprite = BuildSimpleSprite(false, false);
         }
 
-        public void OnButtonClicked(Func<bool> method)
-        {
-            this.method = method;
-        }
+        public void OnButtonClicked(Func<bool> method) => this.method = method;
 
         public void Update(MOUSE_EVENT_RECORD r)
         {
@@ -130,7 +123,6 @@ namespace ConsoleGameEngine
             {
                 retSprite.SetPixel(1+i,1, text[i], color);
             }
-
 
             return retSprite;
         }

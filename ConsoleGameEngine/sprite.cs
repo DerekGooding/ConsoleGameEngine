@@ -1,10 +1,7 @@
-﻿using BigGustave;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using static ConsoleGameEngine.GameConsole;
 
 namespace ConsoleGameEngine
@@ -28,7 +25,6 @@ namespace ConsoleGameEngine
             _width = spriteData[0].Length;
             _height = spriteData.Length;
 
-
             if (spriteColors != null && spriteColors.Length != _width * _height)
                 throw new ArgumentException(nameof(spriteColors));
 
@@ -42,7 +38,7 @@ namespace ConsoleGameEngine
                     _spritedata.SetData(i++, c);
 
             for (i = 0; i < _spritecolors.Data.Length; i++)
-                _spritecolors.SetData(i, spriteColors == null ? (short)GameConsole.COLOR.FG_GREY : spriteColors[i]);
+                _spritecolors.SetData(i, spriteColors == null ? (short)COLOR.FG_GREY : spriteColors[i]);
         }
 
         public Sprite(string[] spriteData, GameConsole.COLOR[] spriteColors = null)
@@ -145,7 +141,6 @@ namespace ConsoleGameEngine
                 }
             }
 
-
             return retList;
         }
 
@@ -161,24 +156,12 @@ namespace ConsoleGameEngine
         }
 
         #region setter/getter
-        public char GetChar(int x, int y)
-        {
-            return _spritedata.GetData(x, y);
-        }
-        public short GetColor(int x, int y)
-        {
-            return _spritecolors.GetData(x, y);
-        }
+        public char GetChar(int x, int y) => _spritedata.GetData(x, y);
+        public short GetColor(int x, int y) => _spritecolors.GetData(x, y);
 
-        public void SetChar(int x, int y, char c)
-        {
-            _spritedata.SetData(x, y, c);
-        }
+        public void SetChar(int x, int y, char c) => _spritedata.SetData(x, y, c);
 
-        public void SetColor(int x, int y, short c)
-        {
-            _spritecolors.SetData(x, y, c);
-        }
+        public void SetColor(int x, int y, short c) => _spritecolors.SetData(x, y, c);
 
         public void SetPixel(int x, int y, char c, short col)
         {
@@ -229,7 +212,6 @@ namespace ConsoleGameEngine
                         _spritecolors.SetData(i, Convert.ToByte(pixel));
                     i++;
                 }
-
             }
             return true;
         }
@@ -291,7 +273,7 @@ namespace ConsoleGameEngine
             for (int i = 0; i < _width * _height; i++)
                 _spritedata.SetData(i, ' ');//m_Glyphs.Add(br.ReadChar());
             for (int i = 0; i < _height * _width; i++)
-                _spritecolors.SetData(i, (short)GameConsole.COLOR.BG_BLACK);//m_Colours.Add(br.ReadSByte());
+                _spritecolors.SetData(i, (short)COLOR.BG_BLACK);//m_Colours.Add(br.ReadSByte());
         }
 
         private void Create(int w, int h, COLOR color)
@@ -323,7 +305,6 @@ namespace ConsoleGameEngine
         }
         #endregion
 
-
         #region sampling
         public char SampleGlyph(double x, double y)
         {
@@ -341,7 +322,7 @@ namespace ConsoleGameEngine
             int sy = (int)(y * (double)_height - 1.0);
 
             if (sx < 0 || sx >= _width || sy < 0 || sy >= _height)
-                return (short)GameConsole.COLOR.BG_BLACK;
+                return (short)COLOR.BG_BLACK;
             else
                 return _spritecolors.GetData(sy * _width + sx);
         }

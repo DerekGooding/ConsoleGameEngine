@@ -8,7 +8,6 @@ using ConsoleGameEngine;
 
 namespace PNGToSpriteEditor
 {
-
     class PNGToSpriteEditor : GameConsole
     {
         string importPath;
@@ -333,7 +332,6 @@ namespace PNGToSpriteEditor
             int spriteYTop = drawingArea.Height / 2 - sprite.Height / 2 + drawingArea.Y;
             if (sprite.Width <= maxDisplayedWidth && sprite.Height <= maxDisplayedHeight) //sprite fits screen
                 DrawSprite(spriteXTop, spriteYTop, sprite);
-
             else //sprite is too big, show only a part
                 DrawPartialSprite(2, 4, sprite, partialSpriteX, partialSpriteY, maxDisplayedWidth, maxDisplayedHeight);
             
@@ -452,7 +450,6 @@ namespace PNGToSpriteEditor
                     pixel = (char)PIXELS.PIXEL_SOLID;
                     return 0x000B;
 
-
                 case 0x28: //dark yellow
                     pixel = (char)PIXELS.PIXEL_SOLID;
                     return 0x0006;
@@ -538,7 +535,6 @@ namespace PNGToSpriteEditor
 
             using (var f = new PNGToSpriteEditor(file))
                 f.Start();
-
         }
     }
 }

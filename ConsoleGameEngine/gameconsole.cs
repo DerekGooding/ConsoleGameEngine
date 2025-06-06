@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using static ConsoleGameEngine.GameConsole;
-
 
 namespace ConsoleGameEngine
 {
@@ -117,7 +115,6 @@ namespace ConsoleGameEngine
 
             return activeProcId == procId;
         }
-
 
         #endregion
         public struct KeyState
@@ -245,7 +242,6 @@ namespace ConsoleGameEngine
                     var tp1 = DateTime.Now;
                     var tp2 = DateTime.Now;
 
-
                     var sw = Stopwatch.StartNew();
                     var cont = true;
 
@@ -259,7 +255,6 @@ namespace ConsoleGameEngine
                         cont = OnUserUpdate(elapsed);
                         Paint();
                     };
-
                 }
             });
         }
@@ -294,8 +289,8 @@ namespace ConsoleGameEngine
         /// <param name="fWorldX">X for Cameraposition in World</param>
         /// <param name="fWorldY">Y for Cameraposition in World</param>
         /// <param name="fWorldA">A for Cameraposition in World</param>
-        /// <param name="fFar">Farthest rendered point</param>
         /// <param name="fNear">Nearest rendered point</param>
+        /// <param name="fFar">Farthest rendered point</param>
         /// <param name="fFoVHalf">Field of view, f.e. "pi / 4"</param>
         /// <param name="sprite">the sprite to be used</param>
         /// <param name="invert">start from bottom or top (ground or sky)</param>
@@ -351,17 +346,13 @@ namespace ConsoleGameEngine
             }
         }
 
-        public void Clear()
-        {
-            Fill(0, 0, Width, Height, (char)PIXELS.PIXEL_NONE, (short)COLOR.BG_BLACK);
-        }
+        public void Clear() => Fill(0, 0, Width, Height, (char)PIXELS.PIXEL_NONE, (short)COLOR.BG_BLACK);
 
         public void Fill(int x, int y, int width, int height, char c = (char)PIXELS.PIXEL_NONE, short attributes = (short)COLOR.BG_BLACK)
         {
             for (int xp = x; xp < x + width; xp++)
                 for (int yp = y; yp < y + height; yp++)
                     SetChar(xp, yp, c, attributes);
-            
         }
 
         public void Print(int x, int y, string text, short attributes = (int)COLOR.FG_WHITE)
@@ -417,10 +408,7 @@ namespace ConsoleGameEngine
             _screenbuf.Data[offset].Char.UnicodeChar = (short)c;
         }
 
-        public char GetChar(int x, int y)
-        {
-            return (char)_screenbuf.GetData(x, y).Char.UnicodeChar;
-        }
+        public char GetChar(int x, int y) => (char)_screenbuf.GetData(x, y).Char.UnicodeChar;
         public short GetColor(int x, int y)
         {
             var offset = _screenbuf.GetOffset(x, y);
@@ -429,34 +417,21 @@ namespace ConsoleGameEngine
 
         public void Start()
         {
-
             _gamethread.Start();
             _gamethread.Join();
         }
 
-        public static KeyState GetKeyState(ConsoleKey key)
-        {
-            return KeyStates[(int)key];
-        }
+        public static KeyState GetKeyState(ConsoleKey key) => KeyStates[(int)key];
 
-        public static int Clamp(int v, int min, int max)
-        {
-            return Math.Min(Math.Max(v, min), max);
-        }
+        public static int Clamp(int v, int min, int max) => Math.Min(Math.Max(v, min), max);
 
-        public static double ClampF(double v, double min, double max)
-        {
-            return Math.Min(Math.Max(v, min), max);
-        }
+        public static double ClampF(double v, double min, double max) => Math.Min(Math.Max(v, min), max);
 
         public abstract bool OnUserCreate();
 
         public abstract bool OnUserUpdate(TimeSpan elapsedTime);
 
-        private void Paint()
-        {
-            WriteConsoleOutput(_consolehandle, _screenbuf.Data, _screencoord, _topleft, ref _screenrect);
-        }
+        private void Paint() => WriteConsoleOutput(_consolehandle, _screenbuf.Data, _screencoord, _topleft, ref _screenrect);
 
         private void GetKeyStates()
         {
@@ -578,7 +553,6 @@ namespace ConsoleGameEngine
                 case 0x1F:
                     pixel = (char)PIXELS.PIXEL_SOLID;
                     return 0x000B;
-
 
                 case 0x28: //dark yellow
                     pixel = (char)PIXELS.PIXEL_SOLID;

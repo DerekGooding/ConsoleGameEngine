@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using ConsoleGameEngine;
 
-
 class Program
 {
     const int RAND_MAX = 2;
@@ -234,23 +233,22 @@ class Program
                 {
                     // Each Row
                     if (y <= nCeiling)
-                        SetChar(x, y, ' ', (short)GameConsole.COLOR.BG_BLACK);
+                        SetChar(x, y, ' ', (short)COLOR.BG_BLACK);
                     else if (y > nCeiling && y <= nFloor)
                     {
                         // Draw Wall
                         if (fDistanceToWall < fDepth)
                         {
-
                             double fSampleY = ((double)y - (double)nCeiling) / ((double)nFloor - (double)nCeiling);
                             SetChar(x, y, (char)(GameConsole.PIXELS)(int)wall.SampleGlyph(fSampleX, fSampleY), wall.SampleColor(fSampleX, fSampleY));
                         }
                         else
-                            SetChar(x, y, (char)GameConsole.PIXELS.PIXEL_SOLID, 0);
+                            SetChar(x, y, (char)PIXELS.PIXEL_SOLID, 0);
                     }
                     else // Floor
                     {
                         //Commented for mode7
-                        SetChar(x, y, (char)GameConsole.PIXELS.PIXEL_HALF,  (short)GameConsole.COLOR.FG_DARK_GREEN); //,(char)GameConsole.PIXELS.PIXEL_SOLID //encs.GetString(new byte[1] { 176 })[0]
+                        SetChar(x, y, (char)PIXELS.PIXEL_HALF,  (short)COLOR.FG_DARK_GREEN); //,(char)GameConsole.PIXELS.PIXEL_SOLID //encs.GetString(new byte[1] { 176 })[0]
                     }
                 }
             }
@@ -262,7 +260,6 @@ class Program
             var coin = listObjects.ElementAt(3);
             coin.sprite = coinAnim.outputSprite;
             listObjects[3] = coin;
-
 
             // Update & Draw Objects	
             for (int i = 0; i < listObjects.Count; i++)
@@ -346,11 +343,10 @@ class Program
         }
     }
 
-
     [STAThread]
     static void Main()
     {
-        Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+        Console.OutputEncoding = Encoding.GetEncoding(437);
 
         using (var f = new ConsoleFPS())
             f.Start();
@@ -365,6 +361,3 @@ class Program
 
     static DateTime lastTime = DateTime.Now;
 }
-
-
-

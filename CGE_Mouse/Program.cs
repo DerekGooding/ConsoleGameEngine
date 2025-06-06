@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ConsoleGameEngine;
 using static ConsoleGameEngine.NativeMethods;
 
@@ -18,19 +15,18 @@ namespace CGE_Mouse
             int cursorX = 0, cursorY = 0;
             bool leftMousebuttonClicked = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
 
-
             public CGE_Mouse()
               : base(200, 120, "Fonts", fontwidth: 4, fontheight: 4)
             { }
             public override bool OnUserCreate()
             {
-                inHandle = NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE);
+                inHandle = GetStdHandle(STD_INPUT_HANDLE);
                 uint mode = 0;
-                NativeMethods.GetConsoleMode(inHandle, ref mode);
-                mode &= ~NativeMethods.ENABLE_QUICK_EDIT_MODE; //disable
-                mode |= NativeMethods.ENABLE_WINDOW_INPUT; //enable (if you want)
-                mode |= NativeMethods.ENABLE_MOUSE_INPUT; //enable
-                NativeMethods.SetConsoleMode(inHandle, mode);
+                GetConsoleMode(inHandle, ref mode);
+                mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
+                mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+                mode |= ENABLE_MOUSE_INPUT; //enable
+                SetConsoleMode(inHandle, mode);
 
                 
                 ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
@@ -74,7 +70,7 @@ namespace CGE_Mouse
 
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.GetEncoding(437);
+            Console.OutputEncoding = Encoding.GetEncoding(437);
 
             using (var f = new CGE_Mouse())
                 f.Start();
