@@ -5,19 +5,19 @@ namespace ConsoleGameEngine
 {
     public class GameObject
     {
-        List<animation> animations = new List<animation>();
+        List<Animation> animations = new List<Animation>();
         int activeAnimationIndex {get; set;}
         public Sprite outputSprite = null;
 
         public GameObject()
         {
             outputSprite = new Sprite(16,16);
-            AddAnimation(new animation(outputSprite, new TimeSpan(0, 0, 0, 0, 100), 16, 16, 0));
+            AddAnimation(new Animation(outputSprite, new TimeSpan(0, 0, 0, 0, 100), 16, 16, 0));
             activeAnimationIndex = 0;
         }
         public GameObject(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
         {
-            animations = new List<animation>();
+            animations = new List<Animation>();
             animations = LoadSpriteSheet(spriteSheet, w, h, timeSpan, frameCounts);
         }
 
@@ -27,11 +27,11 @@ namespace ConsoleGameEngine
             outputSprite = animations[activeAnimationIndex].outputSprite;
         }
 
-        public void AddAnimation(animation animation) => animations.Add(animation);
+        public void AddAnimation(Animation animation) => animations.Add(animation);
 
-        private List<animation> LoadSpriteSheet(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
+        private List<Animation> LoadSpriteSheet(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
         {
-            List<animation> animations = new List<animation>();
+            List<Animation> animations = new List<Animation>();
 
             int width = spriteSheet.Width;
             int height = spriteSheet.Height;
@@ -48,7 +48,7 @@ namespace ConsoleGameEngine
                     }
                 }
 
-                animations.Add(new animation(newSprite, timeSpan, w, h, frameCounts[i]));
+                animations.Add(new Animation(newSprite, timeSpan, w, h, frameCounts[i]));
             }
             return animations;
         }

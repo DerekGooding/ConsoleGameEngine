@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ConsoleGameEngine
 {
-    public class animation
+    public class Animation
     {
         List<Sprite> sprites;
         public Sprite outputSprite;
@@ -14,14 +14,14 @@ namespace ConsoleGameEngine
         private bool animationFromOneFrame = false;
         private int frameCount = 0;
 
-        public animation(List<Sprite> sprites, TimeSpan frameDelay)
+        public Animation(List<Sprite> sprites, TimeSpan frameDelay)
         {
             this.sprites = sprites;
             this.frameDelay = frameDelay;
             this.shownFrame = 0;
             lastUpdate = DateTime.Now;
         }
-        public animation(Sprite sprite, TimeSpan frameDelay, int frameWidth, int frameHeight, int frameCount)
+        public Animation(Sprite sprite, TimeSpan frameDelay, int frameWidth, int frameHeight, int frameCount)
         {
             animationFromOneFrame = true;
             sprites = new List<Sprite> { sprite };
@@ -34,7 +34,7 @@ namespace ConsoleGameEngine
             this.frameCount = frameCount;
         }
 
-        public animation(List<string> sprites, TimeSpan frameDelay)
+        public Animation(List<string> sprites, TimeSpan frameDelay)
         {
             this.sprites = new List<Sprite>();
             foreach (string sprite in sprites)
@@ -47,7 +47,7 @@ namespace ConsoleGameEngine
             lastUpdate = DateTime.Now;
         }
 
-        public animation(string sprite, TimeSpan frameDelay, int frameWidth, int frameHeight)
+        public Animation(string sprite, TimeSpan frameDelay, int frameWidth, int frameHeight)
         {
             animationFromOneFrame = true;
             sprites = new List<Sprite> { new Sprite(sprite) };
