@@ -10,18 +10,18 @@ class PNGToSpriteEditor(string file) : GameConsole(160, 80, "Editor", fontwidth:
     string exportPath = Path.ChangeExtension(file, ".txt");
 
     Rectangle drawingArea;
-    int selectedX = 0, selectedY = 0;
-    short selectedFG = 0x00;
-    short selectedBG = 0x00;
-    int selectedBrush = 0;
-    TimeSpan buttonDelay = new();
+    int selectedX, selectedY;
+    short selectedFG;
+    short selectedBG;
+    int selectedBrush;
+    TimeSpan buttonDelay;
     TimeSpan buttonTime;
 
     readonly int maxDisplayedWidth = 158;
     readonly int maxDisplayedHeight = 76;
 
-    int partialSpriteX = 0;
-    int partialSpriteY = 0;
+    int partialSpriteX;
+    int partialSpriteY;
     public Sprite sprite;
 
     public override bool OnUserCreate()

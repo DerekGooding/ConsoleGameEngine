@@ -1,16 +1,14 @@
-﻿using System;
-
-namespace ConsoleGameEngine;
+﻿namespace ConsoleGameEngine;
 
 public class _3DEngine
 {
-    private readonly double[] cos = new double[360];
-    private readonly double[] sin = new double[360];
+    private readonly double[] _cos = new double[360];
+    private readonly double[] _sin = new double[360];
 
-    private readonly int screenHeight, screenWidth;
+    private readonly int _screenHeight, _screenWidth;
 
-    TimeSpan buttonDelay = new();
-    readonly TimeSpan buttonTime = new(0, 0, 0, 0, 60);
+    TimeSpan _buttonDelay;
+    readonly TimeSpan _buttonTime = new(0, 0, 0, 0, 60);
 
     public Sprite screen;
 
@@ -42,7 +40,7 @@ public class _3DEngine
     public Sector[] sectors = new Sector[4];
 
     #region testing
-    readonly int[] loadSectors =
+    readonly int[] _loadSectors =
     [//wall start, wall end, z1 height, z2 height, bottom color, top color
      0,  4, 0, 60, (int)GameConsole.COLOR.FG_BLUE ,(int)GameConsole.COLOR.FG_DARK_BLUE, //sector 1
      4,  8, 0, 40, (int)GameConsole.COLOR.FG_RED ,(int)GameConsole.COLOR.FG_DARK_RED, //sector 2
@@ -50,7 +48,7 @@ public class _3DEngine
      12,16, 0, 40, (int)GameConsole.COLOR.FG_YELLOW ,(int)GameConsole.COLOR.FG_DARK_YELLOW, //sector 4
     ];
 
-    readonly int[] loadWalls =
+    readonly int[] _loadWalls =
     [//x1,y1, x2,y2, color
       0, 0, 32, 0, (int)GameConsole.COLOR.FG_RED,
      32, 0, 32,32, (int)GameConsole.COLOR.FG_DARK_RED,
@@ -77,15 +75,15 @@ public class _3DEngine
 
     public _3DEngine(int _screenHeight, int _screenWidth)
     {
-        screenHeight = _screenHeight;
-        screenWidth = _screenWidth;
+        this._screenHeight = _screenHeight;
+        this._screenWidth = _screenWidth;
 
-        screen = new Sprite(screenWidth, screenHeight);
+        screen = new Sprite(this._screenWidth, this._screenHeight);
         //sin/cos lookup-table
         for(var x  = 0; x < 360; x++)
         {
-            cos[x] = Math.Cos(x / 180.0 * Math.PI);
-            sin[x] = Math.Sin(x / 180.0 * Math.PI);
+            _cos[x] = Math.Cos(x / 180.0 * Math.PI);
+            _sin[x] = Math.Sin(x / 180.0 * Math.PI);
         }
         //init player
         player = new Player
@@ -101,30 +99,30 @@ public class _3DEngine
         int v1 = 0, v2 = 0;
         for(var s = 0; s < sectors.Length; s++)
         {
-            sectors[s].wallNumberStart = loadSectors[v1 + 0];
-            sectors[s].wallNumberEnd = loadSectors[v1 + 1];
-            sectors[s].bottomHeight = loadSectors[v1 + 2];
-            sectors[s].topHeight = loadSectors[v1 + 3] - loadSectors[v1 + 2];
-            sectors[s].colorTop = (short)loadSectors[v1 + 4];
-            sectors[s].colorBottom = (short)loadSectors[v1 + 5];
+            sectors[s].wallNumberStart = _loadSectors[v1 + 0];
+            sectors[s].wallNumberEnd = _loadSectors[v1 + 1];
+            sectors[s].bottomHeight = _loadSectors[v1 + 2];
+            sectors[s].topHeight = _loadSectors[v1 + 3] - _loadSectors[v1 + 2];
+            sectors[s].colorTop = (short)_loadSectors[v1 + 4];
+            sectors[s].colorBottom = (short)_loadSectors[v1 + 5];
             sectors[s].surfacePoints = new int[200];
             v1 += 6;
 
             for (var w = sectors[s].wallNumberStart; w < sectors[s].wallNumberEnd; w++)
             {
-                walls[w].bottomLinePoint1X = loadWalls[v2 + 0];
-                walls[w].bottomLinePoint1Y = loadWalls[v2 + 1];
-                walls[w].bottomLinePoint2X = loadWalls[v2 + 2];
-                walls[w].bottomLinePoint2Y = loadWalls[v2 + 3];
-                walls[w].color = (short)loadWalls[v2 + 4];
+                walls[w].bottomLinePoint1X = _loadWalls[v2 + 0];
+                walls[w].bottomLinePoint1Y = _loadWalls[v2 + 1];
+                walls[w].bottomLinePoint2X = _loadWalls[v2 + 2];
+                walls[w].bottomLinePoint2Y = _loadWalls[v2 + 3];
+                walls[w].color = (short)_loadWalls[v2 + 4];
                 v2 += 5;
             }
         }
     }
     public void MovePlayer(TimeSpan elapsedTime)
     {
-        buttonDelay += elapsedTime;
-        if (buttonDelay >= buttonTime)
+        _buttonDelay += elapsedTime;
+        if (_buttonDelay >= _buttonTime)
         {
             //Move up, down, left, right
             if (GameConsole.GetKeyState(ConsoleKey.A).Held && !GameConsole.GetKeyState(ConsoleKey.M).Held)
@@ -139,8 +137,8 @@ public class _3DEngine
                 if (player.a > 359)
                     player.a -= 360;
             }
-            var dx = Convert.ToInt32(sin[player.a] * 10.0);
-            var dy = Convert.ToInt32(cos[player.a] * 10.0);
+            var dx = Convert.ToInt32(_sin[player.a] * 10.0);
+            var dy = Convert.ToInt32(_cos[player.a] * 10.0);
             if (GameConsole.GetKeyState(ConsoleKey.W).Held && !GameConsole.GetKeyState(ConsoleKey.M).Held)
             {
                 player.x += dx;
@@ -174,10 +172,10 @@ public class _3DEngine
             if (GameConsole.GetKeyState(ConsoleKey.S).Held && GameConsole.GetKeyState(ConsoleKey.M).Held)
                 player.z += 4;
 
-            buttonDelay = new TimeSpan();
+            _buttonDelay = new TimeSpan();
         }
     }
-    private void ClipBehindPlayer(int x1, int y1, int z1, int x2, int y2, int z2)
+    private static void ClipBehindPlayer(ref int x1, ref int y1, ref int z1, int x2, int y2, int z2)
     {
         double da = y1; // distance plane -> point a
         double db = y2; // distance plane -> point b
@@ -189,15 +187,13 @@ public class _3DEngine
         if (y1 == 0) { y1 = 1; } // prevent divide by zero
         z1 = (int)(z1 + (s * (z2 - z1)));
     }
-    private int Distance(int x1, int y1, int x2, int y2)
-    {
-        var distance = (int)Math.Sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
-        return distance;
-    }
+    private static int Distance(int x1, int y1, int x2, int y2)
+        => (int)Math.Sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
+
     public void Draw3D()
     {
         //Clear screen
-        screen = new Sprite(screenWidth, screenHeight);
+        screen = new Sprite(_screenWidth, _screenHeight);
 
         //sort sectors
         for (var s = 0; s < sectors.Length - 1; s++)
@@ -211,11 +207,11 @@ public class _3DEngine
             }
         }
 
-        double SW2 = screenWidth / 2, SH2 = screenHeight / 2;
+        double SW2 = _screenWidth / 2, SH2 = _screenHeight / 2;
         var wx = new int[4];
         var wy = new int[4];
         var wz = new int[4];
-        double CS = cos[player.a], SN = sin[player.a];
+        double CS = _cos[player.a], SN = _sin[player.a];
         int cycles;
 
         //draw sectors
@@ -226,13 +222,13 @@ public class _3DEngine
             if (player.z < sectors[s].bottomHeight) //bottom surface
             {
                 sectors[s].surface = 1; cycles = 2;
-                for (var x = 0; x < screenWidth; x++)
-                    sectors[s].surfacePoints[x] = screenHeight;
+                for (var x = 0; x < _screenWidth; x++)
+                    sectors[s].surfacePoints[x] = _screenHeight;
             }
             else if (player.z > sectors[s].topHeight) //top surface
             {
                 sectors[s].surface = 2; cycles = 2;
-                for (var x = 0; x < screenWidth; x++)
+                for (var x = 0; x < _screenWidth; x++)
                     sectors[s].surfacePoints[x] = 0;
             }
             else { sectors[s].surface = 0; cycles = 1; }    //no surfaces
@@ -272,13 +268,13 @@ public class _3DEngine
 
                     if (wy[0] < 1)
                     {
-                        ClipBehindPlayer(wx[0], wy[0], wz[0], wx[1], wy[1], wz[1]);
-                        ClipBehindPlayer(wx[2], wy[2], wz[2], wx[3], wy[3], wz[3]);
+                        ClipBehindPlayer(ref wx[0], ref wy[0], ref wz[0], wx[1], wy[1], wz[1]);
+                        ClipBehindPlayer(ref wx[2], ref wy[2], ref wz[2], wx[3], wy[3], wz[3]);
                     }
                     if (wy[1] < 1)
                     {
-                        ClipBehindPlayer(wx[1], wy[1], wz[1], wx[0], wy[0], wz[0]);
-                        ClipBehindPlayer(wx[3], wy[3], wz[3], wx[2], wy[2], wz[2]);
+                        ClipBehindPlayer(ref wx[1], ref wy[1], ref wz[1], wx[0], wy[0], wz[0]);
+                        ClipBehindPlayer(ref wx[3], ref wy[3], ref wz[3], wx[2], wy[2], wz[2]);
                     }
 
                     //screen x and y position
@@ -311,8 +307,8 @@ public class _3DEngine
         //CLIP X
         if (x1 < 1) x1 = 1;
         if (x2 < 1) x2 = 1;
-        if(x1 >screenWidth - 1) x1 = screenWidth - 1;
-        if(x2 >screenWidth - 1)x2 = screenWidth - 1;
+        if(x1 >_screenWidth - 1) x1 = _screenWidth - 1;
+        if(x2 >_screenWidth - 1)x2 = _screenWidth - 1;
         //draw x vertile lines
         for(var x = x1; x < x2; x++)
         {
@@ -323,8 +319,8 @@ public class _3DEngine
             //CLIP Y
             if (y1 < 1) y1 = 1;
             if (y2 < 1) y2 = 1;
-            if (y1 > screenHeight - 1) y1 = screenHeight - 1;
-            if (y2 > screenHeight - 1) y2 = screenHeight - 1;
+            if (y1 > _screenHeight - 1) y1 = _screenHeight - 1;
+            if (y2 > _screenHeight - 1) y2 = _screenHeight - 1;
 
             //surface
             if (sectors[s].surface == 1) { sectors[s].surfacePoints[x] = y1; continue; }

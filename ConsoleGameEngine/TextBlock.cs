@@ -5,30 +5,30 @@ namespace ConsoleGameEngine;
 
 public class TextBlock
 {
-    public int x, y;
-    public Sprite outputSprite;
-    readonly int length; //character-count
+    public int X, Y;
+    public int Width, Height;
+    public Sprite OutputSprite;
+    public string Content = "";
 
-    public string content = "";
-    readonly string tag;
-    readonly bool simple = true; // simple - ascii-charcters, advanced - sprites
-    readonly short foregroundColor, backgroundColor;
-    public int width, height;
-    readonly ObjectPosition tagPosition;
+    readonly int _length; //character-count
+    readonly string _tag;
+    readonly bool _simple = true; // simple - ascii-charcters, advanced - sprites
+    readonly short _foregroundColor, _backgroundColor;
+    readonly ObjectPosition _tagPosition;
 
     public TextBlock(int x, int y, int length, string tag, bool simple = true, ObjectPosition tagPosition = ObjectPosition.Top, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE, string content = "")
     {
-        this.x = x;
-        this.y = y;
-        this.length = length;
-        this.content = content;
-        this.tag = tag;
-        this.simple = simple;
-        this.foregroundColor = foregroundColor;
-        this.backgroundColor = backgroundColor;
-        this.tagPosition = tagPosition;
+        X = x;
+        Y = y;
+        _length = length;
+        Content = content;
+        _tag = tag;
+        _simple = simple;
+        _foregroundColor = foregroundColor;
+        _backgroundColor = backgroundColor;
+        _tagPosition = tagPosition;
 
-        outputSprite = BuildSprite();
+        OutputSprite = BuildSprite();
     }
 
     private Sprite BuildSprite()
@@ -36,13 +36,13 @@ public class TextBlock
         //input body
         Sprite body;
 
-        content = content.PadLeft(length);
+        Content = Content.PadLeft(_length);
 
-        if (simple)
+        if (_simple)
         {
-            var color = (short)((backgroundColor << 4) + foregroundColor);
+            var color = (short)((_backgroundColor << 4) + _foregroundColor);
 
-            switch (tagPosition)
+            switch (_tagPosition)
             {
                 case ObjectPosition.Top:
 
@@ -53,7 +53,7 @@ public class TextBlock
                 case ObjectPosition.Right: break;
             }
 
-            body = new Sprite(length + 2, 4); //length of input + 2 for frame; height for tag, frame and content
+            body = new Sprite(_length + 2, 4); //length of input + 2 for frame; height for tag, frame and content
             //frame
             for (var i = 1; i < body.Width - 1; i++)
             {
@@ -71,17 +71,17 @@ public class TextBlock
             body.SetPixel(body.Width - 1, 1, (char)PIXELS.LINE_CORNER_TOP_RIGHT, color);
             body.SetPixel(body.Width - 1, body.Height, (char)PIXELS.LINE_CORNER_BOTTOM_RIGHT, color);
 
-            for (var i = 0; i < content.Length; i++)
-                body.SetPixel(i + 1, 2, content[i], color);
+            for (var i = 0; i < Content.Length; i++)
+                body.SetPixel(i + 1, 2, Content[i], color);
 
-            for (var i = 0; i < tag.Length; i++)
-                body.SetPixel(i, 0, tag[i], color);
+            for (var i = 0; i < _tag.Length; i++)
+                body.SetPixel(i, 0, _tag[i], color);
         }
         else
         {
-            var contentSprite = TextWriter.GenerateTextSprite(content, TextWriter.Textalignment.Right, 1, backgroundColor: foregroundColor, foregroundColor: backgroundColor);
+            var contentSprite = TextWriter.GenerateTextSprite(Content, TextWriter.Textalignment.Right, 1, backgroundColor: _foregroundColor, foregroundColor: _backgroundColor);
 
-            var tagSprite = TextWriter.GenerateTextSprite(tag, TextWriter.Textalignment.Right, 1, backgroundColor: backgroundColor, foregroundColor: foregroundColor);
+            var tagSprite = TextWriter.GenerateTextSprite(_tag, TextWriter.Textalignment.Right, 1, backgroundColor: _backgroundColor, foregroundColor: _foregroundColor);
 
             body = new Sprite(contentSprite.Width > tagSprite.Width ? contentSprite.Width : tagSprite.Width, contentSprite.Height + tagSprite.Height + 3);
             body.AddSpriteToSprite(1, 1, tagSprite);
@@ -90,23 +90,23 @@ public class TextBlock
             //frame
             for (var i = 0; i < body.Width; i++)
             {
-                body.SetPixel(i, 0, '█', (short)foregroundColor);
-                body.SetPixel(i, tagSprite.Height, '█', (short)foregroundColor);
-                body.SetPixel(i, body.Height - 1, '█', (short)foregroundColor);
+                body.SetPixel(i, 0, '█', (short)_foregroundColor);
+                body.SetPixel(i, tagSprite.Height, '█', (short)_foregroundColor);
+                body.SetPixel(i, body.Height - 1, '█', (short)_foregroundColor);
                 for (var j = 0; j < body.Height; j++)
                 {
-                    body.SetPixel(0, j, '█', (short)foregroundColor);
-                    body.SetPixel(body.Width - 1, j, '█', (short)foregroundColor);
+                    body.SetPixel(0, j, '█', (short)_foregroundColor);
+                    body.SetPixel(body.Width - 1, j, '█', (short)_foregroundColor);
                 }
             }
         }
-        width = body.Width; height = body.Height;
+        Width = body.Width; Height = body.Height;
         return body;
     }
 
     public void SetContent(string content)
     {
-        this.content = content;
-        outputSprite = BuildSprite();
+        Content = content;
+        OutputSprite = BuildSprite();
     }
 }

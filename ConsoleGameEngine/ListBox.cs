@@ -1,41 +1,38 @@
-﻿using System.Collections.Generic;
-using static ConsoleGameEngine.GameConsole;
+﻿using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine;
 
 public class ListBox
 {
-    public int x, y;
-    public int w, h;
-    public List<string> entries = [];
-    readonly bool simple = false;
-    readonly short foregroundColor, backgroundColor;
-    public Sprite outputSprite = new(1, 1);
-    int firstEntry = 0;
+    public int X, Y, W, H;
+    public List<string> Entries = [];
+    public Sprite OutputSprite = new(1, 1);
+    public int SelectedEntry;
 
-    public int selectedEntry = 0;
-
-    readonly Button btn_MoveUP, btn_MoveDOWN;
+    readonly bool _simple;
+    readonly short _foregroundColor, _backgroundColor;
+    int _firstEntry;
+    readonly Button _btn_MoveUP, _btn_MoveDOWN;
 
     public ListBox(int x, int y, int w, int h, List<string> entries, bool simple = false, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE)
     {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-        this.entries = entries;
-        this.simple = simple;
-        this.backgroundColor = backgroundColor;
-        this.foregroundColor = foregroundColor;
+        X = x;
+        Y = y;
+        W = w;
+        H = h;
+        Entries = entries;
+        _simple = simple;
+        _backgroundColor = backgroundColor;
+        _foregroundColor = foregroundColor;
 
-        btn_MoveDOWN = new Button(x+ w - 3, y + h - 4, "v", this.backgroundColor, this.foregroundColor);
-        btn_MoveUP = new Button(x +w - 3, y + 1, "^", this.backgroundColor, this.foregroundColor);
+        _btn_MoveDOWN = new Button(x+ w - 3, y + h - 4, "v", _backgroundColor, _foregroundColor);
+        _btn_MoveUP = new Button(x +w - 3, y + 1, "^", _backgroundColor, _foregroundColor);
 
-        btn_MoveDOWN.OnButtonClicked(Btn_MoveDOWNClicked);
-        btn_MoveUP.OnButtonClicked(Btn_MoveUPClicked);
+        _btn_MoveDOWN.OnButtonClicked(Btn_MoveDOWNClicked);
+        _btn_MoveUP.OnButtonClicked(Btn_MoveUPClicked);
 
-        outputSprite = BuildSprite();
+        OutputSprite = BuildSprite();
     }
 
     public void Update(MOUSE_EVENT_RECORD r)
@@ -45,25 +42,25 @@ public class ListBox
 
         if (mouseState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED)
         {
-            if(mouseX >= x && mouseY >= y && mouseX <= x + w - 4 && mouseY <= y + h - 2)
+            if(mouseX >= X && mouseY >= Y && mouseX <= X + W - 4 && mouseY <= Y + H - 2)
             {
-                selectedEntry = mouseY - y - 1 + firstEntry;
+                SelectedEntry = mouseY - Y - 1 + _firstEntry;
             }
         }
 
-        btn_MoveDOWN.Update(r);
-        btn_MoveUP.Update(r);
+        _btn_MoveDOWN.Update(r);
+        _btn_MoveUP.Update(r);
 
-        outputSprite = BuildSprite();
+        OutputSprite = BuildSprite();
     }
 
     private Sprite BuildSprite()
     {
-        var retSprite = new Sprite(w, h);
+        var retSprite = new Sprite(W, H);
 
-        var color = (short)((foregroundColor << 4) + backgroundColor);
+        var color = (short)((_foregroundColor << 4) + _backgroundColor);
 
-        if (simple)
+        if (_simple)
         {
             //frame
             for (var i = 1; i < retSprite.Width - 1; i++)
@@ -73,7 +70,7 @@ public class ListBox
                 for (var j = 1; j < retSprite.Height - 1; j++)
                 {
                     retSprite.SetPixel(0, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, color); //left
-                    if (entries.Count > retSprite.Height - 2)
+                    if (Entries.Count > retSprite.Height - 2)
                         retSprite.SetPixel(retSprite.Width - 3, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, color); //border between entries and scrollbar
                     retSprite.SetPixel(retSprite.Width - 1, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, color); //right
                 }
@@ -84,27 +81,27 @@ public class ListBox
             retSprite.SetPixel(retSprite.Width - 1, retSprite.Height, (char)PIXELS.LINE_CORNER_BOTTOM_RIGHT, color);
 
             //scrollbar
-            if (entries.Count > retSprite.Height - 2)
+            if (Entries.Count > retSprite.Height - 2)
             {
-                retSprite.AddSpriteToSprite(w - 3, 1, btn_MoveUP.outputSprite);
-                retSprite.AddSpriteToSprite(w - 3, h - 4, btn_MoveDOWN.outputSprite);
+                retSprite.AddSpriteToSprite(W - 3, 1, _btn_MoveUP.OutputSprite);
+                retSprite.AddSpriteToSprite(W - 3, H - 4, _btn_MoveDOWN.OutputSprite);
 
-                var scrollbarHeight = h - 8;
+                var scrollbarHeight = H - 8;
 
-                var scrollbarPosition = (int)((double)scrollbarHeight * ((double)firstEntry / (((double)entries.Count) - ((double)h - 2.0))));
+                var scrollbarPosition = (int)((double)scrollbarHeight * ((double)_firstEntry / (((double)Entries.Count) - ((double)H - 2.0))));
 
-                retSprite.SetPixel(w - 2, scrollbarPosition + 4, '█', (short)COLOR.FG_DARK_GREY);
+                retSprite.SetPixel(W - 2, scrollbarPosition + 4, '█', (short)COLOR.FG_DARK_GREY);
             }
 
             var entryCount = 0;
             //entrys
-            for(var i = firstEntry; i < entries.Count && (i - firstEntry) < h - 2; i++)
+            for(var i = _firstEntry; i < Entries.Count && (i - _firstEntry) < H - 2; i++)
             {
-                color = i == selectedEntry ? (short)((foregroundColor << 4) + backgroundColor) : (short)((backgroundColor << 4) + foregroundColor);
+                color = i == SelectedEntry ? (short)((_foregroundColor << 4) + _backgroundColor) : (short)((_backgroundColor << 4) + _foregroundColor);
 
-                for (var j = 0; j < entries[i].Length && j < w - 4; j++)
+                for (var j = 0; j < Entries[i].Length && j < W - 4; j++)
                 {
-                    retSprite.SetPixel(j + 1, entryCount + 1, entries[i][j], color);
+                    retSprite.SetPixel(j + 1, entryCount + 1, Entries[i][j], color);
                 }
 
                 entryCount++;
@@ -124,20 +121,20 @@ public class ListBox
 
     private bool Btn_MoveUPClicked()
     {
-        firstEntry--;
-        if(firstEntry < 0)
-            firstEntry = 0;
+        _firstEntry--;
+        if(_firstEntry < 0)
+            _firstEntry = 0;
 
-        outputSprite = BuildSprite();
+        OutputSprite = BuildSprite();
         return true;
     }
     private bool Btn_MoveDOWNClicked()
     {
-        firstEntry++;
-        if( firstEntry > entries.Count - (h - 2) )
-            firstEntry = entries.Count - (h - 2);
+        _firstEntry++;
+        if( _firstEntry > Entries.Count - (H - 2) )
+            _firstEntry = Entries.Count - (H - 2);
 
-        outputSprite = BuildSprite();
+        OutputSprite = BuildSprite();
         return true;
     }
 }

@@ -1,84 +1,83 @@
-﻿using System.Collections.Generic;
-using static ConsoleGameEngine.GameConsole;
+﻿using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine;
 
 public class ComboBox
 {
-    public int x, y;
-    public List<string> entries = [];
-    public Sprite outputSprite = null;
+    public int X, Y;
+    public List<string> Entries = [];
+    public Sprite OutputSprite;
 
-    private readonly bool simple;
-    private bool lbShown = false;
-    readonly short foregroundColor, backgroundColor;
-    private readonly int w;
-    private readonly int h;
-    private readonly int entriesToShow;
-    private int shownEntry = 0;
-    readonly string tag;
+    private readonly bool _simple;
+    private bool _lbShown;
+    readonly short _foregroundColor, _backgroundColor;
+    private readonly int _w;
+    private readonly int _h;
+    private readonly int _entriesToShow;
+    private int _shownEntry;
+    readonly string _tag;
 
-    readonly TextBlock tb_Selection;
-    readonly Button btn_Select;
-    readonly ListBox lb_Entries;
+    readonly TextBlock _tb_Selection;
+    readonly Button _btn_Select;
+    readonly ListBox _lb_Entries;
 
     public ComboBox(int x, int y, int w, int h, string tag, List<string> entries, int entriesToShow = 5, bool simple = true, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE)
     {
-        this.x = x;
-        this.y = y;
-        this.tag = tag;
-        this.entries = entries;
-        this.backgroundColor = backgroundColor;
-        this.foregroundColor = foregroundColor;
-        this.entriesToShow = entriesToShow;
-        this.simple = simple;
-        this.w = w;
-        this.h = h;
+        X = x;
+        Y = y;
+        _tag = tag;
+        Entries = entries;
+        _backgroundColor = backgroundColor;
+        _foregroundColor = foregroundColor;
+        _entriesToShow = entriesToShow;
+        _simple = simple;
+        _w = w;
+        _h = h;
 
-        btn_Select = new Button(x + w - 3, y + 1, "v", method: BtnSelectClicked);
-        tb_Selection = new TextBlock(x, y, w - btn_Select.width, tag, tagPosition: TextBox.ObjectPosition.Top, backgroundColor: backgroundColor, foregroundColor: foregroundColor, content: entries[shownEntry]);
-        lb_Entries = new ListBox(x, y + tb_Selection.height, w, entriesToShow + 2, entries, simple: simple, backgroundColor: backgroundColor, foregroundColor: foregroundColor);
+        _btn_Select = new Button(x + w - 3, y + 1, "v", method: BtnSelectClicked);
+        _tb_Selection = new TextBlock(x, y, w - _btn_Select.Width, tag, tagPosition: TextBox.ObjectPosition.Top, backgroundColor: backgroundColor, foregroundColor: foregroundColor, content: entries[_shownEntry]);
+        _lb_Entries = new ListBox(x, y + _tb_Selection.Height, w, entriesToShow + 2, entries, simple: simple, backgroundColor: backgroundColor, foregroundColor: foregroundColor);
 
-        outputSprite = BuildSprite();
+        OutputSprite = BuildSprite();
     }
 
     public void UpdateMouseInput(MOUSE_EVENT_RECORD r)
     {
-        btn_Select.Update(r);
+        _btn_Select.Update(r);
 
-        if (lbShown)
+        if (_lbShown)
         {
-            lb_Entries.Update(r);
+            _lb_Entries.Update(r);
 
-            if(lb_Entries.selectedEntry != shownEntry)
+            if(_lb_Entries.SelectedEntry != _shownEntry)
             {
-                shownEntry = lb_Entries.selectedEntry;
-                tb_Selection.SetContent(entries[shownEntry]);
-                lbShown = false;
+                _shownEntry = _lb_Entries.SelectedEntry;
+                _tb_Selection.SetContent(Entries[_shownEntry]);
+                _lbShown = false;
             }
         }
-        outputSprite = BuildSprite();
+        OutputSprite = BuildSprite();
     }
 
     private Sprite BuildSprite()
     {
         Sprite retSprite;
 
-        if (lbShown)
+        if (_lbShown)
         {
-            retSprite = new Sprite(btn_Select.width + tb_Selection.width, tb_Selection.height + lb_Entries.h);
+            retSprite = new Sprite(_btn_Select.Width + _tb_Selection.Width, _tb_Selection.Height + _lb_Entries.H);
 
-            retSprite.AddSpriteToSprite(0, 0, tb_Selection.outputSprite);
-            retSprite.AddSpriteToSprite(w - 3, 1, btn_Select.outputSprite);
-            retSprite.AddSpriteToSprite(0, tb_Selection.height, lb_Entries.outputSprite);
+            retSprite.AddSpriteToSprite(0, 0, _tb_Selection.OutputSprite);
+            retSprite.AddSpriteToSprite(_w - 3, 1, _btn_Select.OutputSprite);
+            retSprite.AddSpriteToSprite(0, _tb_Selection.Height, _lb_Entries.OutputSprite);
         }
         else
         {
-            retSprite = new Sprite(btn_Select.width + tb_Selection.width, tb_Selection.height);
+            retSprite = new Sprite(_btn_Select.Width + _tb_Selection.Width, _tb_Selection.Height);
 
-            retSprite.AddSpriteToSprite(0, 0, tb_Selection.outputSprite);
-            retSprite.AddSpriteToSprite(w-3, 1, btn_Select.outputSprite);
+            retSprite.AddSpriteToSprite(0, 0, _tb_Selection.OutputSprite);
+            retSprite.AddSpriteToSprite(_w-3, 1, _btn_Select.OutputSprite);
         }
 
         return retSprite;
@@ -86,8 +85,8 @@ public class ComboBox
 
     private bool BtnSelectClicked()
     {
-        lbShown = !lbShown;
-        outputSprite = BuildSprite();
+        _lbShown = !_lbShown;
+        OutputSprite = BuildSprite();
         return true;
     }
 }

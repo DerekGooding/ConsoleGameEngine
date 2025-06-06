@@ -1,33 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ConsoleGameEngine;
+﻿namespace ConsoleGameEngine;
 
 public class GameObject
 {
-    readonly List<Animation> animations = [];
-    int activeAnimationIndex {get; set;}
-    public Sprite outputSprite = null;
+    readonly List<Animation> _animations = [];
+    int ActiveAnimationIndex {get; set;}
+    public Sprite outputSprite;
 
     public GameObject()
     {
         outputSprite = new Sprite(16,16);
         AddAnimation(new Animation(outputSprite, new TimeSpan(0, 0, 0, 0, 100), 16, 16, 0));
-        activeAnimationIndex = 0;
+        ActiveAnimationIndex = 0;
     }
     public GameObject(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
     {
-        animations = [];
-        animations = LoadSpriteSheet(spriteSheet, w, h, timeSpan, frameCounts);
+        _animations = [];
+        _animations = LoadSpriteSheet(spriteSheet, w, h, timeSpan, frameCounts);
     }
 
     public void Update()
     {
-        animations[activeAnimationIndex].Update();
-        outputSprite = animations[activeAnimationIndex].outputSprite;
+        _animations[ActiveAnimationIndex].Update();
+        outputSprite = _animations[ActiveAnimationIndex].outputSprite;
     }
 
-    public void AddAnimation(Animation animation) => animations.Add(animation);
+    public void AddAnimation(Animation animation) => _animations.Add(animation);
 
     private List<Animation> LoadSpriteSheet(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
     {
@@ -55,16 +52,16 @@ public class GameObject
 
     public void DecAnimationIndex()
     {
-        activeAnimationIndex--;
+        ActiveAnimationIndex--;
 
-        if (activeAnimationIndex < 0)
-            activeAnimationIndex = animations.Count - 1;
+        if (ActiveAnimationIndex < 0)
+            ActiveAnimationIndex = _animations.Count - 1;
     }
     public void IncAnimationIndex()
     {
-        activeAnimationIndex++;
+        ActiveAnimationIndex++;
 
-        if(activeAnimationIndex > animations.Count - 1)
-            activeAnimationIndex = 0;
+        if(ActiveAnimationIndex > _animations.Count - 1)
+            ActiveAnimationIndex = 0;
     }
 }

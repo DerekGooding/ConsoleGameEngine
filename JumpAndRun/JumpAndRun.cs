@@ -5,30 +5,30 @@ namespace JumpAndRun;
 
 class JumpAndRun : GameConsole
 {
-    Player player;
-    Level level;
-    private TimeSpan keyInputDelay = new();
-    private readonly TimeSpan keyInputTime = new(0, 0, 0, 0, 120);
-    IntPtr inHandle;
-    int cursorX = 0, cursorY = 0;
-    bool leftMousebuttonClicked = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
+    Player _player;
+    Level _level;
+    private TimeSpan _keyInputDelay;
+    private readonly TimeSpan _keyInputTime = new(0, 0, 0, 0, 120);
+    IntPtr _inHandle;
+    int _cursorX, _cursorY;
+    bool _leftMousebuttonClicked, _mouseWheelClicked, _rightMousebuttonClicked;
 
-    bool startLevel = false;
-    readonly int points = 0;
-    readonly int lastHeight = 0;
+    bool _startLevel;
+    readonly int _points;
+    readonly int _lastHeight;
 
     public JumpAndRun()
       : base(200, 120, "Fonts", fontwidth: 4, fontheight: 4)
     { }
     public override bool OnUserCreate()
     {
-        inHandle = GetStdHandle(STD_INPUT_HANDLE);
+        _inHandle = GetStdHandle(STD_INPUT_HANDLE);
         uint mode = 0;
-        GetConsoleMode(inHandle, ref mode);
+        GetConsoleMode(_inHandle, ref mode);
         mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
         mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
         mode |= ENABLE_MOUSE_INPUT; //enable
-        SetConsoleMode(inHandle, mode);
+        SetConsoleMode(_inHandle, mode);
 
         ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
@@ -36,28 +36,28 @@ class JumpAndRun : GameConsole
 
         TextWriter.LoadFont("fontsheet.txt", 6, 8);
 
-        player = new Player();
-        level = new Level();
-        player.LoadAnimation("runnin ninja.txt");
+        _player = new Player();
+        _level = new Level();
+        _player.LoadAnimation("runnin ninja.txt");
         //Load sprites, setup variables and whatever
         return true;
     }
     public override bool OnUserUpdate(TimeSpan elapsedTime)
     {
-        keyInputDelay += elapsedTime;
-        player.Update(KeyStates, elapsedTime, this);
+        _keyInputDelay += elapsedTime;
+        _player.Update(KeyStates, elapsedTime, this);
 
-        if (startLevel)
+        if (_startLevel)
         {
-            level.Update(elapsedTime);
+            _level.Update(elapsedTime);
         }
 
         Clear();
-        DrawSprite((int)player.xPosition, (int)player.yPosition, player.outputSprite);
-        DrawSprite(0, 0, TextWriter.GenerateTextSprite($"   NINJA TOWER   {level.points} ", TextWriter.Textalignment.Left, 1));
+        DrawSprite((int)_player.xPosition, (int)_player.yPosition, _player.outputSprite);
+        DrawSprite(0, 0, TextWriter.GenerateTextSprite($"   NINJA TOWER   {_level.points} ", TextWriter.Textalignment.Left, 1));
 
         //draw plattforms
-        foreach (var p in level.plattforms)
+        foreach (var p in _level.plattforms)
         {
             DrawSprite(p.X, p.Y, new Sprite(p.L, 1, COLOR.BG_DARK_GREEN));
         }
@@ -68,19 +68,19 @@ class JumpAndRun : GameConsole
         //    DrawSprite(p.x, p.y, new Sprite(1, p.l, GameConsole.COLOR.BG_DARK_GREEN));
         //}
 
-        if(player.yPosition < 50) startLevel = true;
-        if (player.yPosition > 120) startLevel = false;
+        if(_player.yPosition < 50) _startLevel = true;
+        if (_player.yPosition > 120) _startLevel = false;
 
         return true;
     }
 
     private void ConsoleListener_MouseEvent(MOUSE_EVENT_RECORD r)
     {
-        cursorX = r.dwMousePosition.X;
-        cursorY = r.dwMousePosition.Y;
+        _cursorX = r.dwMousePosition.X;
+        _cursorY = r.dwMousePosition.Y;
 
-        leftMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
-        mouseWheelClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_2ND_BUTTON_PRESSED;
-        rightMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.RIGHTMOST_BUTTON_PRESSED;
+        _leftMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
+        _mouseWheelClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_2ND_BUTTON_PRESSED;
+        _rightMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.RIGHTMOST_BUTTON_PRESSED;
     }
 }

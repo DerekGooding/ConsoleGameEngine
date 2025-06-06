@@ -5,35 +5,34 @@ namespace CGE_PopUp;
 
 class CGE_PopUp : GameConsole
 {
-    IntPtr inHandle;
-    delegate void MyDelegate();
+    IntPtr _inHandle;
 
-    Button button;
-    PopUp popUp;
-    Sprite popUpSprite;
-    PopUpState popUpState;
+    Button _button;
+    PopUp _popUp;
+    Sprite _popUpSprite;
+    PopUpState _popUpState;
 
     public CGE_PopUp()
       : base(200, 120, "Fonts", fontwidth: 4, fontheight: 4)
     { }
     public override bool OnUserCreate()
     {
-        inHandle = GetStdHandle(STD_INPUT_HANDLE);
+        _inHandle = GetStdHandle(STD_INPUT_HANDLE);
         uint mode = 0;
-        GetConsoleMode(inHandle, ref mode);
+        GetConsoleMode(_inHandle, ref mode);
         mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
         mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
         mode |= ENABLE_MOUSE_INPUT; //enable
-        SetConsoleMode(inHandle, mode);
+        SetConsoleMode(_inHandle, mode);
 
         ConsoleListener.Start();
 
         TextWriter.LoadFont("fontsheet.txt", 7, 9);
 
-        button = new Button(0, 0, TextWriter.GenerateTextSprite("open PopUp", TextWriter.Textalignment.Left, 1));
-        button.OnButtonClicked(ButtonClicked);
+        _button = new Button(0, 0, TextWriter.GenerateTextSprite("open PopUp", TextWriter.Textalignment.Left, 1));
+        _button.OnButtonClicked(ButtonClicked);
 
-        popUp = new PopUp(40, 40, "Are you sure?", out popUpSprite);
+        _popUp = new PopUp(40, 40, "Are you sure?", out _popUpSprite);
 
         ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
@@ -43,14 +42,14 @@ class CGE_PopUp : GameConsole
     {
         Clear();
 
-        DrawSprite(0, 0, button.outputSprite);
+        DrawSprite(0, 0, _button.OutputSprite);
 
-        if (popUp.visible)
-            DrawSprite(40, 40, popUpSprite);
+        if (_popUp.Visible)
+            DrawSprite(40, 40, _popUpSprite);
 
-        if(popUpState != PopUpState.none)
+        if(_popUpState != PopUpState.none)
         {
-            popUp.visible = false;
+            _popUp.Visible = false;
         }
 
         return true;
@@ -58,13 +57,13 @@ class CGE_PopUp : GameConsole
 
     private void ConsoleListener_MouseEvent(MOUSE_EVENT_RECORD r)
     {
-        popUpState = popUp.Update(r);
-        button.Update(r);
+        _popUpState = _popUp.Update(r);
+        _button.Update(r);
     }
 
     private bool ButtonClicked()
     {
-        popUp.visible = true;
+        _popUp.Visible = true;
         return true;
     }
 }

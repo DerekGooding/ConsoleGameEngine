@@ -10,14 +10,14 @@ class Player
     private Sprite spriteSheet;
     private Animation walkingAnimation;
 
-    private bool airjumpused = false;
+    private bool airjumpused;
 
     private readonly double velocityMax = 30;
 
     private const double walkSpeed = 2, runSpeed = 5, fallSpeed = 10,  acceleration = 0.5, gravity_acceleration = 2.0;
-    private double playerSpeedX = 0.0, playerSpeedY = 0.0;
+    private double playerSpeedX, playerSpeedY;
 
-    private int sign = 0;
+    private int sign;
 
     public Player()
     {

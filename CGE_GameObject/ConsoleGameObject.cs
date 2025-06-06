@@ -4,16 +4,16 @@ namespace CGE_GameObject;
 
 class ConsoleGameObject : GameConsole
 {
-    GameObject playerCharacter;
-    Sprite spriteSheet;
+    GameObject _playerCharacter;
+    Sprite _spriteSheet;
 
     public ConsoleGameObject()
       : base(200, 120, "GameObject", fontwidth: 4, fontheight: 4)
     { }
     public override bool OnUserCreate()
     {
-        spriteSheet = new Sprite("animationsheet.txt");
-        playerCharacter = new GameObject(spriteSheet, 32, 32, new TimeSpan(0, 0, 0, 0, 100), [13, 8, 10, 10, 10, 6, 4, 7]);
+        _spriteSheet = new Sprite("animationsheet.txt");
+        _playerCharacter = new GameObject(_spriteSheet, 32, 32, new TimeSpan(0, 0, 0, 0, 100), [13, 8, 10, 10, 10, 6, 4, 7]);
         return true;
     }
 
@@ -21,17 +21,17 @@ class ConsoleGameObject : GameConsole
     {
         if (GetKeyState(ConsoleKey.A).Released)
         {
-            playerCharacter.DecAnimationIndex();
+            _playerCharacter.DecAnimationIndex();
         }
         if (GetKeyState(ConsoleKey.D).Released)
         {
-            playerCharacter.IncAnimationIndex();
+            _playerCharacter.IncAnimationIndex();
         }
 
-        playerCharacter.Update();
+        _playerCharacter.Update();
 
         Clear();
-        DrawSprite(100, 58, playerCharacter.outputSprite, '\0', 0x0000);
+        DrawSprite(100, 58, _playerCharacter.outputSprite, '\0', 0x0000);
         return true;
     }
 }

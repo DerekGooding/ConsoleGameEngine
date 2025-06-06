@@ -1,107 +1,106 @@
-﻿using System;
-using static ConsoleGameEngine.GameConsole;
+﻿using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine;
 
 public class Button
 {
-    public int x, y, width, height;
-    public Sprite outputSprite, sprite, feedbackSprite, hooverSprite;
-    readonly string text;
-    Func<bool> method;
-    readonly bool simple = false;
-    readonly short foregroundColor, backgroundColor, hooverColor;
+    public int X, Y, Width, Height;
+    public Sprite OutputSprite, Sprite, FeedbackSprite, HooverSprite;
+    readonly string _text;
+    Func<bool> _method;
+    readonly bool _simple;
+    readonly short _foregroundColor, _backgroundColor, _hooverColor;
 
     public Button(int x, int y, int width, int height, Sprite sprite, Sprite feedbackSprite = null, Sprite hooverSprite = null, Func<bool> method = null)
     {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.sprite = sprite;
-        outputSprite = this.sprite;
-        this.feedbackSprite = feedbackSprite;
-        this.hooverSprite = hooverSprite;
-        this.method = method;
+        X = x;
+        Y = y;
+        Width = width;
+        Height = height;
+        Sprite = sprite;
+        OutputSprite = Sprite;
+        FeedbackSprite = feedbackSprite;
+        HooverSprite = hooverSprite;
+        _method = method;
     }
     public Button(int x, int y, Sprite sprite, Sprite feedbackSprite = null, Sprite hooverSprite = null, Func<bool> method = null)
     {
-        this.x = x;
-        this.y = y;
-        this.sprite = sprite;
-        width = sprite.Width;
-        height = sprite.Height;
-        outputSprite = this.sprite;
-        this.feedbackSprite = feedbackSprite;
-        this.hooverSprite= hooverSprite;
-        this.method = method;
+        X = x;
+        Y = y;
+        Sprite = sprite;
+        Width = sprite.Width;
+        Height = sprite.Height;
+        OutputSprite = Sprite;
+        FeedbackSprite = feedbackSprite;
+        HooverSprite= hooverSprite;
+        _method = method;
     }
     public Button(int x, int y, string text, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE, short hooverColor = (short)COLOR.FG_DARK_GREY, Func<bool> method = null)
     {
-        this.x = x;
-        this.y = y;
-        this.text = text;
-        width = text.Length + 2;
-        height = 3;
-        simple = true;
-        this.foregroundColor = foregroundColor;
-        this.backgroundColor = backgroundColor;
-        this.hooverColor = hooverColor;
-        this.method = method;
+        X = x;
+        Y = y;
+        _text = text;
+        Width = text.Length + 2;
+        Height = 3;
+        _simple = true;
+        _foregroundColor = foregroundColor;
+        _backgroundColor = backgroundColor;
+        _hooverColor = hooverColor;
+        _method = method;
 
-        outputSprite = BuildSimpleSprite(false, false);
+        OutputSprite = BuildSimpleSprite(false, false);
     }
 
-    public void OnButtonClicked(Func<bool> method) => this.method = method;
+    public void OnButtonClicked(Func<bool> method) => _method = method;
 
     public void Update(MOUSE_EVENT_RECORD r)
     {
         int mouseX = r.dwMousePosition.X, mouseY = r.dwMousePosition.Y;
         var mouseState = r.dwButtonState;
 
-        if (mouseX <= x + width && mouseX >= x && mouseY <= y + height && mouseY > y)
+        if (mouseX <= X + Width && mouseX >= X && mouseY <= Y + Height && mouseY > Y)
         {
             if (mouseState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED)
             {
-                if (!simple)
+                if (!_simple)
                 {
-                    if (feedbackSprite != null)
-                        outputSprite = feedbackSprite;
+                    if (FeedbackSprite != null)
+                        OutputSprite = FeedbackSprite;
                 }
                 else
                 {
-                    outputSprite = BuildSimpleSprite(true, false);
+                    OutputSprite = BuildSimpleSprite(true, false);
                 }
 
-                method();
+                _method();
             }
             else
             {
-                if (!simple)
+                if (!_simple)
                 {
-                    if(hooverSprite != null)
-                        outputSprite = hooverSprite;
+                    if(HooverSprite != null)
+                        OutputSprite = HooverSprite;
                 }
                 else
                 {
-                    outputSprite = BuildSimpleSprite(false, true);
+                    OutputSprite = BuildSimpleSprite(false, true);
                 }
             }
         }
         else
         {
-            outputSprite = !simple ? sprite : BuildSimpleSprite(false, false);
+            OutputSprite = !_simple ? Sprite : BuildSimpleSprite(false, false);
         }
     }
 
     private Sprite BuildSimpleSprite(bool clicked, bool hoovered)
     {
-        var retSprite = new Sprite(text.Length + 2, 3);
+        var retSprite = new Sprite(_text.Length + 2, 3);
 
-        var color = clicked ? (short)((foregroundColor << 4) + backgroundColor) : (short)((backgroundColor << 4) + foregroundColor);
+        var color = clicked ? (short)((_foregroundColor << 4) + _backgroundColor) : (short)((_backgroundColor << 4) + _foregroundColor);
 
-        color = hoovered ? (short)((hooverColor << 4) + backgroundColor) : color;
+        color = hoovered ? (short)((_hooverColor << 4) + _backgroundColor) : color;
 
         for (var i = 1; i < retSprite.Width - 1; i++)
         {
@@ -120,9 +119,9 @@ public class Button
         retSprite.SetPixel(retSprite.Width - 1, retSprite.Height - 1, (char)PIXELS.LINE_CORNER_BOTTOM_RIGHT, color);
 
         //text
-        for(var i = 0; i < text.Length; i++)
+        for(var i = 0; i < _text.Length; i++)
         {
-            retSprite.SetPixel(1+i,1, text[i], color);
+            retSprite.SetPixel(1+i,1, _text[i], color);
         }
 
         return retSprite;

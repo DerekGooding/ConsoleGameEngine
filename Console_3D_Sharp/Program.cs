@@ -13,80 +13,72 @@ static class Program
             : base(200, 120, "Shooter", fontwidth: 4, fontheight: 4)
         { }
 
-        private readonly int nMapWidth = 32;              // World Dimensions
-        private readonly int nMapHeight = 32;
-        private double fPlayerX = 13.7;          // Player Start Position
-        private double fPlayerY = 5.09;
-        private double fPlayerA = -26.7;           // Player Start Rotation
-        private readonly double fFOV = 3.14159 / 4.0;    // Field of View
-        private readonly double fDepth = 16.0;            // Maximum rendering distance
-        private readonly double fSpeed = 5.0;             // Walking Speed
-        private string map = "";
-        private Sprite wall, lamp, fireball;
-        private double[] fDepthBuffer;
-        private struct SObject
-        {
-            public double x;
-            public double y;
-            public double vx;
-            public double vy;
-            public bool bRemove;
-            public Sprite sprite;
-        };
+        private readonly int _nMapWidth = 32;              // World Dimensions
+        private readonly int _nMapHeight = 32;
+        private double _fPlayerX = 13.7;          // Player Start Position
+        private double _fPlayerY = 5.09;
+        private double _fPlayerA = -26.7;           // Player Start Rotation
+        private readonly double _fFOV = 3.14159 / 4.0;    // Field of View
+        private readonly double _fDepth = 16.0;            // Maximum rendering distance
+        private readonly double _fSpeed = 5.0;             // Walking Speed
+        private string _map = "";
+        private Sprite _wall, _lamp, _fireball;
+        private double[] _fDepthBuffer;
+        private record struct SObject (double X, double Y, double VX, double VY, bool BRemove, Sprite Sprite);
 
-        List<SObject> listObjects;
-        private Animation coinAnim;
-        private readonly Animation diddy;
+        List<SObject> _listObjects;
+        private Animation _coinAnim;
+        private readonly Animation _diddy;
 
         public override bool OnUserCreate()
         {
             #region MAP
-            map += "#########.......#########.......";
-            map += "#...............#...............";
-            map += "#.......#########.......########";
-            map += "#..............##..............#";
-            map += "#......##......##......##......#";
-            map += "#......##..............##......#";
-            map += "#..............##..............#";
-            map += "###............####............#";
-            map += "##.............###.............#";
-            map += "#............####............###";
-            map += "#..............................#";
-            map += "#..............##..............#";
-            map += "#..............##..............#";
-            map += "#...........#####...........####";
-            map += "#..............................#";
-            map += "###..####....########....#######";
-            map += "####.####.......######..........";
-            map += "#...............#...............";
-            map += "#.......#########.......##..####";
-            map += "#..............##..............#";
-            map += "#......##......##.......#......#";
-            map += "#......##......##......##......#";
-            map += "#..............##..............#";
-            map += "###............####............#";
-            map += "##.............###.............#";
-            map += "#............####............###";
-            map += "#..............................#";
-            map += "#..............................#";
-            map += "#..............##..............#";
-            map += "#...........##..............####";
-            map += "#..............##..............#";
-            map += "################################";
+            _map += "#########.......#########.......";
+            _map += "#...............#...............";
+            _map += "#.......#########.......########";
+            _map += "#..............##..............#";
+            _map += "#......##......##......##......#";
+            _map += "#......##..............##......#";
+            _map += "#..............##..............#";
+            _map += "###............####............#";
+            _map += "##.............###.............#";
+            _map += "#............####............###";
+            _map += "#..............................#";
+            _map += "#..............##..............#";
+            _map += "#..............##..............#";
+            _map += "#...........#####...........####";
+            _map += "#..............................#";
+            _map += "###..####....########....#######";
+            _map += "####.####.......######..........";
+            _map += "#...............#...............";
+            _map += "#.......#########.......##..####";
+            _map += "#..............##..............#";
+            _map += "#......##......##.......#......#";
+            _map += "#......##......##......##......#";
+            _map += "#..............##..............#";
+            _map += "###............####............#";
+            _map += "##.............###.............#";
+            _map += "#............####............###";
+            _map += "#..............................#";
+            _map += "#..............................#";
+            _map += "#..............##..............#";
+            _map += "#...........##..............####";
+            _map += "#..............##..............#";
+            _map += "################################";
             #endregion
 
-            wall = new Sprite("wall2.txt");//("FPSSprites\\fps_wall1.spr");
-            lamp = new Sprite("Imp.txt");
-            fireball = new Sprite("FireBall.txt");
-            fDepthBuffer = new double[Width];
+            _wall = new Sprite("wall2.txt");//("FPSSprites\\fps_wall1.spr");
+            _lamp = new Sprite("Imp.txt");
+            _fireball = new Sprite("FireBall.txt");
+            _fDepthBuffer = new double[Width];
 
-            coinAnim = new Animation(["Coin1.txt", "Coin2.txt", "Coin3.txt", "Coin4.txt"], new TimeSpan(0, 0, 0, 0, 500));
-            listObjects =
+            _coinAnim = new Animation(["Coin1.txt", "Coin2.txt", "Coin3.txt", "Coin4.txt"], new TimeSpan(0, 0, 0, 0, 500));
+            _listObjects =
             [
-                new SObject() { x = 8.5f, y = 8.5f, vx = 0.0f, vy = 0.0f, bRemove = false, sprite = lamp },
-            new SObject() { x = 7.5f, y = 7.5f, vx = 0.0f, vy = 0.0f, bRemove = false, sprite = lamp },
-            new SObject() { x = 10.5f, y = 3.5f, vx = 0.0f, vy = 0.0f, bRemove = false, sprite = lamp },
-            new SObject() { x = 9.5f, y = 2.5f, vx = 0.0f, vy = 0.0f, bRemove = false, sprite = coinAnim.outputSprite },
+            new SObject(8.5f, 8.5f, 0.0f, 0.0f, false, _lamp ),
+            new SObject(7.5f, 7.5f, 0.0f, 0.0f, false, _lamp),
+            new SObject(10.5f, 3.5f, 0.0f, 0.0f, false, _lamp),
+            new SObject(9.5f, 2.5f, 0.0f, 0.0f, false, _coinAnim.outputSprite),
         ];
 
             return true;
@@ -96,67 +88,66 @@ static class Program
         {
             #region inputs
             if (GetKeyState(ConsoleKey.A).Held)// Keys[((int)'A')].held)
-                fPlayerA -= fSpeed * 0.5f * fElapsedTime.TotalSeconds;
+                _fPlayerA -= _fSpeed * 0.5f * fElapsedTime.TotalSeconds;
 
             if (GetKeyState(ConsoleKey.D).Held)//(Keys[((int)'D')].held)
-                fPlayerA += fSpeed * 0.5f * fElapsedTime.TotalSeconds;
+                _fPlayerA += _fSpeed * 0.5f * fElapsedTime.TotalSeconds;
 
             if (GetKeyState(ConsoleKey.W).Held) //(Keys[((int)'W')].held)
             {
-                fPlayerX += Math.Sin(fPlayerA) * fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
-                fPlayerY += Math.Cos(fPlayerA) * fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
+                _fPlayerX += Math.Sin(_fPlayerA) * _fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
+                _fPlayerY += Math.Cos(_fPlayerA) * _fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
 
-                if (map[(int)(fPlayerX * nMapWidth) + (int)fPlayerY] == '@')
+                if (_map[(int)(_fPlayerX * _nMapWidth) + (int)_fPlayerY] == '@')
                 {
-                    fPlayerX -= Math.Sin(fPlayerA) * fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
-                    fPlayerY -= Math.Cos(fPlayerA) * fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
+                    _fPlayerX -= Math.Sin(_fPlayerA) * _fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
+                    _fPlayerY -= Math.Cos(_fPlayerA) * _fSpeed * (fElapsedTime.TotalMilliseconds / 1000);
                 }
             }
 
             if (GetKeyState(ConsoleKey.S).Held) //(Keys[((int)'S')].held)
             {
-                fPlayerX -= Math.Sin(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                fPlayerY -= Math.Cos(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                if (map[(int)(fPlayerX * nMapWidth) + (int)fPlayerY] == '@')
+                _fPlayerX -= Math.Sin(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                _fPlayerY -= Math.Cos(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                if (_map[(int)(_fPlayerX * _nMapWidth) + (int)_fPlayerY] == '@')
                 {
-                    fPlayerX += Math.Sin(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                    fPlayerY += Math.Cos(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
+                    _fPlayerX += Math.Sin(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                    _fPlayerY += Math.Cos(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
                 }
             }
 
             if (GetKeyState(ConsoleKey.E).Held) //(Keys[((int)'E')].held)
             {
-                fPlayerX += Math.Cos(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                fPlayerY -= Math.Sin(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                if (map[(int)(fPlayerX * nMapWidth) + (int)fPlayerY] == '@')
+                _fPlayerX += Math.Cos(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                _fPlayerY -= Math.Sin(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                if (_map[(int)(_fPlayerX * _nMapWidth) + (int)_fPlayerY] == '@')
                 {
-                    fPlayerX -= Math.Cos(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                    fPlayerY += Math.Sin(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
+                    _fPlayerX -= Math.Cos(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                    _fPlayerY += Math.Sin(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
                 }
             }
 
             if (GetKeyState(ConsoleKey.Q).Held) //(Keys[((int)'Q')].held)
             {
-                fPlayerX -= Math.Cos(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                fPlayerY += Math.Sin(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                if (map[(int)(fPlayerX * nMapWidth) + (int)fPlayerY] == '@')
+                _fPlayerX -= Math.Cos(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                _fPlayerY += Math.Sin(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                if (_map[(int)(_fPlayerX * _nMapWidth) + (int)_fPlayerY] == '@')
                 {
-                    fPlayerX += Math.Cos(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
-                    fPlayerY -= Math.Sin(fPlayerA) * fSpeed * fElapsedTime.TotalSeconds;
+                    _fPlayerX += Math.Cos(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
+                    _fPlayerY -= Math.Sin(_fPlayerA) * _fSpeed * fElapsedTime.TotalSeconds;
                 }
             }
 
             if (GetKeyState(ConsoleKey.Spacebar).Released)//(Keys[32].released)
             {
-                SObject o;
-                o.x = fPlayerX;
-                o.y = fPlayerY;
                 var fNoise = (new Random().Next(RAND_MAX) - 0.5f) * 0.1f;
-                o.vx = Math.Sin(fPlayerA + fNoise) * 8.0f;
-                o.vy = Math.Cos(fPlayerA + fNoise) * 8.0f;
-                o.sprite = fireball;
-                o.bRemove = false;
-                listObjects.Add(o);
+                var o = new SObject(_fPlayerX,
+                                    _fPlayerY,
+                                    Math.Sin(_fPlayerA + fNoise) * 8.0f,
+                                    Math.Cos(_fPlayerA + fNoise) * 8.0f,
+                                    false,
+                                    _fireball);
+                _listObjects.Add(o);
             }
             #endregion
 
@@ -164,7 +155,7 @@ static class Program
             for (var x = 0; x < Width; x++)
             {
                 // For each column, calculate the projected ray angle into world space
-                var fRayAngle = fPlayerA - (fFOV / 2.0f) + (x / (float)Width * fFOV);
+                var fRayAngle = _fPlayerA - (_fFOV / 2.0f) + (x / (float)Width * _fFOV);
 
                 // Find distance to wall
                 double fStepSize = 0.01f;      // Increment size for ray casting, decrease to increase	
@@ -180,22 +171,22 @@ static class Program
 
                 var bLit = false;
 
-                while (!bHitWall && fDistanceToWall < fDepth)
+                while (!bHitWall && fDistanceToWall < _fDepth)
                 {
                     fDistanceToWall += fStepSize;
-                    var nTestX = (int)(fPlayerX + (fEyeX * fDistanceToWall));
-                    var nTestY = (int)(fPlayerY + (fEyeY * fDistanceToWall));
+                    var nTestX = (int)(_fPlayerX + (fEyeX * fDistanceToWall));
+                    var nTestY = (int)(_fPlayerY + (fEyeY * fDistanceToWall));
 
                     // Test if ray is out of bounds
-                    if (nTestX < 0 || nTestX >= nMapWidth || nTestY < 0 || nTestY >= nMapHeight)
+                    if (nTestX < 0 || nTestX >= _nMapWidth || nTestY < 0 || nTestY >= _nMapHeight)
                     {
                         bHitWall = true;            // Just set distance to maximum depth
-                        fDistanceToWall = fDepth;
+                        fDistanceToWall = _fDepth;
                     }
                     else
                     {
                         // Ray is inbounds so test to see if the ray cell is a wall block
-                        if (map[(nTestX * nMapWidth) + nTestY] == '#')
+                        if (_map[(nTestX * _nMapWidth) + nTestY] == '#')
                         {
                             // Ray has hit wall
                             bHitWall = true;
@@ -205,8 +196,8 @@ static class Program
                             var fBlockMidX = (double)nTestX + 0.5f;
                             var fBlockMidY = (double)nTestY + 0.5f;
 
-                            var fTestPointX = fPlayerX + (fEyeX * fDistanceToWall);
-                            var fTestPointY = fPlayerY + (fEyeY * fDistanceToWall);
+                            var fTestPointX = _fPlayerX + (fEyeX * fDistanceToWall);
+                            var fTestPointY = _fPlayerY + (fEyeY * fDistanceToWall);
 
                             var fTestAngle = Math.Atan2(fTestPointY - fBlockMidY, fTestPointX - fBlockMidX);
 
@@ -227,7 +218,7 @@ static class Program
                 var nFloor = Height - nCeiling;
 
                 // Update Depth Buffer
-                fDepthBuffer[x] = fDistanceToWall;
+                _fDepthBuffer[x] = fDistanceToWall;
 
                 for (var y = 0; y < Height; y++)
                 {
@@ -239,10 +230,10 @@ static class Program
                     else if (y > nCeiling && y <= nFloor)
                     {
                         // Draw Wall
-                        if (fDistanceToWall < fDepth)
+                        if (fDistanceToWall < _fDepth)
                         {
                             var fSampleY = (y - (double)nCeiling) / (nFloor - (double)nCeiling);
-                            SetChar(x, y, (char)(PIXELS)(int)wall.SampleGlyph(fSampleX, fSampleY), wall.SampleColor(fSampleX, fSampleY));
+                            SetChar(x, y, (char)(PIXELS)(int)_wall.SampleGlyph(fSampleX, fSampleY), _wall.SampleColor(fSampleX, fSampleY));
                         }
                         else
                         {
@@ -260,30 +251,30 @@ static class Program
 
             #region Game-Objects
 
-            coinAnim.Update();
-            var coin = listObjects[3];
-            coin.sprite = coinAnim.outputSprite;
-            listObjects[3] = coin;
+            _coinAnim.Update();
+            var coin = _listObjects[3];
+            coin.Sprite = _coinAnim.outputSprite;
+            _listObjects[3] = coin;
 
             // Update & Draw Objects	
-            for (var i = 0; i < listObjects.Count; i++)
+            for (var i = 0; i < _listObjects.Count; i++)
             {
-                var obj = listObjects[i];
+                var obj = _listObjects[i];
                 // Update Object Physics
-                obj.x += obj.vx * fElapsedTime.TotalSeconds;
-                obj.y += obj.vy * fElapsedTime.TotalSeconds;
+                obj.X += obj.VX * fElapsedTime.TotalSeconds;
+                obj.Y += obj.VY * fElapsedTime.TotalSeconds;
 
                 // Check if object is inside wall - set flag for removal
-                if (map[((int)obj.x * nMapWidth) + (int)obj.y] == '#')
-                    obj.bRemove = true;
+                if (_map[((int)obj.X * _nMapWidth) + (int)obj.Y] == '#')
+                    obj.BRemove = true;
 
                 // Can object be seen?
-                var fVecX = obj.x - fPlayerX;
-                var fVecY = obj.y - fPlayerY;
+                var fVecX = obj.X - _fPlayerX;
+                var fVecY = obj.Y - _fPlayerY;
                 var fDistanceFromPlayer = Math.Sqrt((fVecX * fVecX) + (fVecY * fVecY));
 
-                var fEyeX = Math.Sin(fPlayerA);
-                var fEyeY = Math.Cos(fPlayerA);
+                var fEyeX = Math.Sin(_fPlayerA);
+                var fEyeY = Math.Cos(_fPlayerA);
 
                 // Calculate angle between lamp and players feet, and players looking direction
                 // to determine if the lamp is in the players field of view
@@ -293,18 +284,18 @@ static class Program
                 if (fObjectAngle > 3.14159f)
                     fObjectAngle -= 2.0f * 3.14159f;
 
-                var bInPlayerFOV = Math.Abs(fObjectAngle) < fFOV / 2.0f;
+                var bInPlayerFOV = Math.Abs(fObjectAngle) < _fFOV / 2.0f;
 
-                if (bInPlayerFOV && fDistanceFromPlayer >= 0.5f && fDistanceFromPlayer < fDepth && !obj.bRemove)
+                if (bInPlayerFOV && fDistanceFromPlayer >= 0.5f && fDistanceFromPlayer < _fDepth && !obj.BRemove)
                 {
                     var fObjectCeiling = (Height / 2.0) - ((double)Height / (float)fDistanceFromPlayer);
                     var fObjectFloor = Height - fObjectCeiling;
                     var fObjectHeight = fObjectFloor - fObjectCeiling;
-                    var fObjectAspectRatio = obj.sprite.Height / (double)obj.sprite.Width;
+                    var fObjectAspectRatio = obj.Sprite.Height / (double)obj.Sprite.Width;
                     var fObjectWidth = fObjectHeight / fObjectAspectRatio;
-                    var fMiddleOfObject = ((0.5f * (fObjectAngle / (fFOV / 2.0f))) + 0.5f) * Width;
+                    var fMiddleOfObject = ((0.5f * (fObjectAngle / (_fFOV / 2.0f))) + 0.5f) * Width;
 
-                    if (obj.sprite == lamp || true)
+                    if (obj.Sprite == _lamp || true)
                     {
                         // Draw Lamp
                         for (double lx = 0; lx < fObjectWidth; lx++)
@@ -313,14 +304,14 @@ static class Program
                             {
                                 var fSampleX = lx / fObjectWidth;
                                 var fSampleY = ly / fObjectHeight;
-                                var c = obj.sprite.SampleGlyph(fSampleX, fSampleY);
+                                var c = obj.Sprite.SampleGlyph(fSampleX, fSampleY);
                                 var nObjectColumn = (int)(fMiddleOfObject + lx - (fObjectWidth / 2.0f));
                                 if (nObjectColumn >= 0 && nObjectColumn < Width)
                                 {
-                                    if (c != ' ' && fDepthBuffer[nObjectColumn] >= fDistanceFromPlayer)
+                                    if (c != ' ' && _fDepthBuffer[nObjectColumn] >= fDistanceFromPlayer)
                                     {
-                                        SetChar(nObjectColumn, (int)(fObjectCeiling + ly), c, obj.sprite.SampleColor(fSampleX, fSampleY));
-                                        fDepthBuffer[nObjectColumn] = fDistanceFromPlayer;
+                                        SetChar(nObjectColumn, (int)(fObjectCeiling + ly), c, obj.Sprite.SampleColor(fSampleX, fSampleY));
+                                        _fDepthBuffer[nObjectColumn] = fDistanceFromPlayer;
                                     }
                                 }
                             }
@@ -328,22 +319,22 @@ static class Program
                     }
                 }
 
-                listObjects[i] = obj;
+                _listObjects[i] = obj;
             }
 
             // Remove dead objects from object list
-            listObjects.RemoveAll(s => s.bRemove);
+            _listObjects.RemoveAll(s => s.BRemove);
             #endregion
 
             #region GUI
             // Display Map & Player
-            for (var nx = 0; nx < nMapWidth; nx++)
+            for (var nx = 0; nx < _nMapWidth; nx++)
             {
-                for (var ny = 0; ny < nMapWidth; ny++)
-                    SetChar(nx + 1, ny + 1, map[(ny * nMapWidth) + nx]);
+                for (var ny = 0; ny < _nMapWidth; ny++)
+                    SetChar(nx + 1, ny + 1, _map[(ny * _nMapWidth) + nx]);
             }
 
-            SetChar(1 + (int)fPlayerY, 1 + (int)fPlayerX, 'P', (short)COLOR.BG_RED);
+            SetChar(1 + (int)_fPlayerY, 1 + (int)_fPlayerX, 'P', (short)COLOR.BG_RED);
             #endregion
 
             return true;

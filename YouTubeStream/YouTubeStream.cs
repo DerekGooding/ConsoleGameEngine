@@ -20,7 +20,7 @@ class YouTubeStream : GameConsole
     VideoCapture videoCapture;
     Process ffmpeg;
 
-    readonly int points = 0;
+    readonly int points;
 
     public YouTubeStream(string videoURL)
       : base(256, 154, "YouTube", fontwidth: 4, fontheight: 4)

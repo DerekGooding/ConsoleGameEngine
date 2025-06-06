@@ -8,24 +8,23 @@ internal static class Program
 {
     class CGE_Mouse : GameConsole
     {
-        IntPtr inHandle;
-        delegate void MyDelegate();
+        IntPtr _inHandle;
 
-        int cursorX = 0, cursorY = 0;
-        bool leftMousebuttonClicked = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
+        int _cursorX, _cursorY;
+        bool _leftMousebuttonClicked, _mouseWheelClicked, _rightMousebuttonClicked;
 
         public CGE_Mouse()
           : base(200, 120, "Fonts", fontwidth: 4, fontheight: 4)
         { }
         public override bool OnUserCreate()
         {
-            inHandle = GetStdHandle(STD_INPUT_HANDLE);
+            _inHandle = GetStdHandle(STD_INPUT_HANDLE);
             uint mode = 0;
-            GetConsoleMode(inHandle, ref mode);
+            GetConsoleMode(_inHandle, ref mode);
             mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
             mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
             mode |= ENABLE_MOUSE_INPUT; //enable
-            SetConsoleMode(inHandle, mode);
+            SetConsoleMode(_inHandle, mode);
 
             ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
@@ -40,14 +39,14 @@ internal static class Program
         {
             //Clear();
 
-            DrawSprite(0, 0, TextWriter.GenerateTextSprite($"X: {cursorX}; Y: {cursorY}", TextWriter.Textalignment.Left, 1));
+            DrawSprite(0, 0, TextWriter.GenerateTextSprite($"X: {_cursorX}; Y: {_cursorY}", TextWriter.Textalignment.Left, 1));
 
-            if(leftMousebuttonClicked)
+            if(_leftMousebuttonClicked)
             {
-                SetChar(cursorX, cursorY, 'X');
+                SetChar(_cursorX, _cursorY, 'X');
             }
 
-            if(mouseWheelClicked || rightMousebuttonClicked)
+            if(_mouseWheelClicked || _rightMousebuttonClicked)
             {
                 Clear();
             }
@@ -57,12 +56,12 @@ internal static class Program
 
         private void ConsoleListener_MouseEvent(MOUSE_EVENT_RECORD r)
         {
-            cursorX = r.dwMousePosition.X;
-            cursorY = r.dwMousePosition.Y;
+            _cursorX = r.dwMousePosition.X;
+            _cursorY = r.dwMousePosition.Y;
 
-            leftMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
-            mouseWheelClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_2ND_BUTTON_PRESSED;
-            rightMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.RIGHTMOST_BUTTON_PRESSED;
+            _leftMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
+            _mouseWheelClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_2ND_BUTTON_PRESSED;
+            _rightMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.RIGHTMOST_BUTTON_PRESSED;
         }
     }
 

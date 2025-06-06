@@ -4,12 +4,12 @@ class Level
 {
     public List<Plattform> plattforms;
     public List<Plattform> walls;
-    TimeSpan _elapsedTime = new();
+    TimeSpan _elapsedTime;
     readonly TimeSpan updateDelay = new(0, 0, 0, 0, 40);
     const int MAXplattformcount = 7;
     readonly Random random = new();
     Rect boundaries = new(0,9,200,111);
-    public int points = 0;
+    public int points;
 
     public Level()
     {

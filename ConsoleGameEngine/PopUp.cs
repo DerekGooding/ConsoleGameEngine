@@ -1,77 +1,69 @@
-﻿using System;
-using static ConsoleGameEngine.NativeMethods;
+﻿using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine;
 
 public class PopUp
 {
-    public int x, y;
-    public bool visible = false;
-    readonly Button OKButton, CancleButton;
-    readonly String text;
-    readonly GameConsole.COLOR backgroundColor, foregroundColor;
-    PopUpState state;
+    public int X, Y;
+    public bool Visible;
+    readonly Button _oKButton, _cancleButton;
+    readonly string _text;
+    readonly GameConsole.COLOR _backgroundColor, _foregroundColor;
+    PopUpState _state;
 
     public PopUp(int x, int y, string text, out Sprite outputSprite, GameConsole.COLOR backgroundColor = GameConsole.COLOR.FG_BLUE, GameConsole.COLOR foregroundColor = GameConsole.COLOR.FG_WHITE)
     {
-        this.x = x;
-        this.y = y;
-        this.text = text;
-        this.backgroundColor = backgroundColor;
-        this.foregroundColor = foregroundColor;
-        state = PopUpState.none;
+        X = x;
+        Y = y;
+        _text = text;
+        _backgroundColor = backgroundColor;
+        _foregroundColor = foregroundColor;
+        _state = PopUpState.none;
 
-        var textSprite = TextWriter.GenerateTextSprite(this.text, TextWriter.Textalignment.Center, 1, (short)this.backgroundColor, (short)this.foregroundColor);
-        OKButton = new Button(0,0,TextWriter.GenerateTextSprite("  OK  ", TextWriter.Textalignment.Left, 1), feedbackSprite: TextWriter.GenerateTextSprite("  OK  ", TextWriter.Textalignment.Left, 1, backgroundColor: 0, foregroundColor: 15));
-        CancleButton = new Button(0, 0, TextWriter.GenerateTextSprite("CANCLE", TextWriter.Textalignment.Left, 1), feedbackSprite: TextWriter.GenerateTextSprite("CANCLE", TextWriter.Textalignment.Left, 1, backgroundColor: 0, foregroundColor: 15));
+        var textSprite = TextWriter.GenerateTextSprite(_text, TextWriter.Textalignment.Center, 1, (short)_backgroundColor, (short)_foregroundColor);
+        _oKButton = new Button(0,0,TextWriter.GenerateTextSprite("  OK  ", TextWriter.Textalignment.Left, 1), feedbackSprite: TextWriter.GenerateTextSprite("  OK  ", TextWriter.Textalignment.Left, 1, backgroundColor: 0, foregroundColor: 15));
+        _cancleButton = new Button(0, 0, TextWriter.GenerateTextSprite("CANCLE", TextWriter.Textalignment.Left, 1), feedbackSprite: TextWriter.GenerateTextSprite("CANCLE", TextWriter.Textalignment.Left, 1, backgroundColor: 0, foregroundColor: 15));
 
-        OKButton.OnButtonClicked(OKButtonClicked);
-        CancleButton.OnButtonClicked(CancleButtonClicked);
+        _oKButton.OnButtonClicked(OKButtonClicked);
+        _cancleButton.OnButtonClicked(CancleButtonClicked);
 
-        outputSprite = textSprite.Width > OKButton.width + CancleButton.width
-            ? new Sprite(textSprite.Width + 4, textSprite.Height + 6 + OKButton.height, GameConsole.COLOR.BG_BLUE)
-            : new Sprite(OKButton.width + CancleButton.width + 4, OKButton.width + CancleButton.width + 4, GameConsole.COLOR.BG_BLUE);
+        outputSprite = textSprite.Width > _oKButton.Width + _cancleButton.Width
+            ? new Sprite(textSprite.Width + 4, textSprite.Height + 6 + _oKButton.Height, GameConsole.COLOR.BG_BLUE)
+            : new Sprite(_oKButton.Width + _cancleButton.Width + 4, _oKButton.Width + _cancleButton.Width + 4, GameConsole.COLOR.BG_BLUE);
 
         outputSprite.AddSpriteToSprite(2, 2, textSprite);
-        outputSprite.AddSpriteToSprite(2, 2 +textSprite.Height + 2, OKButton.outputSprite);
-        outputSprite.AddSpriteToSprite(outputSprite.Width - 2 - CancleButton.width, 2 + textSprite.Height + 2, CancleButton.outputSprite);
+        outputSprite.AddSpriteToSprite(2, 2 +textSprite.Height + 2, _oKButton.OutputSprite);
+        outputSprite.AddSpriteToSprite(outputSprite.Width - 2 - _cancleButton.Width, 2 + textSprite.Height + 2, _cancleButton.OutputSprite);
 
-        OKButton.x = x + 2;
-        OKButton.y = y + 4 + textSprite.Height;
+        _oKButton.X = x + 2;
+        _oKButton.Y = y + 4 + textSprite.Height;
 
-        CancleButton.x = x + outputSprite.Width - CancleButton.width;
-        CancleButton.y = y + 4 + textSprite.Height;
+        _cancleButton.X = x + outputSprite.Width - _cancleButton.Width;
+        _cancleButton.Y = y + 4 + textSprite.Height;
     }
 
     public PopUpState Update(MOUSE_EVENT_RECORD r)
     {
-        if (visible)
+        if (Visible)
         {
-            state = PopUpState.none;
-            OKButton.Update(r);
-            CancleButton.Update(r);
+            _state = PopUpState.none;
+            _oKButton.Update(r);
+            _cancleButton.Update(r);
         }
         else
-        { state = PopUpState.none; }
+        { _state = PopUpState.none; }
 
-        return state;
+        return _state;
     }
 
     private bool OKButtonClicked()
     {
-        state = PopUpState.okClicked;
+        _state = PopUpState.okClicked;
         return true;
     }
     private bool CancleButtonClicked()
     {
-        state = PopUpState.cancleClicked;
+        _state = PopUpState.cancleClicked;
         return true;
     }
-}
-
-public enum PopUpState
-{
-    none,
-    okClicked,
-    cancleClicked,
 }

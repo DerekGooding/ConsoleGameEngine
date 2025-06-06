@@ -11,7 +11,7 @@ class ConsoleAnimation : GameConsole
     { }
     public override bool OnUserCreate()
     {
-        _3DEngine = new _3DEngine(120,200);
+        _3DEngine = new _3DEngine(120, 200);
 
         return true;
     }

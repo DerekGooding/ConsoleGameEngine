@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
+﻿using System.Runtime.InteropServices;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine;
@@ -13,7 +11,7 @@ public static class ConsoleListener
 
     public static event ConsoleWindowBufferSizeEvent WindowBufferSizeEvent;
 
-    private static bool Run = false;
+    private static bool Run;
 
     public static INPUT_RECORD[] record;
 

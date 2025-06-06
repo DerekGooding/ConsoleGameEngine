@@ -1,9 +1,6 @@
 ﻿using Microsoft.Win32.SafeHandles;
-using System;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace ConsoleGameEngine;
 
@@ -69,7 +66,7 @@ public abstract class GameConsole : IDisposable
     private class CONSOLE_FONT_INFOEX
     {
         private readonly int cbSize;
-        public CONSOLE_FONT_INFOEX() => cbSize = Marshal.SizeOf(typeof(CONSOLE_FONT_INFOEX));
+        public CONSOLE_FONT_INFOEX() => cbSize = Marshal.SizeOf<CONSOLE_FONT_INFOEX>();
 
         public int FontIndex;
         public short FontWidth;
@@ -121,7 +118,7 @@ public abstract class GameConsole : IDisposable
     private readonly short[] _newkeystate = new short[KEYSTATES];
     private readonly short[] _oldkeystate = new short[KEYSTATES];
 
-    public static KeyState[] KeyStates { get; private set; }
+    public static KeyState[] KeyStates { get; private set; } = [];
     public int Width { get; }
     public int Height { get; }
     public string Title { get => Console.Title; set => Console.Title = value ?? "GameConsole"; }
@@ -183,11 +180,16 @@ public abstract class GameConsole : IDisposable
         TRANSPARENT = 0x00FF,
     }
 
-    protected GameConsole(short width, short height, string title = null, string font = "Consolas", short fontwidth = 8, short fontheight = 8)
+    protected GameConsole(short width,
+                          short height,
+                          string? title = null,
+                          string font = "Consolas",
+                          short fontwidth = 8,
+                          short fontheight = 8)
     {
         Width = width;
         Height = height;
-        Title = title;
+        Title = title ?? string.Empty;
 
         KeyStates = new KeyState[KEYSTATES];
 
@@ -612,7 +614,7 @@ public abstract class GameConsole : IDisposable
     }
 
     #region IDisposable Support
-    private bool _disposed = false;
+    private bool _disposed;
 
     protected virtual void Dispose(bool disposing)
     {

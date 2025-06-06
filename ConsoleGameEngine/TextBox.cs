@@ -1,5 +1,4 @@
-﻿using System;
-using static ConsoleGameEngine.GameConsole;
+﻿using static ConsoleGameEngine.GameConsole;
 using static ConsoleGameEngine.NativeMethods;
 
 namespace ConsoleGameEngine;
@@ -14,21 +13,21 @@ public class TextBox(int x,
                      short foregroundColor = (short)COLOR.FG_WHITE,
                      string content = "")
 {
-    public int x = x, y = y;
-    public Sprite outputSprite = new(1, 1);
-    readonly int length = length; //character-count
+    public int X = x, Y = y;
+    public Sprite OutputSprite = new(1, 1);
+    public bool Selected;
+    public string Content = content;
 
-    public string content = content;
-    readonly string tag = tag;
-    public bool selected = false;
-    readonly bool simple = simple; // simple - ascii-charcters, advanced - sprites
-    readonly short foregroundColor = foregroundColor, backgroundColor = backgroundColor;
-    readonly ObjectPosition tagPosition = tagPosition;
+    readonly string _tag = tag;
+    readonly int _length = length; //character-count
+    readonly bool _simple = simple; // simple - ascii-charcters, advanced - sprites
+    readonly short _foregroundColor = foregroundColor, _backgroundColor = backgroundColor;
+    readonly ObjectPosition _tagPosition = tagPosition;
 
-    int inputFieldWidth, inputFieldHeight;
+    int _inputFieldWidth, _inputFieldHeight;
 
-    TimeSpan buttonDelay = new();
-    readonly TimeSpan buttonTime = new(0, 0, 0, 0, 120);
+    TimeSpan _buttonDelay;
+    readonly TimeSpan _buttonTime = new(0, 0, 0, 0, 120);
 
     public void UpdateSelection(MOUSE_EVENT_RECORD r)
     {
@@ -36,69 +35,69 @@ public class TextBox(int x,
         var mouseState = r.dwButtonState;
 
         if (mouseState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED)
-            selected = mouseX <= x + inputFieldWidth && mouseX >= x && mouseY <= y + inputFieldHeight && mouseY > y;
+            Selected = mouseX <= X + _inputFieldWidth && mouseX >= X && mouseY <= Y + _inputFieldHeight && mouseY > Y;
     }
     public void UpdateInput(KeyState[] KeyStates, TimeSpan elapsedTime)
     {
-        buttonDelay += elapsedTime;
+        _buttonDelay += elapsedTime;
 
         //check for keyboard inputs if selected
-        if(selected)
+        if(Selected)
         {
-            if (content.Length < length)
+            if (Content.Length < _length)
             {
                 //A-Z
                 for (var i = 65; i <= 90; i++)
                 {
-                    if (GetKeyState((ConsoleKey)i).Held && buttonDelay >= buttonTime)
+                    if (GetKeyState((ConsoleKey)i).Held && _buttonDelay >= _buttonTime)
                     {
-                        content += Console.CapsLock ? (char)i : (char)(i + 32);
-                        buttonDelay = new TimeSpan();
+                        Content += Console.CapsLock ? (char)i : (char)(i + 32);
+                        _buttonDelay = new TimeSpan();
                     }
                 }
 
                 //0 - 9 - ignores capslock
                 for (var i = 48; i <= 57; i++)
                 {
-                    if (GetKeyState((ConsoleKey)i).Held && buttonDelay >= buttonTime)
+                    if (GetKeyState((ConsoleKey)i).Held && _buttonDelay >= _buttonTime)
                     {
-                        content += (char)i;
-                        buttonDelay = new TimeSpan();
+                        Content += (char)i;
+                        _buttonDelay = new TimeSpan();
                     }
                 }
 
                 //seperators (,.;:-)
-                if (KeyStates[108].Held && buttonDelay >= buttonTime)
+                if (KeyStates[108].Held && _buttonDelay >= _buttonTime)
                 {
-                    content += Console.CapsLock ? ':' : '.';
-                    buttonDelay = new TimeSpan();
+                    Content += Console.CapsLock ? ':' : '.';
+                    _buttonDelay = new TimeSpan();
                 }
-                if (KeyStates[109].Held && buttonDelay >= buttonTime)
+                if (KeyStates[109].Held && _buttonDelay >= _buttonTime)
                 {
-                    content += Console.CapsLock ? '_' : '-';
-                    buttonDelay = new TimeSpan();
+                    Content += Console.CapsLock ? '_' : '-';
+                    _buttonDelay = new TimeSpan();
                 }
-                if (KeyStates[110].Held && buttonDelay >= buttonTime)
+                if (KeyStates[110].Held && _buttonDelay >= _buttonTime)
                 {
-                    content += Console.CapsLock ? ';' : ',';
-                    buttonDelay = new TimeSpan();
+                    Content += Console.CapsLock ? ';' : ',';
+                    _buttonDelay = new TimeSpan();
                 }
 
-                if (KeyStates[32].Held && buttonDelay >= buttonTime) //space
+                if (KeyStates[32].Held && _buttonDelay >= _buttonTime) //space
                 {
-                    content += ' ';
-                    buttonDelay = new TimeSpan();
+                    Content += ' ';
+                    _buttonDelay = new TimeSpan();
                 }
             }
 
             //(back-)space / enter
-            if (KeyStates[13].Held && buttonDelay >= buttonTime) //enter
-                selected = false;
+            if (KeyStates[13].Held && _buttonDelay >= _buttonTime) //enter
+                Selected = false;
 
-            if (KeyStates[8].Held && buttonDelay >= buttonTime) //backspace
+            if (KeyStates[8].Held && _buttonDelay >= _buttonTime) //backspace
             {
-                content = content.Length > 0 ? content[..^1] : content;
-                buttonDelay = new TimeSpan();
+                Content = Content.Length > 0 ? Content[..^1] : Content;
+                _buttonDelay = new TimeSpan();
             }
         }
 
@@ -111,13 +110,13 @@ public class TextBox(int x,
         //input body
         Sprite body;
 
-        content = content.PadLeft(length);
+        Content = Content.PadLeft(_length);
 
-        if(simple)
+        if(_simple)
         {
-            var color = selected ? (short)((foregroundColor << 4) + backgroundColor) : (short)((backgroundColor << 4) + foregroundColor);
+            var color = Selected ? (short)((_foregroundColor << 4) + _backgroundColor) : (short)((_backgroundColor << 4) + _foregroundColor);
 
-            switch(tagPosition)
+            switch(_tagPosition)
             {
                 case ObjectPosition.Top:
 
@@ -128,7 +127,7 @@ public class TextBox(int x,
                 case ObjectPosition.Right: break;
             }
 
-            body = new Sprite(length + 2, 4); //length of input + 2 for frame; height for tag, frame and content
+            body = new Sprite(_length + 2, 4); //length of input + 2 for frame; height for tag, frame and content
             //frame
             for(var i = 1; i < body.Width - 1; i++)
             {
@@ -146,18 +145,18 @@ public class TextBox(int x,
             body.SetPixel(body.Width - 1, 1, (char)PIXELS.LINE_CORNER_TOP_RIGHT, color);
             body.SetPixel(body.Width - 1, body.Height, (char)PIXELS.LINE_CORNER_BOTTOM_RIGHT, color);
 
-            for(var i = 0; i < content.Length; i++)
-                body.SetPixel(i+1,2, content[i], color);
+            for(var i = 0; i < Content.Length; i++)
+                body.SetPixel(i+1,2, Content[i], color);
 
-            for (var i = 0; i < tag.Length; i++)
-                body.SetPixel(i, 0, tag[i], color);
+            for (var i = 0; i < _tag.Length; i++)
+                body.SetPixel(i, 0, _tag[i], color);
         }
         else
         {
-            var contentSprite = !selected
-                ? TextWriter.GenerateTextSprite(content, TextWriter.Textalignment.Right, 1, backgroundColor:backgroundColor, foregroundColor:foregroundColor)
-                : TextWriter.GenerateTextSprite(content, TextWriter.Textalignment.Right, 1, backgroundColor: foregroundColor, foregroundColor: backgroundColor);
-            var tagSprite = TextWriter.GenerateTextSprite(tag, TextWriter.Textalignment.Right, 1, backgroundColor: backgroundColor, foregroundColor: foregroundColor);
+            var contentSprite = !Selected
+                ? TextWriter.GenerateTextSprite(Content, TextWriter.Textalignment.Right, 1, backgroundColor:_backgroundColor, foregroundColor:_foregroundColor)
+                : TextWriter.GenerateTextSprite(Content, TextWriter.Textalignment.Right, 1, backgroundColor: _foregroundColor, foregroundColor: _backgroundColor);
+            var tagSprite = TextWriter.GenerateTextSprite(_tag, TextWriter.Textalignment.Right, 1, backgroundColor: _backgroundColor, foregroundColor: _foregroundColor);
 
             body = new Sprite(contentSprite.Width > tagSprite.Width ? contentSprite.Width : tagSprite.Width, contentSprite.Height + tagSprite.Height + 3);
             body.AddSpriteToSprite(1, 1, tagSprite);
@@ -166,20 +165,20 @@ public class TextBox(int x,
             //frame
             for(var i = 0; i < body.Width; i++)
             {
-                body.SetPixel(i, 0, '█', selected ? (short)COLOR.FG_RED : (short)foregroundColor);
-                body.SetPixel(i, tagSprite.Height, '█', selected ? (short)COLOR.FG_RED : (short)foregroundColor);
-                body.SetPixel(i, body.Height - 1, '█', selected ? (short)COLOR.FG_RED : (short)foregroundColor);
+                body.SetPixel(i, 0, '█', Selected ? (short)COLOR.FG_RED : (short)_foregroundColor);
+                body.SetPixel(i, tagSprite.Height, '█', Selected ? (short)COLOR.FG_RED : (short)_foregroundColor);
+                body.SetPixel(i, body.Height - 1, '█', Selected ? (short)COLOR.FG_RED : (short)_foregroundColor);
                 for (var j = 0; j < body.Height; j++)
                 {
-                    body.SetPixel(0, j, '█', selected ? (short)COLOR.FG_RED : (short)foregroundColor);
-                    body.SetPixel(body.Width - 1, j, '█', selected ? (short)COLOR.FG_RED : (short)foregroundColor);
+                    body.SetPixel(0, j, '█', Selected ? (short)COLOR.FG_RED : (short)_foregroundColor);
+                    body.SetPixel(body.Width - 1, j, '█', Selected ? (short)COLOR.FG_RED : (short)_foregroundColor);
                 }
             }
         }
 
-        inputFieldWidth = body.Width;
-        inputFieldHeight = body.Height;
-        outputSprite = body;
+        _inputFieldWidth = body.Width;
+        _inputFieldHeight = body.Height;
+        OutputSprite = body;
     }
 
     public enum ObjectPosition

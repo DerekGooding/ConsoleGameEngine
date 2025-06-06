@@ -10,11 +10,11 @@ class SpriteEditor : GameConsole
     delegate void MyDelegate();
     MOUSE_EVENT_RECORD oldMouseState;
 
-    int cursorX = 0, cursorY = 0;
-    bool leftMousebuttonClicked = false, leftMousebuttonHeld = false, leftMouseButtonReleased = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
+    int cursorX, cursorY;
+    bool leftMousebuttonClicked, leftMousebuttonHeld, leftMouseButtonReleased, mouseWheelClicked, rightMousebuttonClicked;
 
-    short foregroundColor = 0x00, backgroundColor = 0x00;
-    short foregroundColorReplaceBrush = 0x00, backgroundColorReplaceBrush = 0x00;
+    short foregroundColor, backgroundColor;
+    short foregroundColorReplaceBrush, backgroundColorReplaceBrush;
     char brush = '▓', replaceBrush = '▓';
 
     Sprite sprite = new(32, 32, '█', COLOR.BG_BLACK);
@@ -25,20 +25,20 @@ class SpriteEditor : GameConsole
     ListBox lb_SavedFiles;
     AnimationPreview animationPreview;
 
-    bool colorPickerActive = false, markingActive = false;
+    bool colorPickerActive, markingActive;
 
     readonly List<string> saveFiles = [];
 
     readonly int spriteAreaW = 95, spriteAreaH = 47;
-    int spriteCursorX = 0, spriteCursorY = 0;
+    int spriteCursorX, spriteCursorY;
     readonly int spriteDrawX = 5, spriteDrawY = 10;
 
-    bool marking_visible = false, markingDraging = false;
+    bool marking_visible, markingDraging;
     int markingStartX, markingStartY, markingEndX, markingEndY;
     int markingSpriteX, markingSpriteY;
     Sprite markingSprite;
 
-    private TimeSpan keyInputDelay = new();
+    private TimeSpan keyInputDelay;
     private readonly TimeSpan keyInputTime = new(0, 0, 0, 0, 120);
 
     public SpriteEditor()
@@ -48,7 +48,7 @@ class SpriteEditor : GameConsole
     {
         ConsoleGameEngine.TextWriter.LoadFont("fontsheet.txt", 7, 9);
         ConsoleGameEngine.TextWriter.LoadSmallFont("small font.txt", 6, 6);
-        ConsoleGameEngine.TextWriter.fontPadding = new ConsoleGameEngine.TextWriter.FontPadding(1, 1, 0, 0);
+        ConsoleGameEngine.TextWriter.Fontpadding = new ConsoleGameEngine.TextWriter.FontPadding(1, 1, 0, 0);
 
         btnClear = new Button(105, 8, "clear / new", method: BtnClearClicked);
         tb_Width = new TextBox(119, 7, 6, "Width:");
@@ -110,7 +110,7 @@ class SpriteEditor : GameConsole
             animationPreview.UpdateKeyInput(KeyStates, elapsedTime, sprite);
 
             //evaluate keyinputs of no textbox is selected
-            if (!tb_Height.selected && !tb_Width.selected && !tb_SaveName.selected && !tb_GridWidth.selected && !tb_GridHeight.selected)
+            if (!tb_Height.Selected && !tb_Width.Selected && !tb_SaveName.Selected && !tb_GridWidth.Selected && !tb_GridHeight.Selected)
             {
                 if (GetKeyState(ConsoleKey.W).Held && keyInputDelay >= keyInputTime)
                 {
@@ -157,31 +157,31 @@ class SpriteEditor : GameConsole
         DrawActiveBrush(90, 1, "Active Brush", foregroundColor, backgroundColor, brush);
         DrawActiveBrush(105, 1, "Replace with", foregroundColorReplaceBrush, backgroundColorReplaceBrush, replaceBrush);
 
-        DrawSprite(btnReplaceColor.x, btnReplaceColor.y, btnReplaceColor.outputSprite);
-        DrawSprite(btnClear.x, btnClear.y, btnClear.outputSprite);
-        DrawSprite(btnSave.x, btnSave.y, btnSave.outputSprite);
-        DrawSprite(btnLoad.x, btnLoad.y, btnLoad.outputSprite);
-        DrawSprite(btnAddGrid.x, btnAddGrid.y, btnAddGrid.outputSprite);
+        DrawSprite(btnReplaceColor.X, btnReplaceColor.Y, btnReplaceColor.OutputSprite);
+        DrawSprite(btnClear.X, btnClear.Y, btnClear.OutputSprite);
+        DrawSprite(btnSave.X, btnSave.Y, btnSave.OutputSprite);
+        DrawSprite(btnLoad.X, btnLoad.Y, btnLoad.OutputSprite);
+        DrawSprite(btnAddGrid.X, btnAddGrid.Y, btnAddGrid.OutputSprite);
 
         if (colorPickerActive)
-            DrawASCIIRectangle(btnColorPicker.x - 1, btnColorPicker.y - 1, btnColorPicker.width + 2, btnColorPicker.height + 2, foreground: (short)COLOR.FG_RED);
-        DrawSprite(btnColorPicker.x, btnColorPicker.y, btnColorPicker.outputSprite);
+            DrawASCIIRectangle(btnColorPicker.X - 1, btnColorPicker.Y - 1, btnColorPicker.Width + 2, btnColorPicker.Height + 2, foreground: (short)COLOR.FG_RED);
+        DrawSprite(btnColorPicker.X, btnColorPicker.Y, btnColorPicker.OutputSprite);
 
-        DrawSprite(tb_Width.x, tb_Width.y, tb_Width.outputSprite);
-        DrawSprite(tb_Height.x, tb_Height.y, tb_Height.outputSprite);
-        DrawSprite(tb_SaveName.x, tb_SaveName.y, tb_SaveName.outputSprite);
-        DrawSprite(tb_GridWidth.x, tb_GridWidth.y, tb_GridWidth.outputSprite);
-        DrawSprite(tb_GridHeight.x, tb_GridHeight.y, tb_GridHeight.outputSprite);
+        DrawSprite(tb_Width.X, tb_Width.Y, tb_Width.OutputSprite);
+        DrawSprite(tb_Height.X, tb_Height.Y, tb_Height.OutputSprite);
+        DrawSprite(tb_SaveName.X, tb_SaveName.Y, tb_SaveName.OutputSprite);
+        DrawSprite(tb_GridWidth.X, tb_GridWidth.Y, tb_GridWidth.OutputSprite);
+        DrawSprite(tb_GridHeight.X, tb_GridHeight.Y, tb_GridHeight.OutputSprite);
 
-        DrawSprite(lb_SavedFiles.x, lb_SavedFiles.y, lb_SavedFiles.outputSprite);
+        DrawSprite(lb_SavedFiles.X, lb_SavedFiles.Y, lb_SavedFiles.OutputSprite);
 
         DrawSprite(animationPreview.x, animationPreview.y, animationPreview.outputSprite);
 
-        DrawSprite(btnMark.x, btnMark.y, btnMark.outputSprite);
+        DrawSprite(btnMark.X, btnMark.Y, btnMark.OutputSprite);
 
-        DrawSprite(btnCopy.x, btnCopy.y, btnCopy.outputSprite);
-        DrawSprite(btnAbortMarkAndCopy.x, btnAbortMarkAndCopy.y, btnAbortMarkAndCopy.outputSprite);
-        DrawSprite(btnConfirmMarkAndCopy.x, btnConfirmMarkAndCopy.y, btnConfirmMarkAndCopy.outputSprite);
+        DrawSprite(btnCopy.X, btnCopy.Y, btnCopy.OutputSprite);
+        DrawSprite(btnAbortMarkAndCopy.X, btnAbortMarkAndCopy.Y, btnAbortMarkAndCopy.OutputSprite);
+        DrawSprite(btnConfirmMarkAndCopy.X, btnConfirmMarkAndCopy.Y, btnConfirmMarkAndCopy.OutputSprite);
 
         //DrawArea
         DrawRectangle(3, 8, 100, 50, (short)COLOR.FG_WHITE);
@@ -199,7 +199,7 @@ class SpriteEditor : GameConsole
         }
 
         if (markingActive)
-            DrawASCIIRectangle(btnMark.x - 1, btnMark.y - 1, btnMark.width + 2, btnMark.height + 2, foreground: (short)COLOR.FG_RED);
+            DrawASCIIRectangle(btnMark.X - 1, btnMark.Y - 1, btnMark.Width + 2, btnMark.Height + 2, foreground: (short)COLOR.FG_RED);
 
         Print(3, 7, $"{cursorX - spriteDrawX};{cursorY - spriteDrawY}");
         Print(0, Height - 1, $"marking active:{markingActive}; draging:{markingDraging}");
@@ -615,25 +615,25 @@ class SpriteEditor : GameConsole
     }
     private bool BtnClearClicked()
     {
-        if (tb_Width.content != "" && tb_Height.content != "")
-            sprite = new Sprite(Convert.ToInt32(tb_Width.content), Convert.ToInt32(tb_Height.content), '█', COLOR.BG_BLACK);
+        if (tb_Width.Content != "" && tb_Height.Content != "")
+            sprite = new Sprite(Convert.ToInt32(tb_Width.Content), Convert.ToInt32(tb_Height.Content), '█', COLOR.BG_BLACK);
 
         spriteCursorX = 0;
         spriteCursorY = 0;
 
-        tb_Width.content = "";
-        tb_Height.content = "";
+        tb_Width.Content = "";
+        tb_Height.Content = "";
 
         return true;
     }
     private bool BtnSaveClicked()
     {
-        var exportPath = tb_SaveName.content != "" ? @"Savefiles\" + tb_SaveName.content + ".txt" : @"Savefiles\" + "NewFile.txt";
+        var exportPath = tb_SaveName.Content != "" ? @"Savefiles\" + tb_SaveName.Content + ".txt" : @"Savefiles\" + "NewFile.txt";
 
         if(!File.Exists(exportPath))
             saveFiles.Add(Path.GetFileName(exportPath));
 
-        tb_SaveName.content = Path.GetFileNameWithoutExtension(exportPath);
+        tb_SaveName.Content = Path.GetFileNameWithoutExtension(exportPath);
 
         using var outputfile = new StreamWriter(exportPath);
         outputfile.Write($"{sprite.Width};{sprite.Height};");
@@ -659,15 +659,15 @@ class SpriteEditor : GameConsole
     }
     private bool BtnLoadClicked()
     {
-        var ext = Path.GetExtension(saveFiles[lb_SavedFiles.selectedEntry]);
+        var ext = Path.GetExtension(saveFiles[lb_SavedFiles.SelectedEntry]);
         //check extension of file
-        switch (Path.GetExtension(saveFiles[lb_SavedFiles.selectedEntry]))
+        switch (Path.GetExtension(saveFiles[lb_SavedFiles.SelectedEntry]))
         {
             case ".txt":
-                sprite = new Sprite("Savefiles\\" + saveFiles[lb_SavedFiles.selectedEntry]);
+                sprite = new Sprite("Savefiles\\" + saveFiles[lb_SavedFiles.SelectedEntry]);
                 break;
             case ".png":
-                var png = Png.Open("Savefiles\\" + saveFiles[lb_SavedFiles.selectedEntry]);
+                var png = Png.Open("Savefiles\\" + saveFiles[lb_SavedFiles.SelectedEntry]);
 
                 sprite = new Sprite(png.Width, png.Height);
 
@@ -689,7 +689,7 @@ class SpriteEditor : GameConsole
                 return false;
         }
 
-        tb_SaveName.content = Path.GetFileNameWithoutExtension(saveFiles[lb_SavedFiles.selectedEntry]);
+        tb_SaveName.Content = Path.GetFileNameWithoutExtension(saveFiles[lb_SavedFiles.SelectedEntry]);
 
         return true;
     }
@@ -744,10 +744,10 @@ class SpriteEditor : GameConsole
     }
     private bool BtnAddGridClicked()
     {
-        if(tb_GridHeight.content != "" && tb_GridWidth.content != "")
+        if(tb_GridHeight.Content != "" && tb_GridWidth.Content != "")
         {
-            var gridheight = Convert.ToInt32(tb_GridHeight.content);
-            var gridwidth = Convert.ToInt32(tb_GridWidth.content);
+            var gridheight = Convert.ToInt32(tb_GridHeight.Content);
+            var gridwidth = Convert.ToInt32(tb_GridWidth.Content);
 
             for(var i = 0; i < Width; i+=gridwidth)
             {
@@ -824,8 +824,8 @@ class SpriteEditor : GameConsole
         readonly TextBox tb_SpriteW, tb_SpriteH, tb_FrameDelay, tb_FrameCount;
 
         public Sprite outputSprite;
-        int frameCounter = 0;
-        bool loop = false;
+        int frameCounter;
+        bool loop;
 
         TimeSpan frameDelay = new(0, 0, 0, 0, 0);
         DateTime lastUpdate = DateTime.Now;
@@ -864,15 +864,15 @@ class SpriteEditor : GameConsole
         }
         public void UpdateKeyInput(KeyState[] KeyStates, TimeSpan elapsedTime, Sprite sprite)
         {
-            if(tb_FrameDelay.content != "")
-                frameDelay = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(tb_FrameDelay.content));
+            if(tb_FrameDelay.Content != "")
+                frameDelay = new TimeSpan(0, 0, 0, 0, Convert.ToInt32(tb_FrameDelay.Content));
 
             if (frameDelay < DateTime.Now - lastUpdate && loop)
             {
                 lastUpdate = DateTime.Now;
                 frameCounter++;
 
-                if (tb_FrameCount.content != "" && frameCounter > Convert.ToInt32(tb_FrameCount.content))
+                if (tb_FrameCount.Content != "" && frameCounter > Convert.ToInt32(tb_FrameCount.Content))
                 {
                     frameCounter = 0;
                 }
@@ -912,19 +912,19 @@ class SpriteEditor : GameConsole
             #endregion
 
             #region UI-Elements
-            outputSprite.AddSpriteToSprite(1, spriteH + 2, btn_Backwards.outputSprite);
-            outputSprite.AddSpriteToSprite(5, spriteH + 2, btn_Start.outputSprite);
-            outputSprite.AddSpriteToSprite(9, spriteH + 2, btn_Stop.outputSprite);
-            outputSprite.AddSpriteToSprite(13, spriteH + 2, btn_Forward.outputSprite);
+            outputSprite.AddSpriteToSprite(1, spriteH + 2, btn_Backwards.OutputSprite);
+            outputSprite.AddSpriteToSprite(5, spriteH + 2, btn_Start.OutputSprite);
+            outputSprite.AddSpriteToSprite(9, spriteH + 2, btn_Stop.OutputSprite);
+            outputSprite.AddSpriteToSprite(13, spriteH + 2, btn_Forward.OutputSprite);
 
-            outputSprite.AddSpriteToSprite(spriteW + 3, 0, tb_SpriteW.outputSprite);
-            outputSprite.AddSpriteToSprite(spriteW + 3, 5, tb_SpriteH.outputSprite);
-            outputSprite.AddSpriteToSprite(spriteW + 3, 10, tb_FrameDelay.outputSprite);
-            outputSprite.AddSpriteToSprite(spriteW + 3, 15, tb_FrameCount.outputSprite);
+            outputSprite.AddSpriteToSprite(spriteW + 3, 0, tb_SpriteW.OutputSprite);
+            outputSprite.AddSpriteToSprite(spriteW + 3, 5, tb_SpriteH.OutputSprite);
+            outputSprite.AddSpriteToSprite(spriteW + 3, 10, tb_FrameDelay.OutputSprite);
+            outputSprite.AddSpriteToSprite(spriteW + 3, 15, tb_FrameCount.OutputSprite);
             #endregion
 
             #region animationFrame
-            outputSprite.AddSpriteToSprite(1, 1, sprite.ReturnPartialSprite(frameCounter * (tb_SpriteW.content?.Length == 0 ? spriteW : Convert.ToInt32(tb_SpriteW.content)), 0, tb_SpriteW.content?.Length == 0 ? spriteW : Convert.ToInt32(tb_SpriteW.content), tb_SpriteH.content?.Length == 0 ? spriteH : Convert.ToInt32(tb_SpriteH.content)));
+            outputSprite.AddSpriteToSprite(1, 1, sprite.ReturnPartialSprite(frameCounter * (tb_SpriteW.Content?.Length == 0 ? spriteW : Convert.ToInt32(tb_SpriteW.Content)), 0, tb_SpriteW.Content?.Length == 0 ? spriteW : Convert.ToInt32(tb_SpriteW.Content), tb_SpriteH.Content?.Length == 0 ? spriteH : Convert.ToInt32(tb_SpriteH.Content)));
 
             #endregion
         }
@@ -934,7 +934,7 @@ class SpriteEditor : GameConsole
             frameCounter--;
 
             if (frameCounter < 0)
-                frameCounter = Convert.ToInt32(tb_FrameCount.content) - 1;
+                frameCounter = Convert.ToInt32(tb_FrameCount.Content) - 1;
             return true;
         }
         private bool BtnStartClick()
@@ -946,7 +946,7 @@ class SpriteEditor : GameConsole
         {
             frameCounter++;
 
-            if (frameCounter > Convert.ToInt32(tb_FrameCount.content))
+            if (frameCounter > Convert.ToInt32(tb_FrameCount.Content))
                 frameCounter = 0;
 
             return true;

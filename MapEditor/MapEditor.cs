@@ -10,7 +10,7 @@ class MapEditor : GameConsole
     MOUSE_EVENT_RECORD oldMouseState;
 
     ComboBox comboBox;
-    TileBox tileBox = null;
+    TileBox tileBox;
     Sprite spriteSheet;
     readonly List<string> saveFiles = [];
 
@@ -45,7 +45,7 @@ class MapEditor : GameConsole
     public override bool OnUserUpdate(TimeSpan elapsedTime)
     {
         Clear();
-        DrawSprite(comboBox.x, comboBox.y, comboBox.outputSprite);
+        DrawSprite(comboBox.X, comboBox.Y, comboBox.OutputSprite);
         if(tileBox != null)
             DrawSprite(tileBox.x, tileBox.y, tileBox.outputSprite);
 
@@ -63,7 +63,7 @@ class MapEditor : GameConsole
         public int x, y, spriteW, spriteH;
         private readonly int tilesPerRow;
         private readonly int shownRows;
-        private int firstRow = 0;
+        private int firstRow;
         readonly int tileW, tileH;
         readonly Sprite tileSheet;
         readonly List<Sprite> tiles = [];
@@ -122,8 +122,8 @@ class MapEditor : GameConsole
             //scrollbar
             if (tileSheet.Height / tileH > shownRows)
             {
-                retSprite.AddSpriteToSprite(spriteW - 3, 1, btn_MoveUP.outputSprite);
-                retSprite.AddSpriteToSprite(spriteW - 3, spriteH - 4, btn_MoveDOWN.outputSprite);
+                retSprite.AddSpriteToSprite(spriteW - 3, 1, btn_MoveUP.OutputSprite);
+                retSprite.AddSpriteToSprite(spriteW - 3, spriteH - 4, btn_MoveDOWN.OutputSprite);
 
                 var scrollbarHeight = spriteH - 8;
 
