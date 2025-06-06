@@ -5,7 +5,7 @@ namespace ConsoleGameEngine
 {
     public class GameObject
     {
-        List<Animation> animations = new List<Animation>();
+        readonly List<Animation> animations = new List<Animation>();
         int activeAnimationIndex {get; set;}
         public Sprite outputSprite = null;
 
@@ -31,20 +31,20 @@ namespace ConsoleGameEngine
 
         private List<Animation> LoadSpriteSheet(Sprite spriteSheet, int w, int h, TimeSpan timeSpan, List<int> frameCounts)
         {
-            List<Animation> animations = new List<Animation>();
+            var animations = new List<Animation>();
 
-            int width = spriteSheet.Width;
-            int height = spriteSheet.Height;
+            var width = spriteSheet.Width;
+            var height = spriteSheet.Height;
 
-            for(int i = 0; i < height / h; i++)
+            for(var i = 0; i < height / h; i++)
             {
-                Sprite newSprite = new Sprite(width, h);
+                var newSprite = new Sprite(width, h);
 
-                for(int x = 0; x < width; x++)
+                for(var x = 0; x < width; x++)
                 {
-                    for(int y = i * h; y < i * h + h; y++)
+                    for(var y = i * h; y < (i * h) + h; y++)
                     {
-                        newSprite.SetPixel(x,y - i*h,spriteSheet.GetChar(x,y), spriteSheet.GetColor(x,y));
+                        newSprite.SetPixel(x,y - (i * h), spriteSheet.GetChar(x,y), spriteSheet.GetColor(x,y));
                     }
                 }
 

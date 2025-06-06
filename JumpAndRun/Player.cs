@@ -12,7 +12,7 @@ class Player
 
     private bool airjumpused = false;
 
-    private double velocityMax = 30;
+    private readonly double velocityMax = 30;
 
     private const double walkSpeed = 2, runSpeed = 5, fallSpeed = 10,  acceleration = 0.5, gravity_acceleration = 2.0;
     private double playerSpeedX = 0.0, playerSpeedY = 0.0;
@@ -61,7 +61,7 @@ class Player
             playerSpeedX = ClampF(playerSpeedX, -acceleration, acceleration);
             sign = 1;
         }
-        else if(!(GetKeyState(ConsoleKey.A).Held) &&!(GetKeyState(ConsoleKey.D).Held))
+        else if(!GetKeyState(ConsoleKey.A).Held && !GetKeyState(ConsoleKey.D).Held)
         {
             playerSpeedX -= playerSpeedX / 2;
             playerSpeedX = ClampF(playerSpeedX, -acceleration, acceleration);
@@ -77,11 +77,11 @@ class Player
         #region vertical movement
         #region gravity
         //get bottom left koordinate of player-rect
-        int bottomleft_x = (int)xPosition;
-        int bottomright_x = (int)xPosition + outputSprite.Width;
-        int bottom_y = (int)yPosition + outputSprite.Height + 1;
+        var bottomleft_x = (int)xPosition;
+        var bottomright_x = (int)xPosition + outputSprite.Width;
+        var bottom_y = (int)yPosition + outputSprite.Height + 1;
 
-        if ( (gameConsole.GetColor(bottomleft_x, bottom_y) != (short)COLOR.BG_DARK_GREEN && gameConsole.GetColor(bottomright_x, bottom_y) != (short)COLOR.BG_DARK_GREEN))
+        if (gameConsole.GetColor(bottomleft_x, bottom_y) != (short)COLOR.BG_DARK_GREEN && gameConsole.GetColor(bottomright_x, bottom_y) != (short)COLOR.BG_DARK_GREEN)
         {
             playerSpeedY += gravity_acceleration;
             playerSpeedY = ClampF(playerSpeedY, -acceleration, acceleration);
@@ -96,7 +96,9 @@ class Player
         if (GetKeyState(ConsoleKey.Spacebar).Pressed)
         {
             if (gameConsole.GetColor(bottomleft_x, bottom_y) == (short)COLOR.BG_DARK_GREEN || gameConsole.GetColor(bottomright_x, bottom_y) == (short)COLOR.BG_DARK_GREEN)
+            {
                 playerSpeedY = -40;
+            }
             else if(!airjumpused)
             {
                 airjumpused = true;
@@ -111,7 +113,9 @@ class Player
     public void BuildSprite()
     {
         if (sign == 0)
+        {
             outputSprite = spriteSheet.ReturnPartialSprite(0,0,16,16);
+        }
         else if(sign == 1)
         {
             outputSprite = walkingAnimation.outputSprite;

@@ -13,7 +13,7 @@ class ConsoleGameObject : GameConsole
     public override bool OnUserCreate()
     {
         spriteSheet = new Sprite("animationsheet.txt");
-        playerCharacter = new GameObject(spriteSheet, 32, 32, new TimeSpan(0, 0, 0, 0, 100), new List<int> {13, 8, 10, 10, 10, 6, 4, 7 });
+        playerCharacter = new GameObject(spriteSheet, 32, 32, new TimeSpan(0, 0, 0, 0, 100), [13, 8, 10, 10, 10, 6, 4, 7]);
         return true;
     }
 

@@ -2,9 +2,9 @@
 
 namespace CGE_UIElements_Simple;
 
-internal class Program
+internal static class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
         Console.OutputEncoding = Encoding.GetEncoding(437);
 

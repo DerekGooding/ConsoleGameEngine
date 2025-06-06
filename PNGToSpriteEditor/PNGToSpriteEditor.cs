@@ -4,32 +4,24 @@ using ConsoleGameEngine;
 
 namespace PNGToSpriteEditor;
 
-class PNGToSpriteEditor : GameConsole
+class PNGToSpriteEditor(string file) : GameConsole(160, 80, "Editor", fontwidth: 12, fontheight: 12)
 {
-    string importPath;
-    string exportPath;
+    readonly string importPath = file;
+    string exportPath = Path.ChangeExtension(file, ".txt");
 
     Rectangle drawingArea;
     int selectedX = 0, selectedY = 0;
     short selectedFG = 0x00;
     short selectedBG = 0x00;
     int selectedBrush = 0;
-    TimeSpan buttonDelay = new TimeSpan();
+    TimeSpan buttonDelay = new();
     TimeSpan buttonTime;
 
-    int maxDisplayedWidth = 158;
-    int maxDisplayedHeight = 76;
+    readonly int maxDisplayedWidth = 158;
+    readonly int maxDisplayedHeight = 76;
 
     int partialSpriteX = 0;
     int partialSpriteY = 0;
-
-    public PNGToSpriteEditor(string file)
-        : base(160, 80, "Editor", fontwidth: 12, fontheight: 12) //80,60,12
-    {
-        importPath = file;
-        exportPath = Path.ChangeExtension(file, ".txt");
-    }
-
     public Sprite sprite;
 
     public override bool OnUserCreate()
@@ -38,19 +30,19 @@ class PNGToSpriteEditor : GameConsole
         switch(Path.GetExtension(importPath))
         {
             case ".png":
-                Png png = Png.Open(importPath);
+                var png = Png.Open(importPath);
 
                 sprite = new Sprite(png.Width, png.Height);
 
-                for (int x = 0; x < png.Width; x++)
+                for (var x = 0; x < png.Width; x++)
                 {
-                    for (int y = 0; y < png.Height; y++)
+                    for (var y = 0; y < png.Height; y++)
                     {
-                        byte red = png.GetPixel(x, y).R;
-                        byte green = png.GetPixel(x, y).G;
-                        byte blue = png.GetPixel(x, y).B;
+                        var red = png.GetPixel(x, y).R;
+                        var green = png.GetPixel(x, y).G;
+                        var blue = png.GetPixel(x, y).B;
 
-                        short col = ClosedConsoleColor3Bit(red, green, blue, out char pixel);
+                        var col = ClosedConsoleColor3Bit(red, green, blue, out var pixel);
 
                         //use white as alpha value
                         //if (col == 0x00F0 || col == 0x0007)
@@ -64,7 +56,7 @@ class PNGToSpriteEditor : GameConsole
                 sprite = new Sprite(importPath);
                 break;
             default:
-                string[] splits = importPath.Split(':');
+                var splits = importPath.Split(':');
                 if(splits.Length != 2 )
                     return false;
 
@@ -83,21 +75,21 @@ class PNGToSpriteEditor : GameConsole
         //Save sprite
         if (GetKeyState(ConsoleKey.P).Pressed)
         {
-            using StreamWriter outputfile = new StreamWriter(exportPath);
+            using var outputfile = new StreamWriter(exportPath);
             outputfile.Write($"{sprite.Width};{sprite.Height};");
 
-            for (int j = 0; j < sprite.Height; j++)
+            for (var j = 0; j < sprite.Height; j++)
             {
-                for (int i = 0; i < sprite.Width; i++)
+                for (var i = 0; i < sprite.Width; i++)
                 {
                     outputfile.Write($"{sprite.GetChar(i, j)},");
                 }
             }
             outputfile.Write(";");
 
-            for (int j = 0; j < sprite.Height; j++)
+            for (var j = 0; j < sprite.Height; j++)
             {
-                for (int i = 0; i < sprite.Width; i++)
+                for (var i = 0; i < sprite.Width; i++)
                 {
                     outputfile.Write($"{sprite.GetColor(i, j)},");
                 }
@@ -106,7 +98,7 @@ class PNGToSpriteEditor : GameConsole
         //pixel selector movement
         if (GetKeyState(ConsoleKey.W).Held && buttonDelay >= buttonTime)
         {
-            selectedY -= 1;
+            selectedY--;
             if (selectedY < 0)
                 selectedY = 0;
 
@@ -114,7 +106,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.A).Held && buttonDelay >= buttonTime)
         {
-            selectedX -= 1;
+            selectedX--;
             if (selectedX < 0)
                 selectedX = 0;
 
@@ -122,7 +114,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.S).Held && buttonDelay >= buttonTime)
         {
-            selectedY += 1;
+            selectedY++;
             if (selectedY >= sprite.Height)
                 selectedY = sprite.Height - 1;
 
@@ -130,7 +122,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.D).Held && buttonDelay >= buttonTime)
         {
-            selectedX += 1;
+            selectedX++;
             if (selectedX >= sprite.Width)
                 selectedX = sprite.Width - 1;
 
@@ -139,7 +131,7 @@ class PNGToSpriteEditor : GameConsole
         //color and brush selector
         if (GetKeyState(ConsoleKey.NumPad7).Held && buttonDelay >= buttonTime)
         {
-            selectedFG -= 0x1;
+            selectedFG--;
             buttonDelay = new TimeSpan();
 
             if (selectedFG < 0x0000)
@@ -147,7 +139,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.NumPad8).Held && buttonDelay >= buttonTime)
         {
-            selectedFG += 0x1;
+            selectedFG++;
             buttonDelay = new TimeSpan();
 
             if (selectedFG > 0x000F)
@@ -155,7 +147,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.NumPad4).Held && buttonDelay >= buttonTime)
         {
-            selectedBG -= 0x1;
+            selectedBG--;
             buttonDelay = new TimeSpan();
 
             if (selectedBG < 0x0000)
@@ -163,7 +155,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.NumPad5).Held && buttonDelay >= buttonTime)
         {
-            selectedBG += 0x1;
+            selectedBG++;
             buttonDelay = new TimeSpan();
 
             if (selectedBG > 0x000F)
@@ -171,7 +163,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.NumPad1).Held && buttonDelay >= buttonTime)
         {
-            selectedBrush -= 1;
+            selectedBrush--;
             buttonDelay = new TimeSpan();
 
             if (selectedBrush < 0)
@@ -179,7 +171,7 @@ class PNGToSpriteEditor : GameConsole
         }
         if (GetKeyState(ConsoleKey.NumPad2).Held && buttonDelay >= buttonTime)
         {
-            selectedBrush += 1;
+            selectedBrush++;
             buttonDelay = new TimeSpan();
 
             if (selectedBrush > 4)
@@ -188,28 +180,28 @@ class PNGToSpriteEditor : GameConsole
         //fill screen with selected color and brush
         if (GetKeyState(ConsoleKey.F).Pressed)
         {
-            short Targetcolor = (short)(selectedBG << 4);
+            var Targetcolor = (short)(selectedBG << 4);
             Targetcolor += selectedFG;
 
-            PIXELS pixel = PIXELS.PIXEL_NONE;
+            var pixel = PIXELS.PIXEL_NONE;
 
             switch (selectedBrush)
             {
                 case 0:
-                    pixel = (PIXELS.PIXEL_NONE); break;
+                    pixel = PIXELS.PIXEL_NONE; break;
                 case 1:
-                    pixel = (PIXELS.PIXEL_QUARTER); break;
+                    pixel = PIXELS.PIXEL_QUARTER; break;
                 case 2:
-                    pixel = (PIXELS.PIXEL_HALF); break;
+                    pixel = PIXELS.PIXEL_HALF; break;
                 case 3:
-                    pixel = (PIXELS.PIXEL_THREEQUARTERS); break;
+                    pixel = PIXELS.PIXEL_THREEQUARTERS; break;
                 case 4:
-                    pixel = (PIXELS.PIXEL_SOLID); break;
+                    pixel = PIXELS.PIXEL_SOLID; break;
             }
 
-            for (int x = 0; x < sprite.Width; x++)
+            for (var x = 0; x < sprite.Width; x++)
             {
-                for (int y = 0; y < sprite.Height; y++)
+                for (var y = 0; y < sprite.Height; y++)
                 {
                     sprite.SetPixel(x, y, (char)pixel, Targetcolor);
                 }
@@ -224,21 +216,21 @@ class PNGToSpriteEditor : GameConsole
         //set pixel
         if (GetKeyState(ConsoleKey.Spacebar).Held)
         {
-            short Targetcolor = (short)(selectedBG << 4);
+            var Targetcolor = (short)(selectedBG << 4);
             Targetcolor += selectedFG;
 
             switch (selectedBrush)
             {
                 case 0:
-                    sprite.SetPixel(selectedX, selectedY, (char)(PIXELS.PIXEL_NONE), Targetcolor); break;
+                    sprite.SetPixel(selectedX, selectedY, (char)PIXELS.PIXEL_NONE, Targetcolor); break;
                 case 1:
-                    sprite.SetPixel(selectedX, selectedY, (char)(PIXELS.PIXEL_QUARTER), Targetcolor); break;
+                    sprite.SetPixel(selectedX, selectedY, (char)PIXELS.PIXEL_QUARTER, Targetcolor); break;
                 case 2:
-                    sprite.SetPixel(selectedX, selectedY, (char)(PIXELS.PIXEL_HALF), Targetcolor); break;
+                    sprite.SetPixel(selectedX, selectedY, (char)PIXELS.PIXEL_HALF, Targetcolor); break;
                 case 3:
-                    sprite.SetPixel(selectedX, selectedY, (char)(PIXELS.PIXEL_THREEQUARTERS), Targetcolor); break;
+                    sprite.SetPixel(selectedX, selectedY, (char)PIXELS.PIXEL_THREEQUARTERS, Targetcolor); break;
                 case 4:
-                    sprite.SetPixel(selectedX, selectedY, (char)(PIXELS.PIXEL_SOLID), Targetcolor); break;
+                    sprite.SetPixel(selectedX, selectedY, (char)PIXELS.PIXEL_SOLID, Targetcolor); break;
             }
         }
         //sprite navigation (sprite bigger then screen)
@@ -278,9 +270,9 @@ class PNGToSpriteEditor : GameConsole
 
         #region GUI
         //frame
-        for (int x = 0; x < Width; x++)
+        for (var x = 0; x < Width; x++)
         {
-            for(int y = 0; y < Height; y++)
+            for(var y = 0; y < Height; y++)
             {
                 if(y == 0  || y == 2 || y == Height - 5 || y == Height - 1) //frame top, line after headline, line above menu, frame bottom
                 {
@@ -300,47 +292,47 @@ class PNGToSpriteEditor : GameConsole
         Print(2, Height - 4, "move cursor:  apply change:  fill:  delete:  Foreground:  Background:  Brush:  MoveSprite:");
         Print(2, Height - 3, "-->  W,A,S,D       Spacebar      F        R       7/8           4/5     1/2      ArrowKeys");
         SetChar(57, Height - 3, (char)PIXELS.PIXEL_SOLID, selectedFG);
-        SetChar(68, Height - 3, (char)PIXELS.PIXEL_SOLID, (short)(selectedBG));
+        SetChar(68, Height - 3, (char)PIXELS.PIXEL_SOLID, (short)selectedBG);
 
-        short color = (short)(selectedBG << 4);
+        var color = (short)(selectedBG << 4);
         color += selectedFG;
 
         switch (selectedBrush)
         {
             case 0:
-                SetChar(78, Height - 3, (char)(PIXELS.PIXEL_NONE), color); break;
+                SetChar(78, Height - 3, (char)PIXELS.PIXEL_NONE, color); break;
             case 1:
-                SetChar(78, Height - 3, (char)(PIXELS.PIXEL_QUARTER), color); break;
+                SetChar(78, Height - 3, (char)PIXELS.PIXEL_QUARTER, color); break;
             case 2:
-                SetChar(78, Height - 3, (char)(PIXELS.PIXEL_HALF), color); break;
+                SetChar(78, Height - 3, (char)PIXELS.PIXEL_HALF, color); break;
             case 3:
-                SetChar(78, Height - 3, (char)(PIXELS.PIXEL_THREEQUARTERS), color); break;
+                SetChar(78, Height - 3, (char)PIXELS.PIXEL_THREEQUARTERS, color); break;
             case 4:
-                SetChar(78, Height - 3, (char)(PIXELS.PIXEL_SOLID), color); break;
+                SetChar(78, Height - 3, (char)PIXELS.PIXEL_SOLID, color); break;
 
         }
         #endregion
 
         #region sprite
-        int spriteXTop = drawingArea.Width / 2 - sprite.Width / 2;
-        int spriteYTop = drawingArea.Height / 2 - sprite.Height / 2 + drawingArea.Y;
+        var spriteXTop = (drawingArea.Width / 2) - (sprite.Width / 2);
+        var spriteYTop = (drawingArea.Height / 2) - (sprite.Height / 2) + drawingArea.Y;
         if (sprite.Width <= maxDisplayedWidth && sprite.Height <= maxDisplayedHeight) //sprite fits screen
             DrawSprite(spriteXTop, spriteYTop, sprite);
         else //sprite is too big, show only a part
             DrawPartialSprite(2, 4, sprite, partialSpriteX, partialSpriteY, maxDisplayedWidth, maxDisplayedHeight);
 
         //draw koordinates on x an y axis
-        for (int x = 0; x < sprite.Width; x++)
-            Print(spriteXTop + x, spriteYTop - 1, $"{(x % 10)}");
-        for (int y = 0; y < sprite.Height; y++)
-            Print(spriteXTop - 1, spriteYTop + y, $"{(y % 10)}");
+        for (var x = 0; x < sprite.Width; x++)
+            Print(spriteXTop + x, spriteYTop - 1, $"{x % 10}");
+        for (var y = 0; y < sprite.Height; y++)
+            Print(spriteXTop - 1, spriteYTop + y, $"{y % 10}");
 
         //draw selector-lines
-        for (int x = 0; x <= selectedX; x++)
+        for (var x = 0; x <= selectedX; x++)
         {
             SetChar(spriteXTop - 1 + x, spriteYTop + selectedY, '=');
         }
-        for (int y = 0; y <= selectedY; y++)
+        for (var y = 0; y <= selectedY; y++)
         {
             SetChar(spriteXTop + selectedX, spriteYTop - 1 + y, '|');
         }
@@ -351,7 +343,7 @@ class PNGToSpriteEditor : GameConsole
 
     static short ClosedConsoleColor3Bit(byte r, byte g, byte b, out char pixel)
     {
-        short sixBitValue = (short)((r / 85) << 4 | (g / 85) << 2 | (b / 85));
+        var sixBitValue = (short)((r / 85) << 4 | (g / 85) << 2 | (b / 85));
 
         switch(sixBitValue)
         {

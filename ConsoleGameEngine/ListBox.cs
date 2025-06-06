@@ -9,14 +9,14 @@ namespace ConsoleGameEngine
         public int x, y;
         public int w, h;
         public List<string> entries = new List<string>();
-        bool simple = false;
-        short foregroundColor, backgroundColor;
+        readonly bool simple = false;
+        readonly short foregroundColor, backgroundColor;
         public Sprite outputSprite = new Sprite(1, 1);
         int firstEntry = 0;
 
         public int selectedEntry = 0;
 
-        Button btn_MoveUP, btn_MoveDOWN;
+        readonly Button btn_MoveUP, btn_MoveDOWN;
 
         public ListBox(int x, int y, int w, int h, List<string> entries, bool simple = false, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE)
         {
@@ -41,7 +41,7 @@ namespace ConsoleGameEngine
         public void Update(MOUSE_EVENT_RECORD r)
         {
             int mouseX = r.dwMousePosition.X, mouseY = r.dwMousePosition.Y;
-            uint mouseState = r.dwButtonState;
+            var mouseState = r.dwButtonState;
 
             if (mouseState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED)
             {
@@ -59,18 +59,18 @@ namespace ConsoleGameEngine
 
         private Sprite BuildSprite()
         {
-            Sprite retSprite = new Sprite(w, h);
+            var retSprite = new Sprite(w, h);
 
-            short color = (short)((foregroundColor << 4) + backgroundColor);
+            var color = (short)((foregroundColor << 4) + backgroundColor);
 
             if (simple)
             {
                 //frame
-                for (int i = 1; i < retSprite.Width - 1; i++)
+                for (var i = 1; i < retSprite.Width - 1; i++)
                 {
                     retSprite.SetPixel(i, 0, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, color); //top
                     retSprite.SetPixel(i, retSprite.Height - 1, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, color); //bottom
-                    for (int j = 1; j < retSprite.Height - 1; j++)
+                    for (var j = 1; j < retSprite.Height - 1; j++)
                     {
                         retSprite.SetPixel(0, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, color); //left
                         if (entries.Count > retSprite.Height - 2)
@@ -89,20 +89,20 @@ namespace ConsoleGameEngine
                     retSprite.AddSpriteToSprite(w - 3, 1, btn_MoveUP.outputSprite);
                     retSprite.AddSpriteToSprite(w - 3, h - 4, btn_MoveDOWN.outputSprite);
 
-                    int scrollbarHeight = h - 8;
+                    var scrollbarHeight = h - 8;
 
-                    int scrollbarPosition = (int)((double)scrollbarHeight * (((double)firstEntry / (((double)entries.Count) - ((double)h - 2.0)))));
+                    var scrollbarPosition = (int)((double)scrollbarHeight * ((double)firstEntry / (((double)entries.Count) - ((double)h - 2.0))));
 
                     retSprite.SetPixel(w - 2, scrollbarPosition + 4, '█', (short)COLOR.FG_DARK_GREY);
                 }
 
-                int entryCount = 0;
+                var entryCount = 0;
                 //entrys
-                for(int i = firstEntry; i < entries.Count && (i - firstEntry) < h - 2; i++)
+                for(var i = firstEntry; i < entries.Count && (i - firstEntry) < h - 2; i++)
                 {
                     color = i == selectedEntry ? (short)((foregroundColor << 4) + backgroundColor) : (short)((backgroundColor << 4) + foregroundColor);
 
-                    for (int j = 0; j < entries[i].Length && j < w - 4; j++)
+                    for (var j = 0; j < entries[i].Length && j < w - 4; j++)
                     {
                         retSprite.SetPixel(j + 1, entryCount + 1, entries[i][j], color);
                     }
@@ -124,7 +124,7 @@ namespace ConsoleGameEngine
 
         private bool Btn_MoveUPClicked()
         {
-            firstEntry -= 1;
+            firstEntry--;
             if(firstEntry < 0)
                 firstEntry = 0;
 
@@ -133,7 +133,7 @@ namespace ConsoleGameEngine
         }
         private bool Btn_MoveDOWNClicked()
         {
-            firstEntry += 1;
+            firstEntry++;
             if( firstEntry > entries.Count - (h - 2) )
                 firstEntry = entries.Count - (h - 2);
 

@@ -42,13 +42,13 @@ class ConsoleMode7 : GameConsole
 
         if (GetKeyState(ConsoleKey.UpArrow).Held)
         {
-            fPlayerX += Math.Sin(fPlayerA) * 0.01 * (elapsedTime.TotalMilliseconds); ;
-            fPlayerY += Math.Cos(fPlayerA) * 0.01 * (elapsedTime.TotalMilliseconds); ;
+            fPlayerX += Math.Sin(fPlayerA) * 0.01 * elapsedTime.TotalMilliseconds;
+            fPlayerY += Math.Cos(fPlayerA) * 0.01 * elapsedTime.TotalMilliseconds;
         }
         if (GetKeyState(ConsoleKey.DownArrow).Held)
         {
-            fPlayerX -= Math.Sin(fPlayerA) * 0.01 * (elapsedTime.TotalMilliseconds); ;
-            fPlayerY -= Math.Cos(fPlayerA) * 0.01 * (elapsedTime.TotalMilliseconds); ;
+            fPlayerX -= Math.Sin(fPlayerA) * 0.01 * elapsedTime.TotalMilliseconds;
+            fPlayerY -= Math.Cos(fPlayerA) * 0.01 * elapsedTime.TotalMilliseconds;
         }
 
         Mode7(fPlayerY / 128, fPlayerX / 128, fPlayerA, fNear, fFar, fFoVHalf, sprite, false);

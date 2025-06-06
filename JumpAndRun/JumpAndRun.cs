@@ -7,14 +7,15 @@ class JumpAndRun : GameConsole
 {
     Player player;
     Level level;
-    TimeSpan keyInputDelay = new TimeSpan(), keyInputTime = new TimeSpan(0, 0, 0, 0, 120);
+    private TimeSpan keyInputDelay = new();
+    private readonly TimeSpan keyInputTime = new(0, 0, 0, 0, 120);
     IntPtr inHandle;
     int cursorX = 0, cursorY = 0;
     bool leftMousebuttonClicked = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
 
     bool startLevel = false;
-    int points = 0;
-    int lastHeight = 0;
+    readonly int points = 0;
+    readonly int lastHeight = 0;
 
     public JumpAndRun()
       : base(200, 120, "Fonts", fontwidth: 4, fontheight: 4)
@@ -56,7 +57,7 @@ class JumpAndRun : GameConsole
         DrawSprite(0, 0, TextWriter.GenerateTextSprite($"   NINJA TOWER   {level.points} ", TextWriter.Textalignment.Left, 1));
 
         //draw plattforms
-        foreach (Level.Plattform p in level.plattforms)
+        foreach (var p in level.plattforms)
         {
             DrawSprite(p.x, p.y, new Sprite(p.l, 1, COLOR.BG_DARK_GREEN));
         }

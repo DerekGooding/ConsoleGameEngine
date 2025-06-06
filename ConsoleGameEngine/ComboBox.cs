@@ -10,14 +10,18 @@ namespace ConsoleGameEngine
         public List<string> entries = new List<string>();
         public Sprite outputSprite = null;
 
-        bool simple, lbShown = false;
-        short foregroundColor, backgroundColor;
-        int w, h, entriesToShow, shownEntry = 0;
-        string tag;
+        private readonly bool simple;
+        private bool lbShown = false;
+        readonly short foregroundColor, backgroundColor;
+        private readonly int w;
+        private readonly int h;
+        private readonly int entriesToShow;
+        private int shownEntry = 0;
+        readonly string tag;
 
-        TextBlock tb_Selection;
-        Button btn_Select;
-        ListBox lb_Entries;
+        readonly TextBlock tb_Selection;
+        readonly Button btn_Select;
+        readonly ListBox lb_Entries;
 
         public ComboBox(int x, int y, int w, int h, string tag, List<string> entries, int entriesToShow = 5, bool simple = true, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE)
         {
@@ -59,7 +63,7 @@ namespace ConsoleGameEngine
 
         private Sprite BuildSprite()
         {
-            Sprite retSprite = null;
+            Sprite retSprite;
 
             if (lbShown)
             {

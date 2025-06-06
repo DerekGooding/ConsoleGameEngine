@@ -16,7 +16,7 @@ class CGE_UIElements_Simple : GameConsole
     ListBox yourListBox;
     ComboBox yourComboBox;
 
-    List<string> entries = new List<string>() { "Entry 1", "Entry 2", "Entry 3", "Entry 4", "Entry 5", "Entry 6" };
+    readonly List<string> entries = ["Entry 1", "Entry 2", "Entry 3", "Entry 4", "Entry 5", "Entry 6"];
 
     public CGE_UIElements_Simple()
       : base(80, 50, "Fonts", fontwidth: 10, fontheight: 10)

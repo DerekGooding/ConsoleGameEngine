@@ -17,7 +17,7 @@ class SpriteEditor : GameConsole
     short foregroundColorReplaceBrush = 0x00, backgroundColorReplaceBrush = 0x00;
     char brush = '▓', replaceBrush = '▓';
 
-    Sprite sprite = new Sprite(32, 32, '█', COLOR.BG_BLACK);
+    Sprite sprite = new(32, 32, '█', COLOR.BG_BLACK);
     Button btnClear, btnSave, btnLoad, btnColorPicker, btnMark, btnCopy, btnAbortMarkAndCopy, btnConfirmMarkAndCopy, btnReplaceColor;
     Button btnAddGrid;
     TextBox tb_Width, tb_Height, tb_SaveName;
@@ -27,18 +27,19 @@ class SpriteEditor : GameConsole
 
     bool colorPickerActive = false, markingActive = false;
 
-    List<string> saveFiles = new List<string>();
+    readonly List<string> saveFiles = [];
 
-    int spriteAreaW = 95, spriteAreaH = 47;
+    readonly int spriteAreaW = 95, spriteAreaH = 47;
     int spriteCursorX = 0, spriteCursorY = 0;
-    int spriteDrawX = 5, spriteDrawY = 10;
+    readonly int spriteDrawX = 5, spriteDrawY = 10;
 
     bool marking_visible = false, markingDraging = false;
     int markingStartX, markingStartY, markingEndX, markingEndY;
     int markingSpriteX, markingSpriteY;
     Sprite markingSprite;
 
-    TimeSpan keyInputDelay = new TimeSpan(), keyInputTime = new TimeSpan(0, 0, 0, 0, 120);
+    private TimeSpan keyInputDelay = new();
+    private readonly TimeSpan keyInputTime = new(0, 0, 0, 0, 120);
 
     public SpriteEditor()
       : base(140, 70, "Fonts", fontwidth: 12, fontheight: 12)
@@ -71,9 +72,9 @@ class SpriteEditor : GameConsole
         btnReplaceColor = new Button(120, 2, "replace", method: BtnReplaceClicked);
 
         //load savefiles from savefile-folder
-        foreach (string file in Directory.EnumerateFiles(@"Savefiles\", "*.txt"))
+        foreach (var file in Directory.EnumerateFiles(@"Savefiles\", "*.txt"))
             saveFiles.Add(Path.GetFileName(file));
-        foreach (string file in Directory.EnumerateFiles(@"Savefiles\", "*.png"))
+        foreach (var file in Directory.EnumerateFiles(@"Savefiles\", "*.png"))
             saveFiles.Add(Path.GetFileName(file));
 
         lb_SavedFiles = new ListBox(106, 28, 32, 15, saveFiles, simple: true);
@@ -294,17 +295,17 @@ class SpriteEditor : GameConsole
         {
             if (leftMousebuttonClicked || leftMousebuttonHeld)
             {
-                markingSpriteX = cursorX - markingSprite.Width / 2;
-                markingSpriteY = cursorY - markingSprite.Height / 2;
+                markingSpriteX = cursorX - (markingSprite.Width / 2);
+                markingSpriteY = cursorY - (markingSprite.Height / 2);
             }
         }
         else if (leftMousebuttonClicked || leftMousebuttonHeld || rightMousebuttonClicked)
         {
             //color or brush picking
-            if (cursorY == 2 || cursorY == 3)
+            if (cursorY is 2 or 3)
             {
                 //foreground color
-                if (cursorX >= 1 && cursorX <= 32)
+                if (cursorX is >= 1 and <= 32)
                 {
                     switch (cursorX)
                     {
@@ -424,7 +425,7 @@ class SpriteEditor : GameConsole
                     }
                 }
                 //background color
-                else if (cursorX >= 40 && cursorX <= 71)
+                else if (cursorX is >= 40 and <= 71)
                 {
                     switch (cursorX)
                     {
@@ -544,7 +545,7 @@ class SpriteEditor : GameConsole
                     }
                 }
                 //brush
-                else if (cursorX >= 80 && cursorX <= 87)
+                else if (cursorX is >= 80 and <= 87)
                 {
                     switch (cursorX)
                     {
@@ -589,23 +590,20 @@ class SpriteEditor : GameConsole
                     {
                         if (leftMousebuttonClicked || leftMousebuttonHeld)
                         {
-                            short color = (short)(backgroundColor << 4);
+                            var color = (short)(backgroundColor << 4);
                             color += foregroundColor;
                             sprite.SetPixel(cursorX - 5 + spriteCursorX, cursorY - 10 + spriteCursorY, brush, color);
                         }
                         else if(rightMousebuttonClicked)
                         {
-                            short color = (short)(backgroundColorReplaceBrush << 4);
+                            var color = (short)(backgroundColorReplaceBrush << 4);
                             color += foregroundColorReplaceBrush;
                             sprite.SetPixel(cursorX - 5 + spriteCursorX, cursorY - 10 + spriteCursorY, replaceBrush, color);
                         }
                     }
-                    else if(markingActive)
+                    else if (!markingActive && colorPickerActive)
                     {
-                    }
-                    else if(colorPickerActive)
-                    {
-                        short colorToPick = sprite.GetColor(cursorX - 5 + spriteCursorX, cursorY - 10);
+                        var colorToPick = sprite.GetColor(cursorX - 5 + spriteCursorX, cursorY - 10);
                         foregroundColor = (short)(colorToPick & 0x0F);
                         backgroundColor = (short)(colorToPick >> 4);
                         brush = sprite.GetChar(cursorX - 5 + spriteCursorX, cursorY - 10);
@@ -630,28 +628,28 @@ class SpriteEditor : GameConsole
     }
     private bool BtnSaveClicked()
     {
-        string exportPath = tb_SaveName.content != "" ? @"Savefiles\" + tb_SaveName.content + ".txt" : @"Savefiles\" + "NewFile" + ".txt";
+        var exportPath = tb_SaveName.content != "" ? @"Savefiles\" + tb_SaveName.content + ".txt" : @"Savefiles\" + "NewFile.txt";
 
         if(!File.Exists(exportPath))
             saveFiles.Add(Path.GetFileName(exportPath));
 
         tb_SaveName.content = Path.GetFileNameWithoutExtension(exportPath);
 
-        using StreamWriter outputfile = new StreamWriter(exportPath);
+        using var outputfile = new StreamWriter(exportPath);
         outputfile.Write($"{sprite.Width};{sprite.Height};");
 
-        for (int j = 0; j < sprite.Height; j++)
+        for (var j = 0; j < sprite.Height; j++)
         {
-            for (int i = 0; i < sprite.Width; i++) //sprite.Width
+            for (var i = 0; i < sprite.Width; i++) //sprite.Width
             {
                 outputfile.Write($"{sprite.GetChar(i, j)},");
             }
         }
         outputfile.Write(";");
 
-        for (int j = 0; j < sprite.Height; j++)
+        for (var j = 0; j < sprite.Height; j++)
         {
-            for (int i = 0; i < sprite.Width; i++) //sprite.Width
+            for (var i = 0; i < sprite.Width; i++) //sprite.Width
             {
                 outputfile.Write($"{sprite.GetColor(i, j)},");
             }
@@ -661,7 +659,7 @@ class SpriteEditor : GameConsole
     }
     private bool BtnLoadClicked()
     {
-        string ext = Path.GetExtension(saveFiles[lb_SavedFiles.selectedEntry]);
+        var ext = Path.GetExtension(saveFiles[lb_SavedFiles.selectedEntry]);
         //check extension of file
         switch (Path.GetExtension(saveFiles[lb_SavedFiles.selectedEntry]))
         {
@@ -669,19 +667,19 @@ class SpriteEditor : GameConsole
                 sprite = new Sprite("Savefiles\\" + saveFiles[lb_SavedFiles.selectedEntry]);
                 break;
             case ".png":
-                Png png = Png.Open("Savefiles\\" + saveFiles[lb_SavedFiles.selectedEntry]);
+                var png = Png.Open("Savefiles\\" + saveFiles[lb_SavedFiles.selectedEntry]);
 
                 sprite = new Sprite(png.Width, png.Height);
 
-                for (int x = 0; x < png.Width; x++)
+                for (var x = 0; x < png.Width; x++)
                 {
-                    for (int y = 0; y < png.Height; y++)
+                    for (var y = 0; y < png.Height; y++)
                     {
-                        byte red = png.GetPixel(x, y).R;
-                        byte green = png.GetPixel(x, y).G;
-                        byte blue = png.GetPixel(x, y).B;
+                        var red = png.GetPixel(x, y).R;
+                        var green = png.GetPixel(x, y).G;
+                        var blue = png.GetPixel(x, y).B;
 
-                        short col = ClosedConsoleColor3Bit(red, green, blue, out char pixel);
+                        var col = ClosedConsoleColor3Bit(red, green, blue, out var pixel);
 
                         sprite.SetPixel(x, y, pixel, col);
                     }
@@ -728,12 +726,12 @@ class SpriteEditor : GameConsole
     }
     private bool BtnReplaceClicked()
     {
-        short color = (short)((backgroundColor << 4) + foregroundColor);
-        short replaceColor = (short)((backgroundColorReplaceBrush << 4) + foregroundColorReplaceBrush);
+        var color = (short)((backgroundColor << 4) + foregroundColor);
+        var replaceColor = (short)((backgroundColorReplaceBrush << 4) + foregroundColorReplaceBrush);
 
-        for (int x = 0; x < sprite.Width; x++)
+        for (var x = 0; x < sprite.Width; x++)
         {
-            for(int y = 0; y < sprite.Height; y++)
+            for(var y = 0; y < sprite.Height; y++)
             {
                 if(sprite.GetColor(x,y) == color && sprite.GetChar(x,y) == brush)
                 {
@@ -748,18 +746,18 @@ class SpriteEditor : GameConsole
     {
         if(tb_GridHeight.content != "" && tb_GridWidth.content != "")
         {
-            int gridheight = Convert.ToInt32(tb_GridHeight.content);
-            int gridwidth = Convert.ToInt32(tb_GridWidth.content);
+            var gridheight = Convert.ToInt32(tb_GridHeight.content);
+            var gridwidth = Convert.ToInt32(tb_GridWidth.content);
 
-            for(int i = 0; i < Width; i+=gridwidth)
+            for(var i = 0; i < Width; i+=gridwidth)
             {
-                for (int j = 0; j < Height; j++)
+                for (var j = 0; j < Height; j++)
                     sprite.SetPixel(i, j, (char)PIXELS.PIXEL_SOLID, 0x44);
             }
 
-            for(int i = 0; i <Height; i+=gridheight)
+            for(var i = 0; i <Height; i+=gridheight)
             {
-                for(int j = 0; j < Width; j++)
+                for(var j = 0; j < Width; j++)
                 {
                     sprite.SetPixel(j, i, (char)PIXELS.PIXEL_SOLID, 0x44);
                 }
@@ -775,7 +773,7 @@ class SpriteEditor : GameConsole
     {
         Print(x,y,headline);
         short color = 0x00;
-        for(int i = x; i < x + 32; i+=2)
+        for(var i = x; i < x + 32; i+=2)
         {
             SetChar(i, y + 1, (char)PIXELS.PIXEL_SOLID, color);
             SetChar(i, y + 2, (char)PIXELS.PIXEL_SOLID, color);
@@ -789,8 +787,8 @@ class SpriteEditor : GameConsole
     {
         Print(x,y,headline);
 
-        char[] brushes = new char[4] { '░', '▒', '▓', '█' };
-        for(int i = 0; i < 8; i+=2)
+        var brushes = new char[4] { '░', '▒', '▓', '█' };
+        for(var i = 0; i < 8; i+=2)
         {
             SetChar(x + i, y + 1, brushes[i / 2]);
             SetChar(x + i, y + 2, brushes[i / 2]);
@@ -802,14 +800,14 @@ class SpriteEditor : GameConsole
     {
         Print(x,y,headline);
 
-        short color = (short)(backgroundColor << 4);
+        var color = (short)(backgroundColor << 4);
         color += foregroundColor;
 
-        for(int i = 0; i < 3; i++)
+        for(var i = 0; i < 3; i++)
         {
-            for(int j = 0; j < 3; j++)
+            for(var j = 0; j < 3; j++)
             {
-                SetChar(x + i + headline.Length / 2 , y + j + 1, brush, color);
+                SetChar(x + i + (headline.Length / 2), y + j + 1, brush, color);
             }
         }
     }
@@ -818,18 +816,18 @@ class SpriteEditor : GameConsole
     private class AnimationPreview
     {
         public int x, y;
-        private int spriteW, spriteH;
+        private readonly int spriteW, spriteH;
 
-        short foregroundColor, backgroundColor;
+        readonly short foregroundColor, backgroundColor;
 
-        Button btn_Start, btn_Stop, btn_Forward, btn_Backwards;
-        TextBox tb_SpriteW, tb_SpriteH, tb_FrameDelay, tb_FrameCount;
+        readonly Button btn_Start, btn_Stop, btn_Forward, btn_Backwards;
+        readonly TextBox tb_SpriteW, tb_SpriteH, tb_FrameDelay, tb_FrameCount;
 
         public Sprite outputSprite;
         int frameCounter = 0;
         bool loop = false;
 
-        TimeSpan frameDelay = new TimeSpan(0, 0, 0, 0, 0);
+        TimeSpan frameDelay = new(0, 0, 0, 0, 0);
         DateTime lastUpdate = DateTime.Now;
 
         public AnimationPreview(int x, int y, int spriteW = 16, int spriteH = 16, short backgroundColor = (short)COLOR.FG_BLACK, short foregroundColor = (short)COLOR.FG_WHITE)
@@ -874,9 +872,10 @@ class SpriteEditor : GameConsole
                 lastUpdate = DateTime.Now;
                 frameCounter++;
 
-                if(tb_FrameCount.content != "")
-                    if (frameCounter > Convert.ToInt32(tb_FrameCount.content))
-                        frameCounter = 0;
+                if (tb_FrameCount.content != "" && frameCounter > Convert.ToInt32(tb_FrameCount.content))
+                {
+                    frameCounter = 0;
+                }
             }
             tb_SpriteW.UpdateInput(KeyStates, elapsedTime);
             tb_SpriteH.UpdateInput(KeyStates, elapsedTime);
@@ -888,7 +887,7 @@ class SpriteEditor : GameConsole
 
         private void BuildSprite(Sprite sprite)
         {
-            short color = (short)((foregroundColor << 4) + backgroundColor);
+            var color = (short)((foregroundColor << 4) + backgroundColor);
             outputSprite = new Sprite(8 + spriteW, 8 + spriteH);
 
             #region frame around spriteFrame
@@ -898,12 +897,12 @@ class SpriteEditor : GameConsole
             outputSprite.SetPixel(0, spriteH + 1, '└', color);
             outputSprite.SetPixel(spriteW + 1, spriteH + 1, '┘', color);
 
-            for(int i = 0; i < spriteW; i++)
+            for(var i = 0; i < spriteW; i++)
             {
                 //horizontal lines
                 outputSprite.SetPixel(1 + i, 0, '─', color);
                 outputSprite.SetPixel(1 + i, spriteH + 1, '─', color);
-                for (int j = 0; j < spriteH; j++)
+                for (var j = 0; j < spriteH; j++)
                 {
                     //vertical lines
                     outputSprite.SetPixel(0, 1 + j, '│', color);
@@ -925,7 +924,7 @@ class SpriteEditor : GameConsole
             #endregion
 
             #region animationFrame
-            outputSprite.AddSpriteToSprite(1, 1, sprite.ReturnPartialSprite(frameCounter * (tb_SpriteW.content == "" ? spriteW : Convert.ToInt32(tb_SpriteW.content)), 0, (tb_SpriteW.content == "" ? spriteW : Convert.ToInt32(tb_SpriteW.content)), (tb_SpriteH.content == "" ? spriteH : Convert.ToInt32(tb_SpriteH.content))));
+            outputSprite.AddSpriteToSprite(1, 1, sprite.ReturnPartialSprite(frameCounter * (tb_SpriteW.content?.Length == 0 ? spriteW : Convert.ToInt32(tb_SpriteW.content)), 0, tb_SpriteW.content?.Length == 0 ? spriteW : Convert.ToInt32(tb_SpriteW.content), tb_SpriteH.content?.Length == 0 ? spriteH : Convert.ToInt32(tb_SpriteH.content)));
 
             #endregion
         }

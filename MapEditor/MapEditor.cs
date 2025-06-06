@@ -12,7 +12,7 @@ class MapEditor : GameConsole
     ComboBox comboBox;
     TileBox tileBox = null;
     Sprite spriteSheet;
-    List<string> saveFiles = new List<string>();
+    readonly List<string> saveFiles = [];
 
     public MapEditor()
       : base(200, 120, "Fonts", fontwidth: 6, fontheight: 6)
@@ -21,7 +21,7 @@ class MapEditor : GameConsole
     {
         spriteSheet = new Sprite(1, 1);
 
-        foreach (string file in Directory.EnumerateFiles(@"Savefiles\", "*.txt"))
+        foreach (var file in Directory.EnumerateFiles(@"Savefiles\", "*.txt"))
             saveFiles.Add(Path.GetFileName(file));
         comboBox = new ComboBox(5, 1, 30, 50, "spriteSheet", saveFiles);
 
@@ -55,22 +55,23 @@ class MapEditor : GameConsole
     private void ConsoleListener_MouseEvent(MOUSE_EVENT_RECORD r)
     {
         comboBox.UpdateMouseInput(r);
-        if(tileBox!= null)
-            tileBox.Update(r);
+        tileBox?.Update(r);
     }
 
     class TileBox
     {
         public int x, y, spriteW, spriteH;
-        int tilesPerRow, shownRows, firstRow = 0;
-        int tileW, tileH;
-        Sprite tileSheet;
-        List<Sprite> tiles = new List<Sprite>();
+        private readonly int tilesPerRow;
+        private readonly int shownRows;
+        private int firstRow = 0;
+        readonly int tileW, tileH;
+        readonly Sprite tileSheet;
+        readonly List<Sprite> tiles = [];
 
         public Sprite outputSprite;
-        Button btn_MoveUP, btn_MoveDOWN;
+        readonly Button btn_MoveUP, btn_MoveDOWN;
 
-        short foregroundColor, backgroundColor;
+        readonly short foregroundColor, backgroundColor;
 
         public TileBox(int x, int y, int tilesPerRow, int shownRows, int tileW, int tileH, Sprite tileSheet)
         {
@@ -86,26 +87,26 @@ class MapEditor : GameConsole
             foregroundColor = 0x000F;
             backgroundColor = 0x0000;
 
-            spriteW = 2 + tilesPerRow * tileW + tilesPerRow + 1 + 3; // 2 -> border, tileW times tileCount + tileCount + 1 -> selectionBorder + 3 ->scrollbar;
-            spriteH = 2 + shownRows * tileH + tilesPerRow + 1;
+            spriteW = 2 + (tilesPerRow * tileW) + tilesPerRow + 1 + 3; // 2 -> border, tileW times tileCount + tileCount + 1 -> selectionBorder + 3 ->scrollbar;
+            spriteH = 2 + (shownRows * tileH) + tilesPerRow + 1;
 
-            btn_MoveDOWN = new Button(x + spriteW - 3, y + spriteH - 4, "v", this.backgroundColor, this.foregroundColor, method:BtnMoveDownClicked);
-            btn_MoveUP = new Button(x + spriteW - 3, y + 1, "^", this.backgroundColor, this.foregroundColor, method:BtnMoveUpClicked);
+            btn_MoveDOWN = new Button(x + spriteW - 3, y + spriteH - 4, "v", backgroundColor, foregroundColor, method:BtnMoveDownClicked);
+            btn_MoveUP = new Button(x + spriteW - 3, y + 1, "^", backgroundColor, foregroundColor, method:BtnMoveUpClicked);
 
             outputSprite = BuildSprite();
         }
 
         private Sprite BuildSprite()
         {
-            Sprite retSprite = new Sprite(spriteW, spriteH);
+            var retSprite = new Sprite(spriteW, spriteH);
 
-            short color = (short)((foregroundColor << 4) + backgroundColor);
+            var color = (short)((foregroundColor << 4) + backgroundColor);
             //frame
-            for (int i = 1; i < retSprite.Width - 1; i++)
+            for (var i = 1; i < retSprite.Width - 1; i++)
             {
                 retSprite.SetPixel(i, 0, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, color); //top
                 retSprite.SetPixel(i, retSprite.Height - 1, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, color); //bottom
-                for (int j = 1; j < retSprite.Height - 1; j++)
+                for (var j = 1; j < retSprite.Height - 1; j++)
                 {
                     retSprite.SetPixel(0, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, color); //left
                     if (tileSheet.Height / (shownRows * tileH) > retSprite.Height - 2)
@@ -119,25 +120,25 @@ class MapEditor : GameConsole
             retSprite.SetPixel(retSprite.Width - 1, retSprite.Height, (char)PIXELS.LINE_CORNER_BOTTOM_RIGHT, color);
 
             //scrollbar
-            if (tileSheet.Height / tileH > (shownRows) )
+            if (tileSheet.Height / tileH > shownRows)
             {
                 retSprite.AddSpriteToSprite(spriteW - 3, 1, btn_MoveUP.outputSprite);
                 retSprite.AddSpriteToSprite(spriteW - 3, spriteH - 4, btn_MoveDOWN.outputSprite);
 
-                int scrollbarHeight = spriteH - 8;
+                var scrollbarHeight = spriteH - 8;
 
-                int scrollbarPosition = (int)((double)scrollbarHeight * (((double)firstRow / (((double)tileSheet.Height / tileH) - 2.0))));
+                var scrollbarPosition = (int)((double)scrollbarHeight * ((double)firstRow / (((double)tileSheet.Height / tileH) - 2.0)));
 
                 retSprite.SetPixel(spriteW - 2, scrollbarPosition + 4, '█', (short)COLOR.FG_DARK_GREY);
             }
 
-            int entryCount = 0;
+            var entryCount = 0;
             //entrys
-            for(int i = firstRow; i < shownRows + firstRow; i++) //rows
+            for(var i = firstRow; i < shownRows + firstRow; i++) //rows
             {
-                for(int j = 0; j < tilesPerRow; j++) //columns
+                for(var j = 0; j < tilesPerRow; j++) //columns
                 {
-                    retSprite.AddSpriteToSprite(j * tileW + 1, (i - firstRow) * tileH + 1, tiles[i * tilesPerRow + j]);
+                    retSprite.AddSpriteToSprite((j * tileW) + 1, ((i - firstRow) * tileH) + 1, tiles[(i * tilesPerRow) + j]);
                 }
             }
 
@@ -153,7 +154,7 @@ class MapEditor : GameConsole
 
         private bool BtnMoveUpClicked()
         {
-            firstRow -= 1;
+            firstRow--;
             if(firstRow < 0)
                 firstRow = 0;
 
@@ -162,9 +163,9 @@ class MapEditor : GameConsole
         }
         private bool BtnMoveDownClicked()
         {
-            firstRow += 1;
+            firstRow++;
             if (firstRow >= tileSheet.Height / tileH)
-                firstRow = tileSheet.Height / tileH - 1;
+                firstRow = (tileSheet.Height / tileH) - 1;
 
             outputSprite = BuildSprite();
 

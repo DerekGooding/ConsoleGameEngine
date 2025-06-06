@@ -16,11 +16,11 @@ class YouTubeStream : GameConsole
     IntPtr inHandle;
     delegate void MyDelegate();
 
-    string streamURL = @"https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    readonly string streamURL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     VideoCapture videoCapture;
     Process ffmpeg;
 
-    int points = 0;
+    readonly int points = 0;
 
     public YouTubeStream(string videoURL)
       : base(256, 154, "YouTube", fontwidth: 4, fontheight: 4)
@@ -61,12 +61,12 @@ class YouTubeStream : GameConsole
         var videoStream = streamManifest.GetVideoOnlyStreams().OrderByDescending(s => s.VideoQuality.MaxHeight).LastOrDefault();
         var audioStream = streamManifest.GetAudioOnlyStreams().OrderByDescending(s => s.Bitrate).LastOrDefault();
 
-        string audioURL = audioStream.Url;
+        var audioURL = audioStream.Url;
 
         if (videoStream == null)
             throw new Exception("No video-only streams found.");
 
-        string streamUrl = videoStream.Url;
+        var streamUrl = videoStream.Url;
 
         videoCapture = new VideoCapture(streamUrl);
 
@@ -106,7 +106,7 @@ class YouTubeStream : GameConsole
 
             while (true)
             {
-                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                var bytesRead = stream.Read(buffer, 0, buffer.Length);
                 if (bytesRead == 0)
                     break;
 
@@ -119,23 +119,23 @@ class YouTubeStream : GameConsole
     }
     public override bool OnUserUpdate(TimeSpan elapsedTime)
     {
-        Mat frame = new Mat();
+        var frame = new Mat();
         videoCapture.Read(frame);
 
-        byte[] pngBytes = frame.ToBytes(".png");
+        var pngBytes = frame.ToBytes(".png");
         var ms = new MemoryStream(pngBytes);
-        Png png = Png.Open(ms);
+        var png = Png.Open(ms);
 
-        Sprite outputsprite = new Sprite(png.Width, png.Height);
-        for (int x = 0; x < png.Width; x++)
+        var outputsprite = new Sprite(png.Width, png.Height);
+        for (var x = 0; x < png.Width; x++)
         {
-            for (int y = 0; y < png.Height; y++)
+            for (var y = 0; y < png.Height; y++)
             {
-                byte red = png.GetPixel(x, y).R;
-                byte green = png.GetPixel(x, y).G;
-                byte blue = png.GetPixel(x, y).B;
+                var red = png.GetPixel(x, y).R;
+                var green = png.GetPixel(x, y).G;
+                var blue = png.GetPixel(x, y).B;
 
-                short col = ClosedConsoleColor3Bit(red, green, blue, out char pixel);
+                var col = ClosedConsoleColor3Bit(red, green, blue, out var pixel);
 
                 outputsprite.SetPixel(x, y, pixel, col);
             }

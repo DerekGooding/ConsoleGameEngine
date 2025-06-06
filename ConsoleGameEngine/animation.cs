@@ -5,20 +5,20 @@ namespace ConsoleGameEngine
 {
     public class Animation
     {
-        List<Sprite> sprites;
+        readonly List<Sprite> sprites;
         public Sprite outputSprite;
-        TimeSpan frameDelay;
+        readonly TimeSpan frameDelay;
         DateTime lastUpdate;
         int shownFrame;
-        int frameWidth, frameHeight;
-        private bool animationFromOneFrame = false;
-        private int frameCount = 0;
+        readonly int frameWidth, frameHeight;
+        private readonly bool animationFromOneFrame = false;
+        private readonly int frameCount = 0;
 
         public Animation(List<Sprite> sprites, TimeSpan frameDelay)
         {
             this.sprites = sprites;
             this.frameDelay = frameDelay;
-            this.shownFrame = 0;
+            shownFrame = 0;
             lastUpdate = DateTime.Now;
         }
         public Animation(Sprite sprite, TimeSpan frameDelay, int frameWidth, int frameHeight, int frameCount)
@@ -26,7 +26,7 @@ namespace ConsoleGameEngine
             animationFromOneFrame = true;
             sprites = new List<Sprite> { sprite };
             this.frameDelay = frameDelay;
-            this.shownFrame = 0;
+            shownFrame = 0;
             lastUpdate = DateTime.Now;
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
@@ -37,13 +37,13 @@ namespace ConsoleGameEngine
         public Animation(List<string> sprites, TimeSpan frameDelay)
         {
             this.sprites = new List<Sprite>();
-            foreach (string sprite in sprites)
+            foreach (var sprite in sprites)
             {
                 this.sprites.Add(new Sprite(sprite));
             }
-            outputSprite = this.sprites[this.shownFrame];
+            outputSprite = this.sprites[shownFrame];
             this.frameDelay = frameDelay;
-            this.shownFrame = 0;
+            shownFrame = 0;
             lastUpdate = DateTime.Now;
         }
 
@@ -52,12 +52,12 @@ namespace ConsoleGameEngine
             animationFromOneFrame = true;
             sprites = new List<Sprite> { new Sprite(sprite) };
             this.frameDelay = frameDelay;
-            this.shownFrame = 0;
+            shownFrame = 0;
             lastUpdate = DateTime.Now;
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
             outputSprite = sprites[0].ReturnPartialSprite(shownFrame * frameWidth, frameHeight, frameWidth, frameHeight);
-            this.frameCount = sprites[0].Width / frameWidth;
+            frameCount = sprites[0].Width / frameWidth;
         }
 
         public void Update()

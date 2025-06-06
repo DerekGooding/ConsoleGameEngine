@@ -22,7 +22,7 @@ namespace ConsoleGameEngine
             if (!Run)
             {
                 Run = true;
-                IntPtr handleIn = GetStdHandle(STD_INPUT_HANDLE);
+                var handleIn = GetStdHandle(STD_INPUT_HANDLE);
                 new Thread(() =>
                 {
                     while (true)
@@ -32,6 +32,7 @@ namespace ConsoleGameEngine
                         record[0] = new INPUT_RECORD();
                         ReadConsoleInput(handleIn, record, 1, ref numRead);
                         if (Run)
+                        {
                             switch (record[0].EventType)
                             {
                                 case INPUT_RECORD.MOUSE_EVENT:
@@ -44,6 +45,7 @@ namespace ConsoleGameEngine
                                     WindowBufferSizeEvent?.Invoke(record[0].WindowBufferSizeEvent);
                                     break;
                             }
+                        }
                         else
                         {
                             uint numWritten = 0;
@@ -176,16 +178,16 @@ namespace ConsoleGameEngine
             ENABLE_ECHO_INPUT = 0x0004,
             ENABLE_WINDOW_INPUT = 0x0008; //more
 
-        [DllImportAttribute("kernel32.dll")]
+        [DllImport("kernel32.dll")]
         public static extern bool GetConsoleMode(IntPtr hConsoleInput, ref uint lpMode);
 
-        [DllImportAttribute("kernel32.dll")]
+        [DllImport("kernel32.dll")]
         public static extern bool SetConsoleMode(IntPtr hConsoleInput, uint dwMode);
 
-        [DllImportAttribute("kernel32.dll", CharSet = CharSet.Unicode)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern bool ReadConsoleInput(IntPtr hConsoleInput, [Out] INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsRead);
 
-        [DllImportAttribute("kernel32.dll", CharSet = CharSet.Unicode)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern bool WriteConsoleInput(IntPtr hConsoleInput, INPUT_RECORD[] lpBuffer, uint nLength, ref uint lpNumberOfEventsWritten);
     }
 }

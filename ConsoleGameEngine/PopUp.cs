@@ -7,9 +7,9 @@ namespace ConsoleGameEngine
     {
         public int x, y;
         public bool visible = false;
-        Button OKButton, CancleButton;
-        String text;
-        GameConsole.COLOR backgroundColor, foregroundColor;
+        readonly Button OKButton, CancleButton;
+        readonly String text;
+        readonly GameConsole.COLOR backgroundColor, foregroundColor;
         PopUpState state;
 
         public PopUp(int x, int y, string text, out Sprite outputSprite, GameConsole.COLOR backgroundColor = GameConsole.COLOR.FG_BLUE, GameConsole.COLOR foregroundColor = GameConsole.COLOR.FG_WHITE)
@@ -21,17 +21,16 @@ namespace ConsoleGameEngine
             this.foregroundColor = foregroundColor;
             state = PopUpState.none;
 
-            Sprite textSprite = TextWriter.GenerateTextSprite(this.text, TextWriter.Textalignment.Center, 1, (short)this.backgroundColor, (short)this.foregroundColor);
+            var textSprite = TextWriter.GenerateTextSprite(this.text, TextWriter.Textalignment.Center, 1, (short)this.backgroundColor, (short)this.foregroundColor);
             OKButton = new Button(0,0,TextWriter.GenerateTextSprite("  OK  ", TextWriter.Textalignment.Left, 1), feedbackSprite: TextWriter.GenerateTextSprite("  OK  ", TextWriter.Textalignment.Left, 1, backgroundColor: 0, foregroundColor: 15));
             CancleButton = new Button(0, 0, TextWriter.GenerateTextSprite("CANCLE", TextWriter.Textalignment.Left, 1), feedbackSprite: TextWriter.GenerateTextSprite("CANCLE", TextWriter.Textalignment.Left, 1, backgroundColor: 0, foregroundColor: 15));
 
             OKButton.OnButtonClicked(OKButtonClicked);
             CancleButton.OnButtonClicked(CancleButtonClicked);
 
-            if(textSprite.Width > OKButton.width + CancleButton.width)
-                outputSprite = new Sprite(textSprite.Width + 4, textSprite.Height + 6 + OKButton.height, GameConsole.COLOR.BG_BLUE);
-            else
-                outputSprite = new Sprite(OKButton.width + CancleButton.width + 4, OKButton.width + CancleButton.width + 4, GameConsole.COLOR.BG_BLUE);
+            outputSprite = textSprite.Width > OKButton.width + CancleButton.width
+                ? new Sprite(textSprite.Width + 4, textSprite.Height + 6 + OKButton.height, GameConsole.COLOR.BG_BLUE)
+                : new Sprite(OKButton.width + CancleButton.width + 4, OKButton.width + CancleButton.width + 4, GameConsole.COLOR.BG_BLUE);
 
             outputSprite.AddSpriteToSprite(2, 2, textSprite);
             outputSprite.AddSpriteToSprite(2, 2 +textSprite.Height + 2, OKButton.outputSprite);

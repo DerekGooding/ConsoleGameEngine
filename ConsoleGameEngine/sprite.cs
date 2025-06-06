@@ -10,11 +10,9 @@ namespace ConsoleGameEngine
     {
         private Plane<char> _spritedata;
         private Plane<short> _spritecolors;
-        private int _width;
-        private int _height;
 
-        public int Width { get { return _width; } }
-        public int Height { get { return _height; } }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
         public Sprite(string[] spriteData, short[] spriteColors = null)
         {
@@ -22,16 +20,16 @@ namespace ConsoleGameEngine
                 throw new ArgumentException(nameof(spriteData));
             if (spriteData.Any(s => s.Length != spriteData[0].Length))
                 throw new ArgumentException(nameof(spriteData));
-            _width = spriteData[0].Length;
-            _height = spriteData.Length;
+            Width = spriteData[0].Length;
+            Height = spriteData.Length;
 
-            if (spriteColors != null && spriteColors.Length != _width * _height)
+            if (spriteColors != null && spriteColors.Length != Width * Height)
                 throw new ArgumentException(nameof(spriteColors));
 
-            _spritedata = new Plane<char>(_width, _height);
-            _spritecolors = new Plane<short>(_width, _height);
+            _spritedata = new Plane<char>(Width, Height);
+            _spritecolors = new Plane<short>(Width, Height);
 
-            int i = 0;
+            var i = 0;
 
             foreach (var s in spriteData)
             {
@@ -43,7 +41,7 @@ namespace ConsoleGameEngine
                 _spritecolors.SetData(i, spriteColors == null ? (short)COLOR.FG_GREY : spriteColors[i]);
         }
 
-        public Sprite(string[] spriteData, GameConsole.COLOR[] spriteColors = null)
+        public Sprite(string[] spriteData, COLOR[] spriteColors = null)
             : this(spriteData, spriteColors?.Select(c => (short)c).ToArray())
         { }
 
@@ -64,11 +62,11 @@ namespace ConsoleGameEngine
 
         public Sprite ReturnPartialSprite(int x, int y, int w, int h)
         {
-            Sprite returnSprite = new Sprite(w, h);
+            var returnSprite = new Sprite(w, h);
 
-            for(int i = x; i < x + w; i++)
+            for(var i = x; i < x + w; i++)
             {
-                for(int j = y; j < y +h; j++)
+                for(var j = y; j < y +h; j++)
                 {
                     returnSprite.SetPixel(i - x, j - y, _spritedata.GetData(i, j), _spritecolors.GetData(i, j));
                 }
@@ -78,14 +76,14 @@ namespace ConsoleGameEngine
 
         public Sprite ReturnPartialSpriteInverted(int x, int y, int w, int h)
         {
-            Sprite returnSprite = new Sprite(w, h);
+            var returnSprite = new Sprite(w, h);
 
-            for (int i = x; i < x + w; i++)
+            for (var i = x; i < x + w; i++)
             {
-                for (int j = y; j < y + h; j++)
+                for (var j = y; j < y + h; j++)
                 {
-                    short color = _spritecolors.GetData(i, j);
-                    short invertedColor = (short)((short)(color >> 4) + (short)((color & 0x0F) << 4));
+                    var color = _spritecolors.GetData(i, j);
+                    var invertedColor = (short)((short)(color >> 4) + (short)((color & 0x0F) << 4));
 
                     returnSprite.SetPixel(i - x, j - y, _spritedata.GetData(i, j), invertedColor);
                 }
@@ -95,28 +93,28 @@ namespace ConsoleGameEngine
 
         public Sprite FlipHorizontally()
         {
-            Sprite returnSprite = new Sprite(Width, Height);
+            var returnSprite = new Sprite(Width, Height);
 
-            for(int x = 0; x < Width; x++)
+            for(var x = 0; x < Width; x++)
             {
-                for(int y = 0; y < Height; y++)
+                for(var y = 0; y < Height; y++)
                 {
-                    returnSprite.SetChar(x,y, _spritedata.GetData((Width - 1) - x, y));
-                    returnSprite.SetColor(x, y, _spritecolors.GetData((Width - 1) - x, y));
+                    returnSprite.SetChar(x,y, _spritedata.GetData(Width - 1 - x, y));
+                    returnSprite.SetColor(x, y, _spritecolors.GetData(Width - 1 - x, y));
                 }
             }
             return returnSprite;
         }
         public Sprite FlipVertically()
         {
-            Sprite returnSprite = new Sprite(Width, Height);
+            var returnSprite = new Sprite(Width, Height);
 
-            for (int x = 0; x < Width; x++)
+            for (var x = 0; x < Width; x++)
             {
-                for (int y = 0; y < Height; y++)
+                for (var y = 0; y < Height; y++)
                 {
-                    returnSprite.SetChar(x, y, _spritedata.GetData(x, (Height - 1) - y));
-                    returnSprite.SetColor(x, y, _spritecolors.GetData(x, (Height - 1) - y));
+                    returnSprite.SetChar(x, y, _spritedata.GetData(x, Height - 1 - y));
+                    returnSprite.SetColor(x, y, _spritecolors.GetData(x, Height - 1 - y));
                 }
             }
             return returnSprite;
@@ -124,11 +122,11 @@ namespace ConsoleGameEngine
 
         public List<Sprite> ReturnTileList(int w, int h, int rows, int columns)
         {
-            List<Sprite> retList = new List<Sprite>();
+            var retList = new List<Sprite>();
 
-            for(int r = 0; r < rows; r++)
+            for(var r = 0; r < rows; r++)
             {
-                for(int c = 0; c < columns; c++)
+                for(var c = 0; c < columns; c++)
                 {
                     retList.Add(ReturnPartialSprite(c * w, r * h, w, h));
                 }
@@ -139,9 +137,9 @@ namespace ConsoleGameEngine
 
         public void AddSpriteToSprite(int x, int y, Sprite sprite)
         {
-            for(int i = x; i < x + sprite.Width; i++)
+            for(var i = x; i < x + sprite.Width; i++)
             {
-                for(int j = y; j < y + sprite.Height; j++)
+                for(var j = y; j < y + sprite.Height; j++)
                 {
                     SetPixel(i,j, sprite.GetChar(i - x, j - y), sprite.GetColor(i - x, j - y));
                 }
@@ -164,9 +162,9 @@ namespace ConsoleGameEngine
 
         public void SetBlock(int x, int y, int w, int h, char c, short col)
         {
-            for(int i = 0; i < w; i++)
+            for(var i = 0; i < w; i++)
             {
-                for(int j = 0; j < h; j++)
+                for(var j = 0; j < h; j++)
                 {
                     SetPixel(x + i, y + j, c, col);
                 }
@@ -177,79 +175,74 @@ namespace ConsoleGameEngine
         #region load/save/create
         public bool Load(string file)
         {
-            _width = 0; _height = 0;
+            Width = 0; Height = 0;
 
-            using (var sr = new StreamReader(file))
+            using var sr = new StreamReader(file);
+            var content = sr.ReadToEnd();
+
+            var splits = content.Split(';');
+
+            Width = int.Parse(splits[0]);
+            Height = int.Parse(splits[1]);
+
+            _spritedata = new Plane<char>(Width, Height);
+            _spritecolors = new Plane<short>(Width, Height);
+
+            var i = 0;
+            foreach (var pixel in splits[2].Split(','))
             {
-                string content = sr.ReadToEnd();
-
-                string[] splits = content.Split(';');
-
-                _width = int.Parse(splits[0]);
-                _height = int.Parse(splits[1]);
-
-                _spritedata = new Plane<char>(_width, _height);
-                _spritecolors = new Plane<short>(_width, _height);
-
-                int i = 0;
-                foreach(string pixel in splits[2].Split(','))
-                {
-                    if(pixel != "")
-                        _spritedata.SetData(i, pixel[0]);
-                    i++;
-                }
-                i = 0;
-                foreach (string pixel in splits[3].Split(','))
-                {
-                    if(pixel != "")
-                        _spritecolors.SetData(i, Convert.ToByte(pixel));
-                    i++;
-                }
+                if (pixel != "")
+                    _spritedata.SetData(i, pixel[0]);
+                i++;
+            }
+            i = 0;
+            foreach (var pixel in splits[3].Split(','))
+            {
+                if (pixel != "")
+                    _spritecolors.SetData(i, Convert.ToByte(pixel));
+                i++;
             }
             return true;
         }
 
         public bool Load(string file, int w, int h, int startRow, int count)
         {
-            _width = w; _height = h;
+            Width = w; Height = h;
 
-            using (var sr = new StreamReader(file))
+            using var sr = new StreamReader(file);
+            var content = sr.ReadToEnd();
+
+            var splits = content.Split(';');
+
+            Width = int.Parse(splits[0]);
+
+            _spritedata = new Plane<char>(Width, Height);
+            _spritecolors = new Plane<short>(Width, Height);
+
+            var i = 0;
+
+            var pixelSplits = splits[2].Split(',');
+            var colorSplits = splits[3].Split(',');
+
+            for (var j = startRow * w; j < (startRow + h) * w; j++)
             {
-                string content = sr.ReadToEnd();
-
-                string[] splits = content.Split(';');
-
-                _width = int.Parse(splits[0]);
-
-                _spritedata = new Plane<char>(_width, _height);
-                _spritecolors = new Plane<short>(_width, _height);
-
-                int i = 0;
-
-                var pixelSplits = splits[2].Split(',');
-                var colorSplits = splits[3].Split(',');
-
-                for (int j = startRow * w; j < (startRow + h) * w; j++)
+                if (pixelSplits[j] != "")
                 {
-                    if (pixelSplits[j] != "")
-                    {
-                        _spritedata.SetData(i, pixelSplits[j][0]);
-                        _spritecolors.SetData(i, Convert.ToByte(colorSplits[j]));
-                    }
-                    i++;
+                    _spritedata.SetData(i, pixelSplits[j][0]);
+                    _spritecolors.SetData(i, Convert.ToByte(colorSplits[j]));
                 }
+                i++;
             }
             return true;
         }
         public bool Save(string file)
         {
-            System.IO.BinaryWriter sw = null;
-            sw = new System.IO.BinaryWriter(File.Open(file, FileMode.OpenOrCreate));
-            sw.Write(_width);
-            sw.Write(_height);
-            foreach (char c in _spritedata.Data)
+            var sw = new BinaryWriter(File.Open(file, FileMode.OpenOrCreate));
+            sw.Write(Width);
+            sw.Write(Height);
+            foreach (var c in _spritedata.Data)
                 sw.Write(c);
-            foreach (short s in _spritecolors.Data)
+            foreach (var s in _spritecolors.Data)
                 sw.Write(s);
             sw.Close();
 
@@ -257,43 +250,43 @@ namespace ConsoleGameEngine
         }
         private void Create(int w, int h)
         {
-            _width = w;
-            _height = h;
+            Width = w;
+            Height = h;
 
-            _spritedata = new Plane<char>(_width, _height);
-            _spritecolors = new Plane<short>(_width, _height);
+            _spritedata = new Plane<char>(Width, Height);
+            _spritecolors = new Plane<short>(Width, Height);
 
-            for (int i = 0; i < _width * _height; i++)
+            for (var i = 0; i < Width * Height; i++)
                 _spritedata.SetData(i, ' ');//m_Glyphs.Add(br.ReadChar());
-            for (int i = 0; i < _height * _width; i++)
+            for (var i = 0; i < Height * Width; i++)
                 _spritecolors.SetData(i, (short)COLOR.BG_BLACK);//m_Colours.Add(br.ReadSByte());
         }
 
         private void Create(int w, int h, COLOR color)
         {
-            _width = w;
-            _height = h;
+            Width = w;
+            Height = h;
 
-            _spritedata = new Plane<char>(_width, _height);
-            _spritecolors = new Plane<short>(_width, _height);
+            _spritedata = new Plane<char>(Width, Height);
+            _spritecolors = new Plane<short>(Width, Height);
 
-            for (int i = 0; i < _width * _height; i++)
+            for (var i = 0; i < Width * Height; i++)
                 _spritedata.SetData(i, ' ');
-            for (int i = 0; i < _height * _width; i++)
+            for (var i = 0; i < Height * Width; i++)
                 _spritecolors.SetData(i, (short)color);
         }
 
         public void Create(int w, int h, char c, COLOR color)
         {
-            _width = w;
-            _height = h;
+            Width = w;
+            Height = h;
 
-            _spritedata = new Plane<char>(_width, _height);
-            _spritecolors = new Plane<short>(_width, _height);
+            _spritedata = new Plane<char>(Width, Height);
+            _spritecolors = new Plane<short>(Width, Height);
 
-            for (int i = 0; i < _width * _height; i++)
+            for (var i = 0; i < Width * Height; i++)
                 _spritedata.SetData(i, c);
-            for (int i = 0; i < _height * _width; i++)
+            for (var i = 0; i < Height * Width; i++)
                 _spritecolors.SetData(i, (short)color);
         }
         #endregion
@@ -301,23 +294,17 @@ namespace ConsoleGameEngine
         #region sampling
         public char SampleGlyph(double x, double y)
         {
-            int sx = (int)(x * (double)_width);
-            int sy = (int)(y * (double)_height - 1.0);
+            var sx = (int)(x * (double)Width);
+            var sy = (int)((y * (double)Height) - 1.0);
 
-            if (sx < 0 || sx >= _width || sy < 0 || sy >= _height)
-                return ' ';
-            else
-                return _spritedata.GetData(sy * _width + sx);
+            return sx < 0 || sx >= Width || sy < 0 || sy >= Height ? ' ' : _spritedata.GetData((sy * Width) + sx);
         }
         public short SampleColor(double x, double y)
         {
-            int sx = (int)(x * (double)_width);
-            int sy = (int)(y * (double)_height - 1.0);
+            var sx = (int)(x * (double)Width);
+            var sy = (int)((y * (double)Height) - 1.0);
 
-            if (sx < 0 || sx >= _width || sy < 0 || sy >= _height)
-                return (short)COLOR.BG_BLACK;
-            else
-                return _spritecolors.GetData(sy * _width + sx);
+            return sx < 0 || sx >= Width || sy < 0 || sy >= Height ? (short)COLOR.BG_BLACK : _spritecolors.GetData((sy * Width) + sx);
         }
         #endregion
     }

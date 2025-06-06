@@ -8,10 +8,10 @@ namespace ConsoleGameEngine
     {
         public int x, y, width, height;
         public Sprite outputSprite, sprite, feedbackSprite, hooverSprite;
-        string text;
+        readonly string text;
         Func<bool> method;
-        bool simple = false;
-        short foregroundColor, backgroundColor, hooverColor;
+        readonly bool simple = false;
+        readonly short foregroundColor, backgroundColor, hooverColor;
 
         public Button(int x, int y, int width, int height, Sprite sprite, Sprite feedbackSprite = null, Sprite hooverSprite = null, Func<bool> method = null)
         {
@@ -58,7 +58,7 @@ namespace ConsoleGameEngine
         public void Update(MOUSE_EVENT_RECORD r)
         {
             int mouseX = r.dwMousePosition.X, mouseY = r.dwMousePosition.Y;
-            uint mouseState = r.dwButtonState;
+            var mouseState = r.dwButtonState;
 
             if (mouseX <= x + width && mouseX >= x && mouseY <= y + height && mouseY > y)
             {
@@ -70,7 +70,9 @@ namespace ConsoleGameEngine
                             outputSprite = feedbackSprite;
                     }
                     else
+                    {
                         outputSprite = BuildSimpleSprite(true, false);
+                    }
 
                     method();
                 }
@@ -82,31 +84,30 @@ namespace ConsoleGameEngine
                             outputSprite = hooverSprite;
                     }
                     else
+                    {
                         outputSprite = BuildSimpleSprite(false, true);
+                    }
                 }
             }
             else
             {
-                if(!simple)
-                    outputSprite = sprite;
-                else
-                    outputSprite = BuildSimpleSprite(false, false);
+                outputSprite = !simple ? sprite : BuildSimpleSprite(false, false);
             }
         }
 
         private Sprite BuildSimpleSprite(bool clicked, bool hoovered)
         {
-            Sprite retSprite = new Sprite(text.Length + 2, 3);
+            var retSprite = new Sprite(text.Length + 2, 3);
 
-            short color = clicked ? (short)((foregroundColor << 4) + backgroundColor) : (short)((backgroundColor << 4) + foregroundColor);
+            var color = clicked ? (short)((foregroundColor << 4) + backgroundColor) : (short)((backgroundColor << 4) + foregroundColor);
 
             color = hoovered ? (short)((hooverColor << 4) + backgroundColor) : color;
 
-            for (int i = 1; i < retSprite.Width - 1; i++)
+            for (var i = 1; i < retSprite.Width - 1; i++)
             {
                 retSprite.SetPixel(i, 0, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, color);
                 retSprite.SetPixel(i, retSprite.Height - 1, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, color);
-                for (int j = 1; j < retSprite.Height - 1; j++)
+                for (var j = 1; j < retSprite.Height - 1; j++)
                 {
                     retSprite.SetPixel(0, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, color);
                     retSprite.SetPixel(retSprite.Width - 1, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, color);
@@ -119,7 +120,7 @@ namespace ConsoleGameEngine
             retSprite.SetPixel(retSprite.Width - 1, retSprite.Height - 1, (char)PIXELS.LINE_CORNER_BOTTOM_RIGHT, color);
 
             //text
-            for(int i = 0; i < text.Length; i++)
+            for(var i = 0; i < text.Length; i++)
             {
                 retSprite.SetPixel(1+i,1, text[i], color);
             }

@@ -78,7 +78,7 @@ namespace ConsoleGameEngine
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private class CONSOLE_FONT_INFOEX
         {
-            private int cbSize;
+            private readonly int cbSize;
             public CONSOLE_FONT_INFOEX() => cbSize = Marshal.SizeOf(typeof(CONSOLE_FONT_INFOEX));
 
             public int FontIndex;
@@ -107,8 +107,7 @@ namespace ConsoleGameEngine
             }
 
             var procId = Process.GetCurrentProcess().Id;
-            int activeProcId;
-            GetWindowThreadProcessId(activatedHandle, out activeProcId);
+            GetWindowThreadProcessId(activatedHandle, out var activeProcId);
 
             return activeProcId == procId;
         }
@@ -133,33 +132,34 @@ namespace ConsoleGameEngine
         private readonly short[] _oldkeystate = new short[KEYSTATES];
 
         public static KeyState[] KeyStates { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public string Title { get { return Console.Title; } set { Console.Title = value ?? "GameConsole"; } }
+        public int Width { get; }
+        public int Height { get; }
+        public string Title { get => Console.Title; set => Console.Title = value ?? "GameConsole"; }
 
         public enum PIXELS
         {
             PIXEL_NONE = '\0',
-            PIXEL_SOLID = 0x2588,
-            PIXEL_THREEQUARTERS = 0x2593,
-            PIXEL_HALF = 0x2592,
-            PIXEL_QUARTER = 0x2591,
             LINE_STRAIGHT_HORIZONTAL = '─',
             LINE_STRAIGHT_VERTICAL = '│',
             LINE_CORNER_TOP_LEFT = '┌',
             LINE_CORNER_TOP_RIGHT = '┐',
             LINE_CORNER_BOTTOM_LEFT = '└',
             LINE_CORNER_BOTTOM_RIGHT = '┘',
-            LINE_TSECTION_TOP = '┬',
-            LINE_TSECTION_BOTTOM = '┴',
             LINE_TSECTION_LEFT = '├',
             LINE_TSECTION_RIGHT = '┤',
+            LINE_TSECTION_TOP = '┬',
+            LINE_TSECTION_BOTTOM = '┴',
             LINE_CROSSSECTION = '┼',
+            PIXEL_SOLID = 0x2588,
+            PIXEL_QUARTER = 0x2591,
+            PIXEL_HALF = 0x2592,
+            PIXEL_THREEQUARTERS = 0x2593,
         }
 
         public enum COLOR
         {
             FG_BLACK = 0x0000,
+            BG_BLACK = FG_BLACK,
             FG_DARK_BLUE = 0x0001,
             FG_DARK_GREEN = 0x0002,
             FG_DARK_CYAN = 0x0003,
@@ -175,7 +175,6 @@ namespace ConsoleGameEngine
             FG_MAGENTA = 0x000D,
             FG_YELLOW = 0x000E,
             FG_WHITE = 0x000F,
-            BG_BLACK = 0x0000,
             BG_DARK_BLUE = 0x0010,
             BG_DARK_GREEN = 0x0020,
             BG_DARK_CYAN = 0x0030,
@@ -194,7 +193,7 @@ namespace ConsoleGameEngine
             TRANSPARENT = 0x00FF,
         }
 
-        public GameConsole(short width, short height, string title = null, string font = "Consolas", short fontwidth = 8, short fontheight = 8)
+        protected GameConsole(short width, short height, string title = null, string font = "Consolas", short fontwidth = 8, short fontheight = 8)
         {
             Width = width;
             Height = height;
@@ -247,20 +246,20 @@ namespace ConsoleGameEngine
                         GetKeyStates();
 
                         tp2 = DateTime.Now;
-                        TimeSpan elapsed = tp2 - tp1;
+                        var elapsed = tp2 - tp1;
                         tp1 = tp2;
                         cont = OnUserUpdate(elapsed);
                         Paint();
-                    };
+                    }
                 }
             });
         }
 
         public void DrawSprite(int x, int y, Sprite sprite, char alphaChar = '\0', short alphaColor = 0x0000)
         {
-            for (int py = 0; py < sprite.Height; py++)
+            for (var py = 0; py < sprite.Height; py++)
             {
-                for (int px = 0; px < sprite.Width; px++)
+                for (var px = 0; px < sprite.Width; px++)
                 {
                     var c = sprite.GetChar(px, py);
                     var col = sprite.GetColor(px, py);
@@ -272,9 +271,9 @@ namespace ConsoleGameEngine
 
         public void DrawPartialSprite(int x, int y, Sprite sprite, int ox, int oy, int w, int h)
         {
-            for(int i = 0; i < w; i++)
+            for(var i = 0; i < w; i++)
             {
-                for(int j = 0; j < h; j++)
+                for(var j = 0; j < h; j++)
                 {
                     SetChar(x + i, y + j, sprite.GetChar(i + ox, j + oy), sprite.GetColor(i+ox, j+oy));
                 }
@@ -294,46 +293,46 @@ namespace ConsoleGameEngine
         public void Mode7(double fWorldX, double fWorldY, double fWorldA, double fNear, double fFar, double fFoVHalf, Sprite sprite, bool invert)
         {
             // Create Frustum corner points
-            double fFarX1 = fWorldX + Math.Cos(fWorldA - fFoVHalf) * fFar;
-            double fFarY1 = fWorldY + Math.Sin(fWorldA - fFoVHalf) * fFar;
+            var fFarX1 = fWorldX + (Math.Cos(fWorldA - fFoVHalf) * fFar);
+            var fFarY1 = fWorldY + (Math.Sin(fWorldA - fFoVHalf) * fFar);
 
-            double fNearX1 = fWorldX + Math.Cos(fWorldA - fFoVHalf) * fNear;
-            double fNearY1 = fWorldY + Math.Sin(fWorldA - fFoVHalf) * fNear;
+            var fNearX1 = fWorldX + (Math.Cos(fWorldA - fFoVHalf) * fNear);
+            var fNearY1 = fWorldY + (Math.Sin(fWorldA - fFoVHalf) * fNear);
 
-            double fFarX2 = fWorldX + Math.Cos(fWorldA + fFoVHalf) * fFar;
-            double fFarY2 = fWorldY + Math.Sin(fWorldA + fFoVHalf) * fFar;
+            var fFarX2 = fWorldX + (Math.Cos(fWorldA + fFoVHalf) * fFar);
+            var fFarY2 = fWorldY + (Math.Sin(fWorldA + fFoVHalf) * fFar);
 
-            double fNearX2 = fWorldX + Math.Cos(fWorldA + fFoVHalf) * fNear;
-            double fNearY2 = fWorldY + Math.Sin(fWorldA + fFoVHalf) * fNear;
+            var fNearX2 = fWorldX + (Math.Cos(fWorldA + fFoVHalf) * fNear);
+            var fNearY2 = fWorldY + (Math.Sin(fWorldA + fFoVHalf) * fNear);
 
             // Starting with furthest away line and work towards the camera point
-            for (int y = 0; y < Height / 2; y++)
+            for (var y = 0; y < Height / 2; y++)
             {
                 // Take a sample point for depth linearly related to rows down screen
-                double fSampleDepth = (double)y / Height / 2.0;
+                var fSampleDepth = (double)y / Height / 2.0;
 
                 // Use sample point in non-linear (1/x) way to enable perspective
                 // and grab start and end points for lines across the screen
-                double fStartX = (fFarX1 - fNearX1) / (fSampleDepth) + fNearX1;
-                double fStartY = (fFarY1 - fNearY1) / (fSampleDepth) + fNearY1;
-                double fEndX = (fFarX2 - fNearX2) / (fSampleDepth) + fNearX2;
-                double fEndY = (fFarY2 - fNearY2) / (fSampleDepth) + fNearY2;
+                var fStartX = ((fFarX1 - fNearX1) / fSampleDepth) + fNearX1;
+                var fStartY = ((fFarY1 - fNearY1) / fSampleDepth) + fNearY1;
+                var fEndX = ((fFarX2 - fNearX2) / fSampleDepth) + fNearX2;
+                var fEndY = ((fFarY2 - fNearY2) / fSampleDepth) + fNearY2;
 
                 // Linearly interpolate lines across the screen
-                for (int x = 0; x < Width; x++)
+                for (var x = 0; x < Width; x++)
                 {
-                    double fSampleWidth = (double)x / Width;
-                    double fSampleX = (fEndX - fStartX) * fSampleWidth + fStartX;
-                    double fSampleY = (fEndY - fStartY) * fSampleWidth + fStartY;
+                    var fSampleWidth = (double)x / Width;
+                    var fSampleX = ((fEndX - fStartX) * fSampleWidth) + fStartX;
+                    var fSampleY = ((fEndY - fStartY) * fSampleWidth) + fStartY;
 
                     // Wrap sample coordinates to give "infinite" periodicity on maps
-                    fSampleX = fSampleX % 1.0; //fmod(fSampleX, 1.0f);
-                    fSampleY = fSampleY % 1.0;//fmod(fSampleY, 1.0f);
+                    fSampleX %= 1.0; //fmod(fSampleX, 1.0f);
+                    fSampleY %= 1.0;//fmod(fSampleY, 1.0f);
 
                     // Sample symbol and colour from map sprite, and draw the
                     // pixel to the screen
-                    char sym = sprite.SampleGlyph(fSampleX, fSampleY);
-                    short col = sprite.SampleColor(fSampleX, fSampleY);
+                    var sym = sprite.SampleGlyph(fSampleX, fSampleY);
+                    var col = sprite.SampleColor(fSampleX, fSampleY);
 
                     if(!invert)
                         SetChar(x, y + (Height / 2), sym, col);
@@ -347,14 +346,16 @@ namespace ConsoleGameEngine
 
         public void Fill(int x, int y, int width, int height, char c = (char)PIXELS.PIXEL_NONE, short attributes = (short)COLOR.BG_BLACK)
         {
-            for (int xp = x; xp < x + width; xp++)
-                for (int yp = y; yp < y + height; yp++)
+            for (var xp = x; xp < x + width; xp++)
+            {
+                for (var yp = y; yp < y + height; yp++)
                     SetChar(xp, yp, c, attributes);
+            }
         }
 
         public void Print(int x, int y, string text, short attributes = (int)COLOR.FG_WHITE)
         {
-            for (int i = 0; i < text.Length; ++i)
+            for (var i = 0; i < text.Length; ++i)
             {
                 SetChar(x + i, y, text[i], attributes);
             }
@@ -362,14 +363,14 @@ namespace ConsoleGameEngine
 
         public void DrawRectangle(int x, int y, int width, int height, short color =  (short)COLOR.FG_WHITE)
         {
-            short drawingcolor = (short)(color << 4);
+            var drawingcolor = (short)(color << 4);
             drawingcolor += color;
-            for(int i = x; i <= x+width; i++)
+            for(var i = x; i <= x+width; i++)
             {
                 SetChar(i, y, '█', drawingcolor);
                 SetChar(i, y + height, '█', drawingcolor);
             }
-            for (int j = y; j <= y + height; j++)
+            for (var j = y; j <= y + height; j++)
             {
                 SetChar(x, j, '█', drawingcolor);
                 SetChar(x+width, j, '█', drawingcolor);
@@ -378,14 +379,14 @@ namespace ConsoleGameEngine
 
         public void DrawASCIIRectangle(int x, int y, int width, int height, short background = (short)COLOR.BG_BLACK, short foreground = (short)COLOR.FG_WHITE)
         {
-            short drawingColor = (short)(background + foreground);
+            var drawingColor = (short)(background + foreground);
 
-            for(int i = x; i < x+width; i++)
+            for(var i = x; i < x+width; i++)
             {
                 SetChar(i, y, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, drawingColor);
                 SetChar(i, y + height - 1, (char)PIXELS.LINE_STRAIGHT_HORIZONTAL, drawingColor);
 
-                for(int j = y; j < y+height; j++)
+                for(var j = y; j < y+height; j++)
                 {
                     SetChar(x, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, drawingColor);
                     SetChar(x + width - 1, j, (char)PIXELS.LINE_STRAIGHT_VERTICAL, drawingColor);
@@ -432,7 +433,7 @@ namespace ConsoleGameEngine
 
         private void GetKeyStates()
         {
-            for (int i = 0; i < KEYSTATES; i++)
+            for (var i = 0; i < KEYSTATES; i++)
             {
                 _newkeystate[i] = GetAsyncKeyState(i);
 
@@ -458,7 +459,7 @@ namespace ConsoleGameEngine
 
         public short ClosedConsoleColor3Bit(byte r, byte g, byte b, out char pixel)
         {
-            short sixBitValue = (short)((r / 85) << 4 | (g / 85) << 2 | (b / 85));
+            var sixBitValue = (short)((r / 85) << 4 | (g / 85) << 2 | (b / 85));
 
             switch (sixBitValue)
             {

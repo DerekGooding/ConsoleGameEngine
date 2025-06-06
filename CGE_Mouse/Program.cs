@@ -4,7 +4,7 @@ using static ConsoleGameEngine.NativeMethods;
 
 namespace CGE_Mouse;
 
-internal class Program
+internal static class Program
 {
     class CGE_Mouse : GameConsole
     {
@@ -66,7 +66,7 @@ internal class Program
         }
     }
 
-    static void Main(string[] args)
+    static void Main()
     {
         Console.OutputEncoding = Encoding.GetEncoding(437);
 
