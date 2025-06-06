@@ -1,84 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ConsoleGameEngine
+namespace ConsoleGameEngine;
+
+public class Animation
 {
-    public class Animation
+    readonly List<Sprite> sprites;
+    public Sprite outputSprite;
+    readonly TimeSpan frameDelay;
+    DateTime lastUpdate;
+    int shownFrame;
+    readonly int frameWidth, frameHeight;
+    private readonly bool animationFromOneFrame = false;
+    private readonly int frameCount = 0;
+
+    public Animation(List<Sprite> sprites, TimeSpan frameDelay)
     {
-        readonly List<Sprite> sprites;
-        public Sprite outputSprite;
-        readonly TimeSpan frameDelay;
-        DateTime lastUpdate;
-        int shownFrame;
-        readonly int frameWidth, frameHeight;
-        private readonly bool animationFromOneFrame = false;
-        private readonly int frameCount = 0;
+        this.sprites = sprites;
+        this.frameDelay = frameDelay;
+        shownFrame = 0;
+        lastUpdate = DateTime.Now;
+    }
+    public Animation(Sprite sprite, TimeSpan frameDelay, int frameWidth, int frameHeight, int frameCount)
+    {
+        animationFromOneFrame = true;
+        sprites = new List<Sprite> { sprite };
+        this.frameDelay = frameDelay;
+        shownFrame = 0;
+        lastUpdate = DateTime.Now;
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        outputSprite = sprites[0].ReturnPartialSprite(shownFrame * frameWidth, 0, frameWidth, frameHeight);
+        this.frameCount = frameCount;
+    }
 
-        public Animation(List<Sprite> sprites, TimeSpan frameDelay)
+    public Animation(List<string> sprites, TimeSpan frameDelay)
+    {
+        this.sprites = new List<Sprite>();
+        foreach (var sprite in sprites)
         {
-            this.sprites = sprites;
-            this.frameDelay = frameDelay;
-            shownFrame = 0;
-            lastUpdate = DateTime.Now;
+            this.sprites.Add(new Sprite(sprite));
         }
-        public Animation(Sprite sprite, TimeSpan frameDelay, int frameWidth, int frameHeight, int frameCount)
-        {
-            animationFromOneFrame = true;
-            sprites = new List<Sprite> { sprite };
-            this.frameDelay = frameDelay;
-            shownFrame = 0;
-            lastUpdate = DateTime.Now;
-            this.frameWidth = frameWidth;
-            this.frameHeight = frameHeight;
-            outputSprite = sprites[0].ReturnPartialSprite(shownFrame * frameWidth, 0, frameWidth, frameHeight);
-            this.frameCount = frameCount;
-        }
+        outputSprite = this.sprites[shownFrame];
+        this.frameDelay = frameDelay;
+        shownFrame = 0;
+        lastUpdate = DateTime.Now;
+    }
 
-        public Animation(List<string> sprites, TimeSpan frameDelay)
+    public Animation(string sprite, TimeSpan frameDelay, int frameWidth, int frameHeight)
+    {
+        animationFromOneFrame = true;
+        sprites = new List<Sprite> { new Sprite(sprite) };
+        this.frameDelay = frameDelay;
+        shownFrame = 0;
+        lastUpdate = DateTime.Now;
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        outputSprite = sprites[0].ReturnPartialSprite(shownFrame * frameWidth, frameHeight, frameWidth, frameHeight);
+        frameCount = sprites[0].Width / frameWidth;
+    }
+
+    public void Update()
+    {
+        if(frameDelay < DateTime.Now - lastUpdate)
         {
-            this.sprites = new List<Sprite>();
-            foreach (var sprite in sprites)
+            lastUpdate = DateTime.Now;
+            shownFrame++;
+
+            if (!animationFromOneFrame)
             {
-                this.sprites.Add(new Sprite(sprite));
+                if (shownFrame >= sprites.Count)
+                    shownFrame = 0;
+                outputSprite = sprites[shownFrame];
             }
-            outputSprite = this.sprites[shownFrame];
-            this.frameDelay = frameDelay;
-            shownFrame = 0;
-            lastUpdate = DateTime.Now;
-        }
-
-        public Animation(string sprite, TimeSpan frameDelay, int frameWidth, int frameHeight)
-        {
-            animationFromOneFrame = true;
-            sprites = new List<Sprite> { new Sprite(sprite) };
-            this.frameDelay = frameDelay;
-            shownFrame = 0;
-            lastUpdate = DateTime.Now;
-            this.frameWidth = frameWidth;
-            this.frameHeight = frameHeight;
-            outputSprite = sprites[0].ReturnPartialSprite(shownFrame * frameWidth, frameHeight, frameWidth, frameHeight);
-            frameCount = sprites[0].Width / frameWidth;
-        }
-
-        public void Update()
-        {
-            if(frameDelay < DateTime.Now - lastUpdate)
+            else
             {
-                lastUpdate = DateTime.Now;
-                shownFrame++;
-
-                if (!animationFromOneFrame)
-                {
-                    if (shownFrame >= sprites.Count)
-                        shownFrame = 0;
-                    outputSprite = sprites[shownFrame];
-                }
-                else
-                {
-                    if (shownFrame >= sprites[0].Width / frameWidth || shownFrame >= frameCount)
-                        shownFrame = 0;
-                    outputSprite = sprites[0].ReturnPartialSprite(shownFrame * frameWidth, 0, frameWidth, frameHeight);
-                }
+                if (shownFrame >= sprites[0].Width / frameWidth || shownFrame >= frameCount)
+                    shownFrame = 0;
+                outputSprite = sprites[0].ReturnPartialSprite(shownFrame * frameWidth, 0, frameWidth, frameHeight);
             }
         }
     }
