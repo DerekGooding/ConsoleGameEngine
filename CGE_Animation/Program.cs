@@ -2,40 +2,39 @@
 using System.Text;
 using ConsoleGameEngine;
 
-namespace CGE_Animation
+namespace CGE_Animation;
+
+class ConsoleAnimation : GameConsole
 {
-    class ConsoleAnimation : GameConsole
+    animation diddysAnimation;
+
+    public ConsoleAnimation()
+      : base(200, 120, "Animation", fontwidth: 4, fontheight: 4)
+    { }
+    public override bool OnUserCreate()
     {
-        animation diddysAnimation;
+        diddysAnimation = new animation("diddy_idle.txt", new TimeSpan(0, 0, 0, 0, 100), 37, 48);
 
-        public ConsoleAnimation()
-          : base(200, 120, "Animation", fontwidth: 4, fontheight: 4)
-        { }
-        public override bool OnUserCreate()
-        {
-            diddysAnimation = new animation("diddy_idle.txt", new TimeSpan(0, 0, 0, 0, 100), 37, 48);
-
-            return true;
-        }
-
-        public override bool OnUserUpdate(TimeSpan elapsedTime)
-        {
-            diddysAnimation.Update();
-
-            DrawSprite(0, 0, diddysAnimation.outputSprite);
-
-            return true;
-        }
+        return true;
     }
 
-        internal class Program
+    public override bool OnUserUpdate(TimeSpan elapsedTime)
     {
-        static void Main(string[] args)
-        {
-            Console.OutputEncoding = Encoding.GetEncoding(437);
+        diddysAnimation.Update();
 
-            using (var f = new ConsoleAnimation())
-                f.Start();
-        }
+        DrawSprite(0, 0, diddysAnimation.outputSprite);
+
+        return true;
+    }
+}
+
+    internal class Program
+{
+    static void Main(string[] args)
+    {
+        Console.OutputEncoding = Encoding.GetEncoding(437);
+
+        using (var f = new ConsoleAnimation())
+            f.Start();
     }
 }

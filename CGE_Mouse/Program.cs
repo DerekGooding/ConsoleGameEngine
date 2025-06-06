@@ -3,77 +3,76 @@ using System.Text;
 using ConsoleGameEngine;
 using static ConsoleGameEngine.NativeMethods;
 
-namespace CGE_Mouse
+namespace CGE_Mouse;
+
+internal class Program
 {
-    internal class Program
+    class CGE_Mouse : GameConsole
     {
-        class CGE_Mouse : GameConsole
+        IntPtr inHandle;
+        delegate void MyDelegate();
+
+        int cursorX = 0, cursorY = 0;
+        bool leftMousebuttonClicked = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
+
+        public CGE_Mouse()
+          : base(200, 120, "Fonts", fontwidth: 4, fontheight: 4)
+        { }
+        public override bool OnUserCreate()
         {
-            IntPtr inHandle;
-            delegate void MyDelegate();
+            inHandle = GetStdHandle(STD_INPUT_HANDLE);
+            uint mode = 0;
+            GetConsoleMode(inHandle, ref mode);
+            mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
+            mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
+            mode |= ENABLE_MOUSE_INPUT; //enable
+            SetConsoleMode(inHandle, mode);
 
-            int cursorX = 0, cursorY = 0;
-            bool leftMousebuttonClicked = false, mouseWheelClicked = false, rightMousebuttonClicked = false;
+            
+            ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
 
-            public CGE_Mouse()
-              : base(200, 120, "Fonts", fontwidth: 4, fontheight: 4)
-            { }
-            public override bool OnUserCreate()
-            {
-                inHandle = GetStdHandle(STD_INPUT_HANDLE);
-                uint mode = 0;
-                GetConsoleMode(inHandle, ref mode);
-                mode &= ~ENABLE_QUICK_EDIT_MODE; //disable
-                mode |= ENABLE_WINDOW_INPUT; //enable (if you want)
-                mode |= ENABLE_MOUSE_INPUT; //enable
-                SetConsoleMode(inHandle, mode);
+            ConsoleListener.Start();
 
-                
-                ConsoleListener.MouseEvent += ConsoleListener_MouseEvent;
+            TextWriter.LoadFont("fontsheet.txt", 7, 9);
 
-                ConsoleListener.Start();
-
-                TextWriter.LoadFont("fontsheet.txt", 7, 9);
-
-                return true;
-            }
-
-            public override bool OnUserUpdate(TimeSpan elapsedTime)
-            {
-                //Clear();
-
-                DrawSprite(0, 0, TextWriter.GenerateTextSprite($"X: {cursorX}; Y: {cursorY}", TextWriter.Textalignment.Left, 1));
-
-                if(leftMousebuttonClicked)
-                {
-                    SetChar(cursorX, cursorY, 'X');
-                }
-
-                if(mouseWheelClicked || rightMousebuttonClicked)
-                {
-                    Clear();
-                }
-
-                return true;
-            }
-
-            private void ConsoleListener_MouseEvent(MOUSE_EVENT_RECORD r)
-            {
-                cursorX = r.dwMousePosition.X;
-                cursorY = r.dwMousePosition.Y;
-
-                leftMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
-                mouseWheelClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_2ND_BUTTON_PRESSED;
-                rightMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.RIGHTMOST_BUTTON_PRESSED;
-            }
+            return true;
         }
 
-        static void Main(string[] args)
+        public override bool OnUserUpdate(TimeSpan elapsedTime)
         {
-            Console.OutputEncoding = Encoding.GetEncoding(437);
+            //Clear();
 
-            using (var f = new CGE_Mouse())
-                f.Start();
+            DrawSprite(0, 0, TextWriter.GenerateTextSprite($"X: {cursorX}; Y: {cursorY}", TextWriter.Textalignment.Left, 1));
+
+            if(leftMousebuttonClicked)
+            {
+                SetChar(cursorX, cursorY, 'X');
+            }
+
+            if(mouseWheelClicked || rightMousebuttonClicked)
+            {
+                Clear();
+            }
+
+            return true;
         }
+
+        private void ConsoleListener_MouseEvent(MOUSE_EVENT_RECORD r)
+        {
+            cursorX = r.dwMousePosition.X;
+            cursorY = r.dwMousePosition.Y;
+
+            leftMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_1ST_BUTTON_PRESSED;
+            mouseWheelClicked = r.dwButtonState == MOUSE_EVENT_RECORD.FROM_LEFT_2ND_BUTTON_PRESSED;
+            rightMousebuttonClicked = r.dwButtonState == MOUSE_EVENT_RECORD.RIGHTMOST_BUTTON_PRESSED;
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        Console.OutputEncoding = Encoding.GetEncoding(437);
+
+        using (var f = new CGE_Mouse())
+            f.Start();
     }
 }
